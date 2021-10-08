@@ -1,0 +1,7 @@
+{
+  "name": "ygopro",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

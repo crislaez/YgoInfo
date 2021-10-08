@@ -1,0 +1,40 @@
+{
+  "COMMON":{
+    "TITLE":"YGO Info",
+    "MENU":"Menu",
+    "MONSTER_CARDS":"Monster cards",
+    "MAGIC_CARDS":"Magic cards",
+    "TRAP_CARDS":"Trap cards",
+    "NORESULT":"No data found, swipe down to reload",
+    "ERROR":"An error has occurred, swipe down to reload",
+    "SEARCH":"Search by name...",
+    "EVERYONE":"All",
+    "FILTER_BY_TYPE":"By type...",
+    "FILTER_BY_ARCHETYPE":"By archetype...",
+    "FILTER_BY_ATTIBUTE":"By attribute...",
+    "FILTER_BY_RACE":"By race...",
+    "DESCRIPTION":"Description",
+    "LEVEL":"Level",
+    "ATTACK":"Attack",
+    "DEFENDING":"Defending",
+    "RACE":"Race",
+    "ATTRIBUTE":"Attribute",
+    "TYPE":"Type",
+    "PRICES":"Prices",
+    "EXPANSION":"Expansions",
+    "EXPANSION_NAME":"Expansion name",
+    "EXPANSION_CODE":"Expansion code",
+    "RARITY":"Rarity",
+    "PRICE":"price",
+    "CARD_MARKER":"Card marker",
+    "TCG_PLAYER":"TCG player",
+    "EBAY":"Ebay",
+    "AMAZON":"Amazon",
+    "COOL_STUFFINC":"Cool stuffinc"
+  },
+  "ERRORS":{
+    "ERROR_LOAD_MONSTER_CARDS":"error loading monsters cards",
+    "ERROR_LOAD_MAGICS_CARDS":"error loading magics cards",
+    "ERROR_LOAD_CARD":"error loading card"
+  }
+}

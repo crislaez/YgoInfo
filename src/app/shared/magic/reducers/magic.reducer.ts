@@ -1,0 +1,44 @@
+import { createReducer, on } from '@ngrx/store';
+import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
+import * as MagicActions from '../actions/magic.actions';
+import { Magic } from '../models';
+
+export const magicFeatureKey = 'magic';
+
+export interface State {
+  statusMagics: EntityStatus;
+  magics?: Magic[];
+  total?:number;
+  offset?:number;
+  fname?:string;
+  race?:string;
+
+  statusMagic: EntityStatus;
+  magic?: Magic;
+  error?: unknown;
+}
+
+export const initialState: State = {
+  statusMagics: EntityStatus.Initial,
+  magics: [],
+  total:0,
+  offset:0,
+  fname:'',
+  race:'',
+
+  statusMagic: EntityStatus.Initial,
+  magic: null,
+  error: null
+};
+
+export const reducer = createReducer(
+  initialState,
+  on(MagicActions.loadMagics, (state): State => ({ ...state, statusMagics: EntityStatus.Pending })),
+  on(MagicActions.saveMagics, (state, { magics, total, error, status, offset, fname, race  }): State => {
+    let stateMagics:Magic[] = [];
+    if(offset === 0) stateMagics = [...magics];
+    else stateMagics = [...state.magics, ...magics ];
+    return { ...state, magics: stateMagics, total, error, statusMagics: status, offset, fname, race }
+  }),
+
+);

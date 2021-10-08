@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">yu-gi-oh! Info</string>
+    <string name="title_activity_main">yu-gi-oh! Info</string>
+    <string name="package_name">io.ionic.ygoinfo</string>
+    <string name="custom_url_scheme">io.ionic.ygoinfo</string>
+</resources>
