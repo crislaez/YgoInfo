@@ -45,19 +45,9 @@ export const getRace = createSelector(
   (state) => state.race
 );
 
-export const getStatusMonster = createSelector(
-  selectMonsterState,
-  (state) => state.statusMonster
-);
-
 export const getMonsters = createSelector(
   selectMonsterState,
   (state) => state.monsters
-);
-
-export const getMonster = createSelector(
-  selectMonsterState,
-  (state) => state.monster
 );
 
 export const getError = createSelector(

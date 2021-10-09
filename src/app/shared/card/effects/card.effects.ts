@@ -20,10 +20,10 @@ export class CardEffects {
           map((card) => CardActions.saveCard({ card, error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
             if(error === 400){
-              return of(CardActions.saveCard({ card:null, error, status:EntityStatus.Loaded }))
+              return of(CardActions.saveCard({ card:{}, error, status:EntityStatus.Loaded }))
             }
             return of(
-              CardActions.saveCard({ card:null, error, status:EntityStatus.Loaded }),
+              CardActions.saveCard({ card:{}, error, status:EntityStatus.Loaded }),
               CardActions.loadCardFailure()
             )
           })

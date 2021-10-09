@@ -30,19 +30,9 @@ export const getRace = createSelector(
   (state) => state.race
 );
 
-export const getStatusMagic = createSelector(
-  selectMagicState,
-  (state) => state.statusMagic
-);
-
 export const getMagics = createSelector(
   selectMagicState,
   (state) => state.magics
-);
-
-export const getMagic = createSelector(
-  selectMagicState,
-  (state) => state.magic
 );
 
 export const getError = createSelector(

@@ -12,9 +12,6 @@ export interface State {
   offset?:number;
   fname?:string;
   race?:string;
-
-  stratusTrap: EntityStatus;
-  trap?: Trap;
   error?: unknown;
 }
 
@@ -25,15 +22,12 @@ export const initialState: State = {
   offset:0,
   fname:'',
   race:'',
-
-  stratusTrap: EntityStatus.Initial,
-  trap: null,
-  error: null
+  error: undefined
 };
 
 export const reducer = createReducer(
   initialState,
-  on(TrapActions.loadTraps, (state): State => ({ ...state, statusTraps: EntityStatus.Pending })),
+  on(TrapActions.loadTraps, (state): State => ({ ...state,  error: undefined, statusTraps: EntityStatus.Pending })),
   on(TrapActions.saveTraps, (state, { traps, total, error, status, offset, fname, race  }): State => {
     let stateTraps:Trap[] = [];
     if(offset === 0) stateTraps = [...traps];

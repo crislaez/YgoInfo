@@ -30,19 +30,9 @@ export const getRace = createSelector(
   (state) => state.race
 );
 
-export const getStatusTrap = createSelector(
-  selectTrapState,
-  (state) => state.stratusTrap
-);
-
 export const getTraps = createSelector(
   selectTrapState,
   (state) => state.traps
-);
-
-export const getTrap = createSelector(
-  selectTrapState,
-  (state) => state.trap
 );
 
 export const getError = createSelector(

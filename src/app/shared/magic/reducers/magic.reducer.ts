@@ -12,9 +12,6 @@ export interface State {
   offset?:number;
   fname?:string;
   race?:string;
-
-  statusMagic: EntityStatus;
-  magic?: Magic;
   error?: unknown;
 }
 
@@ -25,15 +22,12 @@ export const initialState: State = {
   offset:0,
   fname:'',
   race:'',
-
-  statusMagic: EntityStatus.Initial,
-  magic: null,
-  error: null
+  error: undefined
 };
 
 export const reducer = createReducer(
   initialState,
-  on(MagicActions.loadMagics, (state): State => ({ ...state, statusMagics: EntityStatus.Pending })),
+  on(MagicActions.loadMagics, (state): State => ({ ...state,  error:undefined, statusMagics: EntityStatus.Pending })),
   on(MagicActions.saveMagics, (state, { magics, total, error, status, offset, fname, race  }): State => {
     let stateMagics:Magic[] = [];
     if(offset === 0) stateMagics = [...magics];

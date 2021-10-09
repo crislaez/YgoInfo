@@ -19,21 +19,21 @@ export const initialState: State = {
   types:[],
   attributes:[],
   races:[],
-  error: null
+  error: undefined
 };
 
 export const reducer = createReducer(
   initialState,
-  on(FiltersActions.loadArchetypes, (state): State => ({ ...state, status: EntityStatus.Pending })),
+  on(FiltersActions.loadArchetypes, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(FiltersActions.saveArchetypes, (state, { archetypes, error, status}): State => ({ ...state, status, archetypes, error })),
 
-  on(FiltersActions.loadTypes, (state): State => ({ ...state, status: EntityStatus.Pending })),
+  on(FiltersActions.loadTypes, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(FiltersActions.saveTypes, (state, { types, error, status}): State => ({ ...state, status, types, error })),
 
-  on(FiltersActions.loadArchetypes, (state): State => ({ ...state, status: EntityStatus.Pending })),
+  on(FiltersActions.loadArchetypes, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(FiltersActions.saveAttributtes, (state, { attributes, error, status}): State => ({ ...state, status, attributes, error })),
 
-  on(FiltersActions.loadRaces, (state): State => ({ ...state, status: EntityStatus.Pending })),
+  on(FiltersActions.loadRaces, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(FiltersActions.saveRaces, (state, { races, error, status}): State => ({ ...state, status, races, error })),
 
 );
