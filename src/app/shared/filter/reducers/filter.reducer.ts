@@ -10,6 +10,7 @@ export interface State {
   types?:string[];
   attributes?:string[];
   races?:string[];
+  formats?:string[];
   error?: unknown;
 }
 
@@ -19,6 +20,7 @@ export const initialState: State = {
   types:[],
   attributes:[],
   races:[],
+  formats:[],
   error: undefined
 };
 
@@ -35,5 +37,8 @@ export const reducer = createReducer(
 
   on(FiltersActions.loadRaces, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(FiltersActions.saveRaces, (state, { races, error, status}): State => ({ ...state, status, races, error })),
+
+  on(FiltersActions.loadFormats, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
+  on(FiltersActions.saveFormats, (state, { formats, error, status}): State => ({ ...state, status, formats, error })),
 
 );

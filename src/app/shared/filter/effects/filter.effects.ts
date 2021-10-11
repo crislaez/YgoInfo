@@ -77,7 +77,21 @@ export class FilterEffects {
     );
   });
 
-
+  loadFormats$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FilterActions.loadFormats),
+      switchMap(() => {
+        return this._filter.getFormat().pipe(
+          map((formats) => FilterActions.saveFormats({ formats, error:undefined, status:EntityStatus.Loaded })),
+          catchError(error => {
+            return of(
+              FilterActions.saveFormats({ formats:[], error, status:EntityStatus.Loaded}),
+            )
+          })
+        )
+      })
+    );
+  });
 
   // messageFailureAuth$ = createEffect(() =>
   //   this.actions$.pipe(
@@ -107,6 +121,12 @@ export class FilterEffects {
   tyLoadTypes = createEffect(() => {
     return of(
       FilterActions.loadTypes()
+    )
+  });
+
+  tyloadFormats = createEffect(() => {
+    return of(
+      FilterActions.loadFormats()
     )
   });
 

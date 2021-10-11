@@ -46,6 +46,8 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngFor="let trap of traps; trackBy: trackById">
                   <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+trap?.id]">
                     <img [src]="trap?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+                    <!-- RIPPLE EFFECT  -->
+                    <ion-ripple-effect></ion-ripple-effect>
                   </ion-card>
                 </ng-container>
 

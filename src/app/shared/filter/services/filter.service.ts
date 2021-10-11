@@ -13,7 +13,7 @@ export class FilterService {
 
   baseURL: string = `${this._coreConfig.getEndpoint()}`;
 
-  types = [
+  types: string[]  = [
     "Effect Monster",
     "Flip Effect Monster",
     "Flip Tuner Effect Monster",
@@ -43,7 +43,7 @@ export class FilterService {
     "XYZ Pendulum Effect Monster"
   ];
 
-  attributes = [
+  attributes: string[]  = [
     "dark",
     "earth",
     "fire",
@@ -53,7 +53,7 @@ export class FilterService {
     "divine"
   ];
 
-  races = [
+  races: string[]  = [
     "Aqua",
     "Beast",
     "Beast-Warrior",
@@ -89,6 +89,11 @@ export class FilterService {
     "Counter",
   ];
 
+  format: string[] = [
+    'normal',
+    'Speed Duel',
+    'Rush Duel'
+  ]
 
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }
 
@@ -116,5 +121,9 @@ export class FilterService {
         return throwError(error)
       })
     )
+  }
+
+  getFormat(): Observable<string[]>{
+    return of(this.format)
   }
 }

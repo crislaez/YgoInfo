@@ -32,13 +32,6 @@ export class CardEffects {
     );
   });
 
-  // messageSuccessAuth$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(AuthActions.updateSuccess),
-  //     tap(({message}) => this.presentToast(this.translate.instant(message), 'success')),
-  //   ), { dispatch: false }
-  // );
-
   loadCardFailure$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardActions.loadCardFailure),
@@ -46,10 +39,6 @@ export class CardEffects {
     ), { dispatch: false }
   );
 
-
-  // try$ = createEffect(() => {
-  //   return of(CardActions.loadCard({id:86988864}))
-  // })
 
   constructor(
     private actions$: Actions,

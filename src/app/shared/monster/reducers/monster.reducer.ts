@@ -15,6 +15,7 @@ export interface State {
   attribute?:string;
   fname?:string;
   race?:string;
+  format?:string,
   error?: unknown;
 }
 
@@ -28,17 +29,18 @@ export const initialState: State = {
   attribute:'',
   fname:'',
   race:'',
+  format:'',
   error: undefined
 };
 
 export const reducer = createReducer(
   initialState,
   on(MonsterActions.loadMonsters, (state): State => ({ ...state, error: undefined, statusMonsters: EntityStatus.Pending })),
-  on(MonsterActions.saveMosters, (state, { monsters, total, error, status, offset, typeCard, archetype, attribute,fname, race  }): State => {
+  on(MonsterActions.saveMosters, (state, { monsters, total, error, status, offset, typeCard, archetype, attribute, fname, race, format}): State => {
     let stateMonsters:Monster[] = [];
     if(offset === 0) stateMonsters = [...monsters];
     else stateMonsters = [...state.monsters, ...monsters ];
-    return { ...state, monsters: stateMonsters, total, error, statusMonsters: status, offset, type:typeCard, archetype, attribute, fname, race }
+    return { ...state, monsters: stateMonsters, total, error, statusMonsters: status, offset, type:typeCard, archetype, attribute, fname, race, format }
   }),
 
 );

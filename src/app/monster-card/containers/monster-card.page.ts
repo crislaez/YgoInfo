@@ -30,6 +30,17 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
                 </form>
 
+
+                <ng-container *ngIf="(mosterFormats$ | async) as mosterFormats">
+                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-90">
+                    <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
+                    <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="statusComponent?.format" interface="action-sheet">
+                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
+                      <ion-select-option *ngFor="let format of mosterFormats" [value]="format">{{format}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ng-container>
+
                 <ng-container *ngIf="(monstersType$ | async) as monstersType">
                   <ion-item *ngIf="monstersType?.length > 0" class="fade-in-card item-select font-medium width-40">
                     <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
@@ -75,6 +86,8 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <ng-container *ngFor="let monster of monsters; trackBy: trackById">
                     <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+monster?.id]">
                       <img [src]="monster?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+                      <!-- RIPPLE EFFECT  -->
+                      <ion-ripple-effect></ion-ripple-effect>
                     </ion-card>
                   </ng-container>
 
@@ -141,7 +154,7 @@ export class MonsterCardPage {
   errorImage = errorImage;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent;
-  infiniteScroll$ = new EventEmitter();
+  infiniteScroll$ = new EventEmitter<{fname?:string, offset:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string}>();
 
   search = new FormControl('');
   showButton: boolean = false;
@@ -151,9 +164,11 @@ export class MonsterCardPage {
     archetype:'',
     attribute:'',
     race:'',
-    typeCard:''
+    typeCard:'',
+    format:'',
   };
 
+  mosterFormats$ = this.store.select(fromFilter.getFormats);
   monstersAttributes$ = this.store.select(fromFilter.getAttributes);
   monstersArchetypes$ = this.store.select(fromFilter.getArchetypes);
   monstersRaces$ = this.store.select(fromFilter.getRaces).pipe(
@@ -168,9 +183,9 @@ export class MonsterCardPage {
 
   mosters$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
-    tap(({fname, offset, archetype, attribute, race, typeCard}) => {
-      // console.log(fname, offset, archetype, attribute, race, typeCard)
-      this.store.dispatch(MonsterActions.loadMonsters({fname, offset, archetype, attribute, race, typeCard}))
+    tap(({fname, offset, archetype, attribute, race, typeCard, format}) => {
+      // console.log(fname, offset, archetype, attribute, race, typeCard, format)
+      this.store.dispatch(MonsterActions.loadMonsters({fname, offset, archetype, attribute, race, typeCard, format}))
     }),
     switchMap(() =>
       this.store.select(fromMonster.getMonsters)
@@ -235,7 +250,7 @@ export class MonsterCardPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = {...this.statusComponent, fname:'', offset:0, archetype:'', attribute:'', race:'', typeCard:'' };
+      this.statusComponent = {...this.statusComponent, fname:'', offset:0, archetype:'', attribute:'', race:'', typeCard:'', format:'' };
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 

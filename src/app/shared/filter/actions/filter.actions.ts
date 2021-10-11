@@ -44,3 +44,14 @@ export const saveArchetypes = createAction(
   '[Filter] Save Archetypes',
   props<{ archetypes: string[], error:unknown, status:EntityStatus }>()
 );
+
+
+// FORMATS
+export const loadFormats = createAction(
+  '[Filter] Load Formats'
+);
+
+export const saveFormats = createAction(
+  '[Filter] Save Formats',
+  props<{ formats: string[], error:unknown, status:EntityStatus }>()
+);

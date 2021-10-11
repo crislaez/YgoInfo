@@ -18,12 +18,13 @@ export class MonsterService {
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }
 
 
-  getMonsters(offset:number = 0, fname?:string, archetype?:string, attribute?:string, race?:string, type?:string): Observable<{monsters:Monster[], total:number}> {
-
+  getMonsters(offset:number = 0, fname?:string, archetype?:string, attribute?:string, race?:string, type?:string, format?:string): Observable<{monsters:Monster[], total:number}> {
+    console.log()
     let params = new HttpParams();
     params = params.append('offset', offset);
     params = params.append('num', this.baseNumber);
 
+    if(!!format) params = params.append('format', format); //Blue-Eyes...
     if(!!archetype) params = params.append('archetype', archetype); //Blue-Eyes...
     if(!!attribute) params = params.append('attribute', attribute);// Water, Fire...
     if(!!race) params = params.append('race', race); //Aqua, Beast, Donosaur ...

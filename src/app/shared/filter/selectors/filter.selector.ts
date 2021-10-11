@@ -29,3 +29,8 @@ export const getAttributes = createSelector(
   selectMonsterState,
   (state) => state?.attributes
 );
+
+export const getFormats = createSelector(
+  selectMonsterState,
+  (state) => state?.formats
+);

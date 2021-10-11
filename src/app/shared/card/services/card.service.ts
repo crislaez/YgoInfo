@@ -20,7 +20,7 @@ export class CardService {
   getCardById(id:number = 0): Observable<Card> {
 
     return this.http.get<any>(`${this.baseURL}cardinfo.php?id=${id}`).pipe(
-      map(res => (res?.data[0] || {})),
+      map(res => (res?.data[0] || {}) ),
       // map(() => {
       //   throw throwError('error')
       // }),
