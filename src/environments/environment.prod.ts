@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  baseEndpoint: '',
+  baseEndpoint: 'https://db.ygoprodeck.com/api/v7/',
+  number: 21
 };

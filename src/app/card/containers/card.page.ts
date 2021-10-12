@@ -21,7 +21,7 @@ import { CardActions, fromCard } from '@ygopro/shared/card';
               <div class="container components-color-second" [ngClass]="cardType(card?.type)">
 
                 <div class="header" no-border>
-                  <ion-back-button defaultHref="/moster" class="text-second-color" [text]="''"></ion-back-button>
+                  <ion-back-button defaultHref="/monster" class="text-second-color" [text]="''"></ion-back-button>
                   <h1 class="text-second-color">{{ card?.name }}</h1>
                   <div class="header-container-empty"></div>
                 </div>
@@ -32,47 +32,77 @@ import { CardActions, fromCard } from '@ygopro/shared/card';
 
                 <ion-card class="fade-in-card card-card">
                   <ion-card-content>
-                    <ng-container *ngIf="!!card?.level">
-                      <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.LEVEL' | translate}}</span> </div>
-                      <div class="card-result font-medium">  <span>{{ card?.level }}</span> </div>
+
+                    <ng-container *ngIf="emptyObject(card?.banlist_info)">
+                      <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.BANLIST' | translate}}</span> </div>
+                      <div *ngIf="!!card?.banlist_info?.ban_tcg" class="card-result span-bold font-medium"> <span>{{ 'COMMON.TCG' | translate}}: </span>
+                        <span [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_tcg }}</span>
+                      </div>
+                      <div *ngIf="!!card?.banlist_info?.ban_ocg" class="card-result span-bold font-medium"> <span>{{ 'COMMON.OCG' | translate}}: </span>
+                        <span [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_ocg }}</span>
+                      </div>
+                      <br>
                     </ng-container>
 
-                    <br>
+                    <ng-container *ngIf="!!card?.level">
+                      <div class="card-type span-bold mediun-size">
+                        <span *ngIf="card?.type !== 'XYZ Monster'; else rank">{{ 'COMMON.LEVEL' | translate}}</span>
+                        <ng-template #rank> <span>{{ 'COMMON.RANK' | translate}}</span> </ng-template>
+                      </div>
+                      <div class="card-result font-medium">  <span>{{ card?.level }}</span> </div>
+                      <br>
+                    </ng-container>
+
+                    <ng-container *ngIf="!!card?.scale">
+                      <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.SCALE' | translate}}</span> </div>
+                      <div class="card-result font-medium">  <span>{{ card?.scale }}</span> </div>
+                      <br>
+                    </ng-container>
+
+                    <ng-container *ngIf="!!card?.linkval">
+                      <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.LINK' | translate}}</span> </div>
+                      <div class="card-result font-medium">  <span>{{ card?.linkval }}</span> </div>
+                      <br>
+                    </ng-container>
+
                     <ng-container *ngIf="!!card?.type">
                       <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.TYPE' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.type }}</span> </div>
+                      <br>
                     </ng-container>
 
-                    <br>
                     <ng-container *ngIf="!!card?.attribute">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.ATTRIBUTE' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.attribute }}</span> </div>
+                      <br>
                     </ng-container>
 
-                    <br>
                     <ng-container *ngIf="!!card?.race">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.RACE' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.race }}</span> </div>
+                      <br>
                     </ng-container>
 
-                    <br>
+
                     <ng-container *ngIf="!!card?.atk">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.ATTACK' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.atk }}</span> </div>
+                      <br>
                     </ng-container>
 
-                    <br>
+
                     <ng-container *ngIf="!!card?.def">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.DEFENDING' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.def }}</span> </div>
+                      <br>
                     </ng-container>
 
-                    <br>
+
                     <ng-container *ngIf="!!card?.desc">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.DESCRIPTION' | translate}}</span> </div>
                       <div class="card-result font-medium">  <span>{{ card?.desc }}</span> </div>
+                      <br>
                     </ng-container>
-                    <br>
 
                     <ng-container *ngIf="card?.card_sets?.length > 0">
                       <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.EXPANSION' | translate}}</span> </div>

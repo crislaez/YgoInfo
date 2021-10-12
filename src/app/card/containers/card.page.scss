@@ -7,6 +7,20 @@
   flex-wrap: wrap;
   justify-content: center;
 
+  .forbidden{
+    background: red;
+  }
+
+  .limited{
+    background: orange;
+  }
+
+  .semi-limited{
+    background: yellow;
+  }
+
+
+
   >div{
     display: flex;
     flex-direction: row;

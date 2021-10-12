@@ -39,3 +39,8 @@ export const getError = createSelector(
   selectTrapState,
   (state) => state.error
 );
+
+export const getFormat = createSelector(
+  selectTrapState,
+  (state) => state.format
+);

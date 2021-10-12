@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { CoreConfigService } from '../../../core/services/core-config.service';
-import { Trap } from '../models';
+import { Card } from '@ygopro/shared/shared/models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +18,14 @@ export class TrapService {
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }
 
 
-  getTraps(offset:number = 0, fname?:string, race?:string): Observable<{traps:Trap[], total:number}> {
+  getTraps(offset:number = 0, fname?:string, race?:string, format?:string): Observable<{traps:Card[], total:number}> {
 
     let params = new HttpParams();
     params = params.append('offset', offset);
     params = params.append('num', this.baseNumber);
     params = params.append('type', this.types?.join(','));
 
+    if(!!format) params = params.append('format', format); //Rush Duel ..
     if(!!race) params = params.append('race', race); //Continious...
     if(!!fname) params = params.append('fname', fname); //Call of...
 

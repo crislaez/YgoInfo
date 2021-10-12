@@ -15,16 +15,16 @@ export class MonsterEffects {
   loadMonsters$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MonsterActions.loadMonsters),
-      switchMap(({ offset, typeCard, archetype, attribute, fname, race, format }) => {
-        return this._monster.getMonsters( offset, fname, archetype, attribute, race, typeCard, format ).pipe(
-          map(({monsters, total}) => MonsterActions.saveMosters({ monsters:monsters, total, error:undefined, offset, status:EntityStatus.Loaded, archetype, attribute, fname, race, typeCard, format })),
+      switchMap(({ offset, typeCard, archetype, attribute, fname, race, format, level }) => {
+        return this._monster.getMonsters( offset, fname, archetype, attribute, race, typeCard, format, level ).pipe(
+          map(({monsters, total}) => MonsterActions.saveMosters({ monsters:monsters, total, error:undefined, offset, status:EntityStatus.Loaded, archetype, attribute, fname, race, typeCard, format, level })),
           catchError(error => {
             console.log(error)
             if(error === 400){
-              return of(MonsterActions.saveMosters({ monsters:[], total:0, error, offset:0, status:EntityStatus.Loaded, archetype, attribute, fname, race, typeCard, format }))
+              return of(MonsterActions.saveMosters({ monsters:[], total:0, error, offset:0, status:EntityStatus.Loaded, archetype, attribute, fname, race, typeCard, format, level }))
             }
             return of(
-              MonsterActions.saveMosters({ monsters:[], total:0, error, offset:0, status:EntityStatus.Error, archetype, attribute, fname, race, typeCard, format }),
+              MonsterActions.saveMosters({ monsters:[], total:0, error, offset:0, status:EntityStatus.Error, archetype, attribute, fname, race, typeCard, format, level }),
               MonsterActions.loadMonstersFailure()
             )
           })

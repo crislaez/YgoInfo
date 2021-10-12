@@ -1,10 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { CoreConfigService } from '../../../core/services/core-config.service';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +10,6 @@ import { CoreConfigService } from '../../../core/services/core-config.service';
 export class FilterService {
 
   baseURL: string = `${this._coreConfig.getEndpoint()}`;
-
   types: string[]  = [
     "Effect Monster",
     "Flip Effect Monster",
@@ -77,15 +74,12 @@ export class FilterService {
     "Thunder",
     "Warrior",
     "Winged Beast",
-
     "Continuous",
     "Normal",
-
     "Field",
     "Equip",
     "Quick-Play",
     "Ritual",
-
     "Counter",
   ];
 
@@ -93,7 +87,23 @@ export class FilterService {
     'normal',
     'Speed Duel',
     'Rush Duel'
-  ]
+  ];
+
+  level: string [] = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12'
+  ];
+
 
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }
 
@@ -110,6 +120,14 @@ export class FilterService {
     return of(this.races)
   }
 
+  getFormat(): Observable<string[]>{
+    return of(this.format)
+  }
+
+  getLevel(): Observable<string[]>{
+    return of(this.level)
+  }
+
   getArchetypes(): Observable<string[]>{
     return this.http.get<any>(`${this.baseURL}archetypes.php`).pipe(
       map((archertypes) => {
@@ -123,7 +141,6 @@ export class FilterService {
     )
   }
 
-  getFormat(): Observable<string[]>{
-    return of(this.format)
-  }
+
+
 }

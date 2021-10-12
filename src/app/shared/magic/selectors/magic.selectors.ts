@@ -39,3 +39,8 @@ export const getError = createSelector(
   selectMagicState,
   (state) => state.error
 );
+
+export const getFormat = createSelector(
+  selectMagicState,
+  (state) => state.format
+);

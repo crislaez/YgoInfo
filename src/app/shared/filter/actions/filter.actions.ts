@@ -55,3 +55,13 @@ export const saveFormats = createAction(
   '[Filter] Save Formats',
   props<{ formats: string[], error:unknown, status:EntityStatus }>()
 );
+
+// LEVEL
+export const loadLevels = createAction(
+  '[Filter] Load Levels'
+);
+
+export const saveLevels = createAction(
+  '[Filter] Save FormaLevelsts',
+  props<{ levels: string[], error:unknown, status:EntityStatus }>()
+);

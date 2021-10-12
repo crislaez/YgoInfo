@@ -34,3 +34,8 @@ export const getFormats = createSelector(
   selectMonsterState,
   (state) => state?.formats
 );
+
+export const getLevels = createSelector(
+  selectMonsterState,
+  (state) => state?.levels
+);

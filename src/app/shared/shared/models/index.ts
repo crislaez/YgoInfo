@@ -6,8 +6,11 @@ export interface Card {
   atk?: number;
   def?: number;
   level?: number;
+  scale?:number;
+  linkval?:number;
   race?: string;
   attribute?: string;
+  banlist_info?: Banlist;
   card_sets?: CardSet[];
   card_images?: CardImage[];
   card_prices?: CardPrices[];
@@ -33,4 +36,9 @@ export interface CardSet {
   set_rarity?: string;
   set_rarity_code?: string;
   set_price?: string;
+}
+
+export interface Banlist {
+  ban_ocg?: string;
+  ban_tcg?: string;
 }

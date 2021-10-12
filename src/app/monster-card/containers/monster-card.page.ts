@@ -5,7 +5,7 @@ import { IonContent, IonInfiniteScroll, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromFilter } from '@ygopro/shared/filter';
 import { fromMonster, MonsterActions } from '@ygopro/shared/monster';
-import { errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 
@@ -30,13 +30,21 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
                 </form>
 
-
                 <ng-container *ngIf="(mosterFormats$ | async) as mosterFormats">
-                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-90">
+                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-40">
                     <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
                     <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="statusComponent?.format" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
                       <ion-select-option *ngFor="let format of mosterFormats" [value]="format">{{format}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ng-container>
+
+                <ng-container *ngIf="(monsterLevels$ | async) as monsterLevels">
+                  <ion-item *ngIf="monsterLevels?.length > 0" class="fade-in-card item-select font-medium width-40">
+                    <ion-label>{{'COMMON.FILTER_BY_LEVEL' | translate}}</ion-label>
+                    <ion-select (ionChange)="changeFilter($any($event), 'level')" [value]="statusComponent?.level" interface="action-sheet">
+                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
+                      <ion-select-option *ngFor="let level of monsterLevels" [value]="level">{{level}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ng-container>
@@ -86,6 +94,24 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <ng-container *ngFor="let monster of monsters; trackBy: trackById">
                     <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+monster?.id]">
                       <img [src]="monster?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+
+                      <ng-container *ngIf="emptyObject(monster?.banlist_info)">
+                        <div class="banlist-div">
+                          <div *ngIf="!!monster?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
+                            <span [ngClass]="{'forbidden': monster?.banlist_info?.ban_tcg === 'Banned', 'limited': monster?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': monster?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                          </div>
+                          <div *ngIf="!!monster?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
+                            <span [ngClass]="{'forbidden': monster?.banlist_info?.ban_ocg === 'Banned', 'limited': monster?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': monster?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
+                            <ng-container *ngIf="monster?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                          </div>
+                        </div>
+                      </ng-container>
+
                       <!-- RIPPLE EFFECT  -->
                       <ion-ripple-effect></ion-ripple-effect>
                     </ion-card>
@@ -152,9 +178,13 @@ export class MonsterCardPage {
   gotToTop = gotToTop;
   trackById = trackById;
   errorImage = errorImage;
+  emptyObject = emptyObject;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent;
-  infiniteScroll$ = new EventEmitter<{fname?:string, offset:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string}>();
+  infiniteScroll$ = new EventEmitter<{fname?:string, offset:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string, level?:string}>();
+  banned = '../../../assets/images/Banned.png';
+  limited = '../../../assets/images/Limited.png';
+  semiLimited = '../../../assets/images/Semi-limited.png';
 
   search = new FormControl('');
   showButton: boolean = false;
@@ -166,8 +196,10 @@ export class MonsterCardPage {
     race:'',
     typeCard:'',
     format:'',
+    level:''
   };
 
+  monsterLevels$ = this.store.select(fromFilter.getLevels);
   mosterFormats$ = this.store.select(fromFilter.getFormats);
   monstersAttributes$ = this.store.select(fromFilter.getAttributes);
   monstersArchetypes$ = this.store.select(fromFilter.getArchetypes);
@@ -183,9 +215,10 @@ export class MonsterCardPage {
 
   mosters$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
-    tap(({fname, offset, archetype, attribute, race, typeCard, format}) => {
+    tap(({fname, offset, archetype, attribute, race, typeCard, format, level}) => {
       // console.log(fname, offset, archetype, attribute, race, typeCard, format)
-      this.store.dispatch(MonsterActions.loadMonsters({fname, offset, archetype, attribute, race, typeCard, format}))
+      if(format === 'normal') format = '';
+      this.store.dispatch(MonsterActions.loadMonsters({fname, offset, archetype, attribute, race, typeCard, format, level}))
     }),
     switchMap(() =>
       this.store.select(fromMonster.getMonsters)
@@ -250,7 +283,7 @@ export class MonsterCardPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = {...this.statusComponent, fname:'', offset:0, archetype:'', attribute:'', race:'', typeCard:'', format:'' };
+      this.statusComponent = {...this.statusComponent, fname:'', offset:0, archetype:'', attribute:'', race:'', typeCard:'', format:'', level:''};
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 

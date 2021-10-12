@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   baseEndpoint: 'https://db.ygoprodeck.com/api/v7/',
-  number: 20
+  number: 21
 };
 
 /*

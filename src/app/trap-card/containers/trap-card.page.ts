@@ -4,7 +4,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromFilter } from '@ygopro/shared/filter';
-import { errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
 import { fromTrap, TrapActions } from '@ygopro/shared/trap';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -31,6 +31,15 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
               </form>
 
+              <ng-container *ngIf="(mosterFormats$ | async) as mosterFormats">
+                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-84">
+                    <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
+                    <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="statusComponent?.format" interface="action-sheet">
+                      <ion-select-option *ngFor="let format of mosterFormats" [value]="format">{{format}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ng-container>
+
               <ng-container *ngIf="(trapsRace$ | async) as trapsRace">
                 <ion-item *ngIf="trapsRace?.length > 0" class="fade-in-card item-select font-medium width-84">
                   <ion-label>{{'COMMON.FILTER_BY_RACE' | translate}}</ion-label>
@@ -46,6 +55,24 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngFor="let trap of traps; trackBy: trackById">
                   <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+trap?.id]">
                     <img [src]="trap?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+
+                    <ng-container *ngIf="emptyObject(trap?.banlist_info)">
+                      <div class="banlist-div">
+                        <div *ngIf="!!trap?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
+                          <span [ngClass]="{'forbidden': trap?.banlist_info?.ban_tcg === 'Banned', 'limited': trap?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': trap?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                        </div>
+                        <div *ngIf="!!trap?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
+                          <span [ngClass]="{'forbidden': trap?.banlist_info?.ban_ocg === 'Banned', 'limited': trap?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': trap?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
+                          <ng-container *ngIf="trap?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                        </div>
+                      </div>
+                    </ng-container>
+
                     <!-- RIPPLE EFFECT  -->
                     <ion-ripple-effect></ion-ripple-effect>
                   </ion-card>
@@ -113,18 +140,24 @@ export class TrapCardPage {
   gotToTop = gotToTop;
   trackById = trackById;
   errorImage = errorImage;
+  emptyObject = emptyObject;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent
-  infiniteScroll$ = new EventEmitter();
+  infiniteScroll$ = new EventEmitter<{fname:string, offset:number, race:string, format:string}>();
+  banned = '../../../assets/images/Banned.png';
+  limited = '../../../assets/images/Limited.png';
+  semiLimited = '../../../assets/images/Semi-limited.png';
 
   search = new FormControl('');
   showButton: boolean = false;
   statusComponent = {
     fname:'',
     offset:0,
-    race:''
+    race:'',
+    format:'',
   };
 
+  mosterFormats$ = this.store.select(fromFilter.getFormats);
   trapsRace$ = this.store.select(fromFilter.getRaces).pipe(
     map(races => (races || [])?.filter(item => item === 'Normal' || item === 'Continuous' || item === 'Counter'))
   );
@@ -134,8 +167,9 @@ export class TrapCardPage {
 
   traps$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
-    tap(({fname, offset, race}) => {
-      this.store.dispatch(TrapActions.loadTraps({fname, offset, race}))
+    tap(({fname, offset, race, format}) => {
+      if(format === 'normal') format = '';
+      this.store.dispatch(TrapActions.loadTraps({fname, offset, race, format}))
     }),
     switchMap(() =>
       this.store.select(fromTrap.getTraps)
@@ -199,7 +233,7 @@ export class TrapCardPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = {...this.statusComponent, fname:'', offset:0, race:'' };
+      this.statusComponent = {...this.statusComponent, fname:'', offset:0, race:'', format:''};
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 

@@ -4,14 +4,13 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as FilterActions from '../actions/filter.actions';
 import { FilterService } from '../services/filter.service';
 
 
 @Injectable()
 export class FilterEffects {
-
 
   loadArchetypes$ = createEffect(() => {
     return this.actions$.pipe(
@@ -26,7 +25,7 @@ export class FilterEffects {
           })
         )
       })
-    );
+    )
   });
 
   loadAttributes$ = createEffect(() => {
@@ -42,7 +41,7 @@ export class FilterEffects {
           })
         )
       })
-    );
+    )
   });
 
   loadRaces$ = createEffect(() => {
@@ -58,7 +57,7 @@ export class FilterEffects {
           })
         )
       })
-    );
+    )
   });
 
   loadTypes$ = createEffect(() => {
@@ -74,7 +73,7 @@ export class FilterEffects {
           })
         )
       })
-    );
+    )
   });
 
   loadFormats$ = createEffect(() => {
@@ -90,43 +89,33 @@ export class FilterEffects {
           })
         )
       })
-    );
+    )
   });
 
-  // messageFailureAuth$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(FilterActions.loadMonstersFailure),
-  //     tap(() => this.presentToast(this.translate.instant('ERRORS.ERROR_LOAD_MONSTER_CARDS'), 'danger')),
-  //   ), { dispatch: false }
-  // );
+  loadLevels$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FilterActions.loadLevels),
+      switchMap(() => {
+        return this._filter.getLevel().pipe(
+          map((levels) => FilterActions.saveLevels({ levels, error:undefined, status:EntityStatus.Loaded })),
+          catchError(error => {
+            return of(
+              FilterActions.saveLevels({ levels:[], error, status:EntityStatus.Loaded}),
+            )
+          })
+        )
+      })
+    );
+  });
 
   tryLoadArchetypes = createEffect(() => {
     return of(
       FilterActions.loadArchetypes(),
-    )
-  });
-
-  tryLoasAttributtes = createEffect(() => {
-    return of(
-      FilterActions.loadAttributes()
-    )
-  });
-
-  tryLoadRaces = createEffect(() => {
-    return of(
-      FilterActions.loadRaces()
-    )
-  });
-
-  tyLoadTypes = createEffect(() => {
-    return of(
-      FilterActions.loadTypes()
-    )
-  });
-
-  tyloadFormats = createEffect(() => {
-    return of(
-      FilterActions.loadFormats()
+      FilterActions.loadAttributes(),
+      FilterActions.loadRaces(),
+      FilterActions.loadTypes(),
+      FilterActions.loadFormats(),
+      FilterActions.loadLevels()
     )
   });
 

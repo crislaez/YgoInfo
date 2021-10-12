@@ -54,3 +54,13 @@ export const getError = createSelector(
   selectMonsterState,
   (state) => state.error
 );
+
+export const getFormat = createSelector(
+  selectMonsterState,
+  (state) => state.format
+);
+
+export const getLevel = createSelector(
+  selectMonsterState,
+  (state) => state.level
+);

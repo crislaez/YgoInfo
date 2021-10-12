@@ -15,16 +15,16 @@ export class MagicEffects {
   loadMagics$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MagicActions.loadMagics),
-      switchMap(({ offset, fname, race }) => {
-        return this._magic.getMagics( offset, fname, race,  ).pipe(
-          map(({magics, total}) => MagicActions.saveMagics({ magics, total, error:undefined, offset, status:EntityStatus.Loaded, fname, race })),
+      switchMap(({ offset, fname, race, format }) => {
+        return this._magic.getMagics( offset, fname, race, format ).pipe(
+          map(({magics, total}) => MagicActions.saveMagics({ magics, total, error:undefined, offset, status:EntityStatus.Loaded, fname, race, format})),
           catchError(error => {
             // console.log(error)
             if(error === 400){
-              return of(MagicActions.saveMagics({ magics:[], total:0, error, offset:0, status:EntityStatus.Loaded, fname, race }))
+              return of(MagicActions.saveMagics({ magics:[], total:0, error, offset:0, status:EntityStatus.Loaded, fname, race, format}))
             }
             return of(
-              MagicActions.saveMagics({ magics:[], total:0, error, offset:0, status:EntityStatus.Error, fname, race }),
+              MagicActions.saveMagics({ magics:[], total:0, error, offset:0, status:EntityStatus.Error, fname, race, format }),
               MagicActions.loadMagicsFailure()
             )
           })

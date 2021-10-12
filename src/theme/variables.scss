@@ -405,6 +405,8 @@ ion-searchbar{
 
 ion-card{
   width: 23%;
+  height: 17ch;
+  // height: initial;
   // width: 41%;
   // width: 80%;
   // background: $backfourthColor;
@@ -413,6 +415,7 @@ ion-card{
 
   img{
     width: 100%;
+    // height: 9em;
   }
 
   //titulo de la card
@@ -753,6 +756,41 @@ ion-avatar{
 .trap{
   background: #EBBCCF;
 }
+
+.banlist-div{
+  // position: absolute;
+  z-index: 2px;
+  // background: red;
+  // color: red;
+  margin-top: -74px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  // align-items: flex-end;
+
+  >div{
+    width: 70%;
+  }
+
+  img{
+    width: 25%;
+  }
+}
+
+.forbidden{
+  color: red;
+}
+
+.limited{
+  color: orange;
+}
+
+.semi-limited{
+  color: yellow;
+}
+
+
 // .my-custom-class .alert-wrapper {
 //   background: #e5e5e5;
 // }

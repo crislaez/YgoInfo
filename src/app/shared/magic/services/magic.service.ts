@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { CoreConfigService } from '../../../core/services/core-config.service';
-import { Magic } from '../models';
+import { Card } from '@ygopro/shared/shared/models';
 
 
 @Injectable({
@@ -19,13 +19,13 @@ export class MagicService {
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }
 
 
-  getMagics(offset:number = 0, fname?:string, race?:string): Observable<{magics:Magic[], total:number}> {
-
+  getMagics(offset:number = 0, fname?:string, race?:string, format?:string): Observable<{magics:Card[], total:number}> {
     let params = new HttpParams();
     params = params.append('offset', offset);
     params = params.append('num', this.baseNumber);
     params = params.append('type', this.types?.join(','));
 
+    if(!!format) params = params.append('format', format); //Rush Duel ..
     if(!!race) params = params.append('race', race); //Continious...
     if(!!fname) params = params.append('fname', fname); //Raigeky
 
