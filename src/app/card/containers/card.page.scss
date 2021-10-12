@@ -2,6 +2,7 @@
 
 .card-card {
   width: 98%;
+  height: 40em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -9,14 +10,17 @@
 
   .forbidden{
     background: red;
+    color: black;
   }
 
   .limited{
     background: orange;
+    color: black;
   }
 
   .semi-limited{
     background: yellow;
+    color: black;
   }
 
 
