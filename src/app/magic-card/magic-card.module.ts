@@ -6,6 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FilterModule } from '@ygopro/shared/filter/filter.module';
 import { MagicModule } from '@ygopro/shared/magic/magic.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
+import { StorageModule } from '@ygopro/shared/storage/storage.module';
+import { LongPressModule } from 'ionic-long-press';
 import { MagicCardPage } from './containers/magic-card.page';
 import { MagicCardPageRoutingModule } from './magic-card-routing.module';
 
@@ -17,7 +19,9 @@ import { MagicCardPageRoutingModule } from './magic-card-routing.module';
     TranslateModule.forChild(),
     MagicModule,
     SharedModule,
+    LongPressModule,
     FilterModule,
+    StorageModule,
     MagicCardPageRoutingModule
   ],
   declarations: [MagicCardPage]

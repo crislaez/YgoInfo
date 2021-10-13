@@ -34,9 +34,6 @@ export class MonsterService {
 
     return this.http.get<any>(`${this.baseURL}cardinfo.php`, { params }).pipe(
       map(res => ({monsters:res?.data || [], total:res?.meta?.total_rows || 0})),
-      // map(() => {
-      //   throw throwError('error')
-      // }),
       catchError((error) => {
         if( error?.error === 'No card matching your query was found in the database. Please see https://db.ygoprodeck.com/api-guide/ for syntax usage.'){
           error = 400

@@ -43,7 +43,7 @@ export class TrapEffects {
   loadTrapsFailure$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TrapActions.loadTrapsFailure),
-      tap(() => this.presentToast(this.translate.instant('ERRORS.ERROR_LOAD_trapS_CARDS'), 'danger')),
+      tap(() => this.presentToast(this.translate.instant('ERRORS.ERROR_LOAD_TRAP_CARDS'), 'danger')),
     ), { dispatch: false }
   );
 

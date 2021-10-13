@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { EffectsModule } from '@ngrx/effects';
@@ -17,6 +17,7 @@ import { CoreConfigService } from './core/services/core-config.service';
 import { HttpErrorInterceptor } from './core/services/http-error.interceptor';
 import { extModules } from './core/build-specifics';
 import { DynamicLocaleId } from './core/i18n/utils/dynamic-locale-id.class';
+import { IonicGestureConfig } from '@ygopro/shared/shared/utils/IonicGestureConfig'
 
 export function appInitializerFactory(translate: TranslateService, coreConfig: CoreConfigService): Function {
   coreConfig.importConfig(appConfig);
@@ -75,6 +76,10 @@ export function appInitializerFactory(translate: TranslateService, coreConfig: C
     //   useClass: DynamicLocaleId,
     //   deps: [TranslateService]
     // }
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: IonicGestureConfig
+    }
   ],
   bootstrap: [AppComponent],
 })

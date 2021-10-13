@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
-import { IonContent, IonInfiniteScroll, Platform } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromFilter } from '@ygopro/shared/filter';
 import { fromMonster, MonsterActions } from '@ygopro/shared/monster';
 import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
-
-
+import { Gesture, GestureController } from '@ionic/angular';
+import { PoperComponent } from '../components/poper.component';
+import { Card } from '@ygopro/shared/shared/models';
 @Component({
   selector: 'app-monster-card',
   template: `
@@ -92,7 +93,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngIf="monsters?.length > 0; else noData">
 
                   <ng-container *ngFor="let monster of monsters; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+monster?.id]">
+                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+monster?.id]" ion-long-press [interval]="400" (pressed)="presentPopover($event, monster)">
                       <img [src]="monster?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                       <ng-container *ngIf="emptyObject(monster?.banlist_info)">
@@ -228,7 +229,9 @@ export class MonsterCardPage {
 
   constructor(
     private store: Store,
-    public platform: Platform
+    public platform: Platform,
+    public popoverController: PopoverController,
+    private gestureCtrl: GestureController
   ) { }
 
 
@@ -289,6 +292,19 @@ export class MonsterCardPage {
 
       event.target.complete();
     }, 500);
+  }
+
+  async presentPopover(ev: any, info: Card) {
+    const popover = await this.popoverController.create({
+      component: PoperComponent,
+      cssClass: 'my-custom-class',
+      event: ev,
+      translucent: true
+    });
+    await popover.present();
+
+    const { role, data } = await popover.onDidDismiss();
+    if(data) console.log(info)
   }
 
 

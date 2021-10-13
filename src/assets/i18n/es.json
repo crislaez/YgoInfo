@@ -38,11 +38,19 @@
     "TCG_PLAYER":"TCG player",
     "EBAY":"Ebay",
     "AMAZON":"Amazon",
-    "COOL_STUFFINC":"Cool stuffinc"
+    "COOL_STUFFINC":"Cool stuffinc",
+    "SAVE":"Save",
+    "CLOSE":"Close",
+    "SAVE_CARD_SUCCESS":"Save card",
+    "DELETE_CARD_SUCCESS":"Delete card"
   },
   "ERRORS":{
     "ERROR_LOAD_MONSTER_CARDS":"error loading monsters cards",
     "ERROR_LOAD_MAGICS_CARDS":"error loading magics cards",
-    "ERROR_LOAD_CARD":"error loading card"
+    "ERROR_LOAD_TRAP_CARDS":"error loading magics cards",
+    "ERROR_LOAD_SAVE_CARDS":"error loading save cards",
+    "ERROR_LOAD_CARD":"error loading card",
+    "ERROR_TO_SAVE_CARDS":"error to save cards",
+    "ERROR_TO_DELETE_CARDS":"error to delete cards"
   }
 }
