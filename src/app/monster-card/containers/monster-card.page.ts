@@ -4,12 +4,14 @@ import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromFilter } from '@ygopro/shared/filter';
+import { PoperComponent } from '@ygopro/shared/generics/components/poper.component';
 import { fromMonster, MonsterActions } from '@ygopro/shared/monster';
-import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-import { Gesture, GestureController } from '@ionic/angular';
-import { PoperComponent } from '../components/poper.component';
 import { Card } from '@ygopro/shared/shared/models';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { StorageActions } from '@ygopro/shared/storage';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+
+
 @Component({
   selector: 'app-monster-card',
   template: `
@@ -120,7 +122,7 @@ import { Card } from '@ygopro/shared/shared/models';
 
                   <!-- INFINITE SCROLL  -->
                   <ng-container *ngIf="(total$ | async) as total">
-                    <ng-container *ngIf="(statusComponent?.offset + 20) < total">
+                    <ng-container *ngIf="(statusComponent?.offset + 21) < total">
                       <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
                         <ion-infinite-scroll-content color="primary" class="loadingspinner">
                         </ion-infinite-scroll-content>
@@ -217,7 +219,6 @@ export class MonsterCardPage {
   mosters$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
     tap(({fname, offset, archetype, attribute, race, typeCard, format, level}) => {
-      // console.log(fname, offset, archetype, attribute, race, typeCard, format)
       if(format === 'normal') format = '';
       this.store.dispatch(MonsterActions.loadMonsters({fname, offset, archetype, attribute, race, typeCard, format, level}))
     }),
@@ -230,8 +231,7 @@ export class MonsterCardPage {
   constructor(
     private store: Store,
     public platform: Platform,
-    public popoverController: PopoverController,
-    private gestureCtrl: GestureController
+    public popoverController: PopoverController
   ) { }
 
 
@@ -262,7 +262,7 @@ export class MonsterCardPage {
   // INIFINITE SCROLL
   loadData(event, total) {
     setTimeout(() => {
-      this.statusComponent = {...this.statusComponent, offset:(this.statusComponent?.offset + 20) };
+      this.statusComponent = {...this.statusComponent, offset:(this.statusComponent?.offset + 21) };
 
       if(this.statusComponent?.offset >= total){
         if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
@@ -299,12 +299,15 @@ export class MonsterCardPage {
       component: PoperComponent,
       cssClass: 'my-custom-class',
       event: ev,
-      translucent: true
+      translucent: true,
+      componentProps:{
+        button:'save'
+      }
     });
     await popover.present();
 
     const { role, data } = await popover.onDidDismiss();
-    if(data) console.log(info)
+    if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
 

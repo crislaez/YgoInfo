@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromStorage from '../reducers/storage.reducer';
 
 export const selectStorageState = createFeatureSelector<fromStorage.State>(
-  fromStorage.trapFeatureKey
+  fromStorage.storageFeatureKey
 );
 
 export const getStorage = createSelector(

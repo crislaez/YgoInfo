@@ -19,35 +19,35 @@ export const loadStorageFailure = createAction(
 
 
 
-export const deleteStorage = createAction(
-  '[Storage] Delete Storage',
+export const deleteCard = createAction(
+  '[Storage] Delete Card',
   props<{ id:number }>()
 );
 
-export const deleteStorageSuccess = createAction(
-  '[Storage] Delete Storage Success',
+export const deleteCardSuccess = createAction(
+  '[Storage] Delete Card Success',
   props<{ message:string }>()
 );
 
-export const deleteStorageFailure= createAction(
-  '[Storage] Delete Storage Failure',
+export const deleteCardFailure= createAction(
+  '[Storage] Delete Card Failure',
   props<{ error?:unknown, message?: string }>()
 );
 
 
 
-export const createStorage = createAction(
-  '[Storage] Create Storage',
+export const saveCard = createAction(
+  '[Storage] Save Card',
   props<{ card:Card }>()
 );
 
-export const createStorageSuccess = createAction(
-  '[Storage] Create Storage Success',
+export const saveCardSuccess = createAction(
+  '[Storage] Save Card Success',
   props<{ message:string }>()
 );
 
-export const createStorageFailure = createAction(
-  '[Storage] Create Storage Failure',
+export const saveCardFailure = createAction(
+  '[Storage] Save Card Failure',
   props<{ error?:unknown, message?: string }>()
 );
 

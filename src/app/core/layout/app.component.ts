@@ -74,6 +74,11 @@ export class AppComponent {
       id:3,
       link:'trap',
       text:'COMMON.TRAP_CARDS',
+    },
+    {
+      id:3,
+      link:'storage',
+      text:'COMMON.SAVED_CARDS',
     }
   ];
 

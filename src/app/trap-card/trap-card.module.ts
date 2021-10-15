@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FilterModule } from '@ygopro/shared/filter/filter.module';
+import { GenericsModule } from '@ygopro/shared/generics/generics.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { StorageModule } from '@ygopro/shared/storage/storage.module';
 import { TrapModule } from '@ygopro/shared/trap/trap.module';
@@ -22,6 +23,7 @@ import { TrapCardPageRoutingModule } from './trap-card-routing.module';
     LongPressModule,
     FilterModule,
     StorageModule,
+    GenericsModule,
     TrapCardPageRoutingModule
   ],
   declarations: [TrapCardPage]

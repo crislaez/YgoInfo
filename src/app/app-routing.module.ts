@@ -19,6 +19,10 @@ const routes: Routes = [
     loadChildren: () => import('./card/card.module').then( m => m.CardPageModule)
   },
   {
+    path: 'storage',
+    loadChildren: () => import('./storage/storage.module').then( m => m.StoragePageModule)
+  },
+  {
     path: '**',
     redirectTo: 'monster',
     pathMatch: 'full',

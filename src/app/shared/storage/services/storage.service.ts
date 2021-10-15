@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@capacitor/storage';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Card } from '@ygopro/shared/shared/models';
 
@@ -17,46 +17,41 @@ export class StorageService {
 
   getCards(): Observable<any>{
     return from(this.localCards()).pipe(
-      tap(data => console.log(data)),
-      map(data => data || [])
+      map(data => (data || []))
     )
   }
-
-  // getCard(idNote: number): Observable<any>{
-  //   return from(this.localCards()).pipe(
-  //     map(data => {
-  //       let allNotes = data || []
-  //       const note = allNotes?.find(({id}) => id === idNote) || {}
-  //       return note || null
-  //     })
-  //   )
-  // }
 
   deleteCard(idCard: number): Observable<any>{
     return from(this.localCards()).pipe(
       map(data => {
-        let allCards = data || []
+        let allCards = [...data] || [];
         const cardIndex = allCards?.findIndex(({id}) => id === idCard) || null
-        let copyObject = [...allCards]
+
         if(cardIndex > -1) {
-          copyObject.splice(cardIndex,1)
-          this.saveLocalCards(copyObject)
-          return {message:'carta borrada'}
+          allCards.splice(cardIndex,1)
+          this.saveLocalCards(allCards)
+          return {code:200}
         }
-        else return {message:'error al borrar la carta'}
+        else return {code:403}
       })
     )
   }
 
-  createCard(card: Card): Observable<any>{
+  saveCard(card: Card): Observable<any>{
     return from(this.localCards()).pipe(
       map(data => {
-      let allCards = data || [];
-      card = {...card, id: (allCards[allCards?.length -1]?.id || 0) + 1}
-      let copyObject = [...allCards]
-      copyObject.push(card)
-      this.saveLocalCards(copyObject)
-      return {message:'carta agregada'}
+      let allCards = [...data] || [];
+
+      let checkQuantity = (allCards || [])?.filter(({id}) => id === card?.id);
+      checkQuantity = [...checkQuantity, card];
+
+      if(checkQuantity?.length > 3){
+        return {code:403}
+      }
+
+      allCards.push(card)
+      this.saveLocalCards(allCards)
+      return {code:200}
       })
     )
   }
@@ -64,7 +59,7 @@ export class StorageService {
 
   async localCards(){
     const cards = await Storage.get({key: this.cards})
-    return await JSON.parse(cards?.value)
+    return await JSON.parse(cards?.value) || []
   }
 
   async saveLocalCards(cards: Card[]){

@@ -404,6 +404,7 @@ ion-searchbar{
 }
 
 ion-card{
+  touch-action: pan-y !important;
   width: 23%;
   min-height: 15vh;
   // height: 17ch;

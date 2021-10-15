@@ -3,14 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { FilterModule } from '@ygopro/shared/filter/filter.module';
 import { GenericsModule } from '@ygopro/shared/generics/generics.module';
-import { MonsterModule } from '@ygopro/shared/monster/monster.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { StorageModule } from '@ygopro/shared/storage/storage.module';
 import { LongPressModule } from 'ionic-long-press';
-import { MonsterCardPage } from './containers/monster-card.page';
-import { MonsterCardPageRoutingModule } from './monster-card-routing.module';
+import { StoragePage } from './containers/storage.page';
+import { StoragePageRoutingModule } from './storage-routing.module';
 
 
 @NgModule({
@@ -19,16 +17,12 @@ import { MonsterCardPageRoutingModule } from './monster-card-routing.module';
     FormsModule,
     IonicModule,
     TranslateModule.forChild(),
-    MonsterModule,
     SharedModule,
     LongPressModule,
-    FilterModule,
     StorageModule,
     GenericsModule,
-    MonsterCardPageRoutingModule
+    StoragePageRoutingModule
   ],
-  declarations: [
-    MonsterCardPage
-  ]
+  declarations: [StoragePage]
 })
-export class MonsterCardPageModule {}
+export class StoragePageModule {}

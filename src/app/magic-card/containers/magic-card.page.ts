@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
-import { IonContent, IonInfiniteScroll, Platform } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromFilter } from '@ygopro/shared/filter';
+import { PoperComponent } from '@ygopro/shared/generics/components/poper.component';
 import { fromMagic, MagicActions } from '@ygopro/shared/magic';
-import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
+import { Card } from '@ygopro/shared/shared/models';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { StorageActions } from '@ygopro/shared/storage';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 
@@ -53,7 +56,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngIf="magics?.length > 0; else noData">
 
                   <ng-container *ngFor="let magic of magics; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+magic?.id]">
+                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+magic?.id]" ion-long-press [interval]="700" (pressed)="presentPopover($event, magic)">
                       <img [src]="magic?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                       <ng-container *ngIf="emptyObject(magic?.banlist_info)">
@@ -80,7 +83,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
                   <!-- INFINITE SCROLL  -->
                   <ng-container *ngIf="(total$ | async) as total">
-                    <ng-container *ngIf="(statusComponent?.offset + 20) <= total">
+                    <ng-container *ngIf="(statusComponent?.offset + 21) <= total">
                       <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
                         <ion-infinite-scroll-content color="primary" class="loadingspinner">
                         </ion-infinite-scroll-content>
@@ -179,7 +182,8 @@ export class MagicCardPage {
 
   constructor(
     private store: Store,
-    public platform: Platform
+    public platform: Platform,
+    public popoverController: PopoverController,
   ) { }
 
 
@@ -210,7 +214,7 @@ export class MagicCardPage {
   // INIFINITE SCROLL
   loadData(event, total) {
     setTimeout(() => {
-      this.statusComponent = {...this.statusComponent, offset:(this.statusComponent?.offset + 20) };
+      this.statusComponent = {...this.statusComponent, offset:(this.statusComponent?.offset + 21) };
 
       if(this.statusComponent?.offset >= total){
         if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
@@ -239,6 +243,22 @@ export class MagicCardPage {
 
       event.target.complete();
     }, 500);
+  }
+
+  async presentPopover(ev: any, info: Card) {
+    const popover = await this.popoverController.create({
+      component: PoperComponent,
+      cssClass: 'my-custom-class',
+      event: ev,
+      translucent: true,
+      componentProps:{
+        button:'save'
+      }
+    });
+    await popover.present();
+
+    const { role, data } = await popover.onDidDismiss();
+    if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
 }

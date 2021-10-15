@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FilterModule } from '@ygopro/shared/filter/filter.module';
+import { GenericsModule } from '@ygopro/shared/generics/generics.module';
 import { MagicModule } from '@ygopro/shared/magic/magic.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { StorageModule } from '@ygopro/shared/storage/storage.module';
@@ -22,6 +23,7 @@ import { MagicCardPageRoutingModule } from './magic-card-routing.module';
     LongPressModule,
     FilterModule,
     StorageModule,
+    GenericsModule,
     MagicCardPageRoutingModule
   ],
   declarations: [MagicCardPage]

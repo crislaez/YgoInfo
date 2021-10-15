@@ -22,12 +22,12 @@ export const reducer = createReducer(
   on(StorageActions.loadStorage, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
   on(StorageActions.saveStorage, (state, { storage, error, status }): State => ({ ...state, storage, error, status })),
 
-  on(StorageActions.deleteStorage, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
-  on(StorageActions.deleteStorageSuccess, (state): State => ({ ...state, status: EntityStatus.Loaded })),
-  on(StorageActions.deleteStorageFailure, (state, { error}): State => ({ ...state, error, status: EntityStatus.Error })),
+  on(StorageActions.deleteCard, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
+  on(StorageActions.deleteCardSuccess, (state): State => ({ ...state, status: EntityStatus.Loaded })),
+  on(StorageActions.deleteCardFailure, (state, { error}): State => ({ ...state, error, status: EntityStatus.Loaded })),
 
-  on(StorageActions.createStorage, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
-  on(StorageActions.createStorageSuccess, (state): State => ({ ...state, status: EntityStatus.Loaded })),
-  on(StorageActions.createStorageFailure, (state, { error}): State => ({ ...state, error, status: EntityStatus.Error })),
+  on(StorageActions.saveCard, (state): State => ({ ...state,  error: undefined, status: EntityStatus.Pending })),
+  on(StorageActions.saveCardSuccess, (state): State => ({ ...state, status: EntityStatus.Loaded })),
+  on(StorageActions.saveCardFailure, (state, { error}): State => ({ ...state, error, status: EntityStatus.Loaded })),
 
 );

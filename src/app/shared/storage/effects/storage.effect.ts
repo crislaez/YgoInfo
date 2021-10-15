@@ -16,11 +16,12 @@ export class StorageEffects {
     return this.actions$.pipe(
       ofType(
         StorageActions.loadStorage,
-        StorageActions.createStorageSuccess
+        StorageActions.saveCardSuccess,
+        StorageActions.deleteCardSuccess
       ),
       switchMap(() => {
         return this._storage.getCards().pipe(
-          map(({cards}) => StorageActions.saveStorage({ storage: cards || [], error:undefined, status:EntityStatus.Loaded })),
+          map((cards) => StorageActions.saveStorage({ storage: cards || [], error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
             return of(
               StorageActions.saveStorage({ storage:[], error,  status:EntityStatus.Error }),
@@ -32,28 +33,34 @@ export class StorageEffects {
     );
   });
 
-  createStorage$ = createEffect(() => {
+  saveCard$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(StorageActions.createStorage),
+      ofType(StorageActions.saveCard),
       switchMap(({card}) => {
-        return this._storage.createCard(card).pipe(
-          map(() => StorageActions.createStorageSuccess({ message:'COMMON.SAVE_CARD_SUCCESS' })),
+        return this._storage.saveCard(card).pipe(
+          map(({code}) => {
+            if(code === 403) return StorageActions.saveCardFailure({error:code, message:'ERRORS.ERROR_LIMIT_EXCESS'});
+            return StorageActions.saveCardSuccess({ message:'COMMON.SAVE_CARD_SUCCESS' });
+          }),
           catchError(error => {
-            return of(StorageActions.createStorageFailure({error, message:'ERRORS.ERROR_TO_SAVE_CARDS'}))
+            return of(StorageActions.saveCardFailure({error, message:'ERRORS.ERROR_TO_SAVE_CARDS'}))
           })
         )
       })
     );
   });
 
-  deleteStorage$ = createEffect(() => {
+  deleteCard$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(StorageActions.deleteStorage),
+      ofType(StorageActions.deleteCard),
       switchMap(({id}) => {
         return this._storage.deleteCard(id).pipe(
-          map(() => StorageActions.deleteStorageSuccess({ message:'COMMON.DELETE_CARD_SUCCESS' })),
+          map(({code}) => {
+            if(code === 403) StorageActions.deleteCardFailure({error: code, message:'ERRORS.ERROR_TO_DELETE_CARDS'})
+            return StorageActions.deleteCardSuccess({ message:'COMMON.DELETE_CARD_SUCCESS' })
+          }),
           catchError(error => {
-            return of(StorageActions.deleteStorageFailure({error, message:'ERRORS.ERROR_TO_DELETE_CARDS'}))
+            return of(StorageActions.deleteCardFailure({error, message:'ERRORS.ERROR_TO_DELETE_CARDS'}))
           })
         )
       })
@@ -63,8 +70,8 @@ export class StorageEffects {
   messageSuccess$ = createEffect(() =>
     this.actions$.pipe(
     ofType(
-      StorageActions.createStorageSuccess,
-      StorageActions.deleteStorageSuccess
+      StorageActions.saveCardSuccess,
+      StorageActions.deleteCardSuccess
     ),
       tap(({message}) => this.presentToast(this.translate.instant(message), 'success')),
     ), { dispatch: false }
@@ -74,8 +81,8 @@ export class StorageEffects {
     this.actions$.pipe(
       ofType(
         StorageActions.loadStorageFailure,
-        StorageActions.createStorageFailure,
-        StorageActions.deleteStorageFailure
+        StorageActions.saveCardFailure,
+        StorageActions.deleteCardFailure
       ),
       tap(({message}) => this.presentToast(this.translate.instant(message), 'danger')),
     ), { dispatch: false }
