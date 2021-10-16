@@ -51,7 +51,7 @@
                 {
                   "replace": "src/app/core/build-specifics/index.ts",
                   "with": "src/app/core/build-specifics/index.prod.ts"
-              }
+                }
               ],
               "optimization": true,
               "outputHashing": "all",

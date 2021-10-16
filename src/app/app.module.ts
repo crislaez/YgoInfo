@@ -52,7 +52,8 @@ export function appInitializerFactory(translate: TranslateService, coreConfig: C
     HttpClientModule
   ],
   providers: [
-    { provide: RouteReuseStrategy,
+    {
+      provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
     {
