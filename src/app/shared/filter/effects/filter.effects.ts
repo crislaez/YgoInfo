@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { TranslateService } from '@ngx-translate/core';
 import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -123,18 +122,9 @@ export class FilterEffects {
   constructor(
     private actions$: Actions,
     private _filter: FilterService,
-    private translate: TranslateService,
     public toastController: ToastController,
   ) { }
 
 
-  async presentToast(message, color) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: color,
-      duration: 1000
-    });
-    toast.present();
-  }
 
 }

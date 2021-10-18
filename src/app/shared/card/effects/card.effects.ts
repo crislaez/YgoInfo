@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { TranslateService } from '@ngx-translate/core';
+import { NotificationActions } from '@ygopro/shared/notification';
 import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as CardActions from '../actions/card.actions';
 import { CardService } from '../services/card.service';
 
@@ -24,7 +24,7 @@ export class CardEffects {
             }
             return of(
               CardActions.saveCard({ card:{}, error, status:EntityStatus.Loaded }),
-              CardActions.loadCardFailure()
+              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
             )
           })
         )
@@ -32,29 +32,12 @@ export class CardEffects {
     );
   });
 
-  loadCardFailure$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardActions.loadCardFailure),
-      tap(() => this.presentToast(this.translate.instant('ERRORS.ERROR_LOAD_CARD'), 'danger')),
-    ), { dispatch: false }
-  );
-
 
   constructor(
     private actions$: Actions,
     private _card: CardService,
-    private translate: TranslateService,
     public toastController: ToastController,
   ) { }
 
-
-  async presentToast(message, color) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: color,
-      duration: 1000
-    });
-    toast.present();
-  }
 
 }

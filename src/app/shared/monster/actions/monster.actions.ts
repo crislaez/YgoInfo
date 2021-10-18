@@ -13,10 +13,3 @@ export const saveMosters = createAction(
   props<{ monsters: Card[], total:number, error:unknown, status:EntityStatus, offset: number, fname?:string, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?: string, level?: string }>()
 );
 
-export const loadMonstersFailure = createAction(
-  '[Monster] Load Monster Failure'
-  // props<{error: unknown}>()
-);
-
-
-

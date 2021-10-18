@@ -12,10 +12,3 @@ export const saveCard = createAction(
   '[Card] Save Card',
   props<{ card: Card, error:unknown, status:EntityStatus }>()
 );
-
-export const loadCardFailure = createAction(
-  '[Card] Load Card Failure'
-);
-
-
-

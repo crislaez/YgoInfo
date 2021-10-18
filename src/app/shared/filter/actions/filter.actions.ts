@@ -13,6 +13,7 @@ export const saveTypes = createAction(
 );
 
 
+
 // ATTRIBUTES
 export const loadAttributes = createAction(
   '[Filter] Load Attributes'
@@ -22,6 +23,7 @@ export const saveAttributtes = createAction(
   '[Filter] Save Attributes',
   props<{ attributes: string[], error:unknown, status:EntityStatus }>()
 );
+
 
 
 // RACES
@@ -35,6 +37,7 @@ export const saveRaces = createAction(
 );
 
 
+
 // ARCHETYPES
 export const loadArchetypes = createAction(
   '[Filter] Load Archetypes'
@@ -46,6 +49,7 @@ export const saveArchetypes = createAction(
 );
 
 
+
 // FORMATS
 export const loadFormats = createAction(
   '[Filter] Load Formats'
@@ -55,6 +59,8 @@ export const saveFormats = createAction(
   '[Filter] Save Formats',
   props<{ formats: string[], error:unknown, status:EntityStatus }>()
 );
+
+
 
 // LEVEL
 export const loadLevels = createAction(

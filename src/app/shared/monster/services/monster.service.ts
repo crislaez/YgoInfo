@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { CoreConfigService } from '../../../core/services/core-config.service';
+import { CoreConfigService } from '@ygopro/core/services/core-config.service';
 import { Card } from '@ygopro/shared/shared/models';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

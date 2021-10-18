@@ -3,9 +3,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith } from 'rxjs/operators';
 
 export class DynamicLocaleId extends String {
-  constructor(protected translate: TranslateService, _langs: string[]) {
+  private _localeLoaded;
+
+  constructor(protected translate: TranslateService) {
+
     super('');
-    const langs = _langs;
+    const langs = [...this.translate.langs];
+    this._localeLoaded = (this.translate.langs ||[]).reduce((acc, lang) => ({ ...acc, [lang]: false }), {});
 
     this.translate.onLangChange.pipe(
       map(({ lang }) => lang),
@@ -30,6 +34,10 @@ export class DynamicLocaleId extends String {
       default:
         return Promise.reject('Locale not supported');
     }
+  }
+
+  isLocaleLoaded(lang: string): boolean {
+    return this._localeLoaded[lang];
   }
 
   toString() {

@@ -15,6 +15,7 @@
     "lib": ["es2018", "dom"],
     "paths":{
       "@ygopro/shared/*": ["./src/app/shared/*"],
+      "@ygopro/core/*": ["./src/app/core/*"],
     }
   },
   "angularCompilerOptions": {

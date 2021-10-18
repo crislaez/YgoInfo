@@ -26,7 +26,7 @@ export const deleteCard = createAction(
 
 export const deleteCardSuccess = createAction(
   '[Storage] Delete Card Success',
-  props<{ message:string }>()
+  props<{ message?:string }>()
 );
 
 export const deleteCardFailure= createAction(
@@ -43,7 +43,7 @@ export const saveCard = createAction(
 
 export const saveCardSuccess = createAction(
   '[Storage] Save Card Success',
-  props<{ message:string }>()
+  props<{ message?:string }>()
 );
 
 export const saveCardFailure = createAction(

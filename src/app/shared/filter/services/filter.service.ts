@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CoreConfigService } from '@ygopro/core/services/core-config.service';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CoreConfigService } from '../../../core/services/core-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ import { CoreConfigService } from '../../../core/services/core-config.service';
 export class FilterService {
 
   baseURL: string = `${this._coreConfig.getEndpoint()}`;
+
   types: string[]  = [
     "Effect Monster",
     "Flip Effect Monster",

@@ -13,9 +13,4 @@ export const saveMagics = createAction(
   props<{ magics: Card[], total:number, error:unknown, status:EntityStatus, offset: number, fname?:string, race?:string, format?: string  }>()
 );
 
-export const loadMagicsFailure = createAction(
-  '[Magic] Load Magic Failure'
-);
-
-
 
