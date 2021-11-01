@@ -541,14 +541,6 @@ ion-avatar{
   height:auto;
 }
 
-.big-size{
-  font-size: 23px !important;
-}
-
-.mediun-size{
-  font-size: 15px !important;
-}
-
 .width-max{
   width: 100%;
 }
@@ -573,8 +565,16 @@ ion-avatar{
   width: 40%;
 }
 
-.font-big{
+.big-size{
+  font-size: 23px !important;
+}
+
+.big-size-medium{
   font-size: 18px !important;
+}
+
+.mediun-size{
+  font-size: 15px !important;
 }
 
 .font-medium{

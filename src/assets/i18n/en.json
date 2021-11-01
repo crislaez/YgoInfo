@@ -55,6 +55,7 @@
     "ERROR_LOAD_CARD":"error loading card",
     "ERROR_TO_SAVE_CARDS":"error to save cards",
     "ERROR_TO_DELETE_CARDS":"error to delete cards",
-    "ERROR_LIMIT_EXCESS":"You cannot add more than the limit (3)"
+    "ERROR_LIMIT_EXCESS":"You cannot add more than the limit (3)",
+    "ERROR_LOAD_BANLIST":"error loading banlist"
   }
 }

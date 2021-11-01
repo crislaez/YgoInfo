@@ -79,6 +79,11 @@ export class AppComponent {
       id:3,
       link:'storage',
       text:'COMMON.SAVED_CARDS',
+    },
+    {
+      id:4,
+      link:'banlist',
+      text:'COMMON.BANLIST',
     }
   ];
 

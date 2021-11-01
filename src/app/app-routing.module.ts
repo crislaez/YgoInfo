@@ -30,6 +30,11 @@ const routes: Routes = [
     // canActivate: [LangGuard],
   },
   {
+    path: 'banlist',
+    loadChildren: () => import('./banlist/banlist.module').then( m => m.BanlistPageModule),
+    // canActivate: [LangGuard],
+  },
+  {
     path: '**',
     redirectTo: 'monster',
     pathMatch: 'full',
