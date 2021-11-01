@@ -10,7 +10,7 @@ YgoInfo es una aplicación hecha en Ionic (Angular, TypeScript, Sass/Css, Html, 
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_4.PNG" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_5.PNG" />
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_5.jpg" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_6.PNG" />
 <hr>
@@ -19,7 +19,9 @@ YgoInfo es una aplicación hecha en Ionic (Angular, TypeScript, Sass/Css, Html, 
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_8.PNG" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_9.PNG" />
-
+<hr>
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_10.jpg" />
+<hr>
 ### Que hace el proyecto
 
 YgoInfo es una aplicación hecha en Ionic con la información de todas las cartas de yu-gi-oh, donde tambien
