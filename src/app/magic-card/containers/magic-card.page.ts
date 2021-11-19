@@ -226,7 +226,7 @@ export class MagicCardPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = {...this.statusComponent, fname:'', offset:0, race:'', format:''};
+      this.statusComponent = {...this.statusComponent, fname:'', offset:0, race:'', format:'normal'};
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 

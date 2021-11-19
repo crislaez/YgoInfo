@@ -15,7 +15,7 @@ import { Store } from '@ngrx/store';
       </ion-toolbar>
     </ion-header>
 
-    <div class="displays-around">
+    <div class="displays-around height-100">
       <ng-container *ngIf="containerName === 'monster'">
         <ng-container *ngIf="monsterFormat">
           <ion-item *ngIf="monsterFormat?.length > 0" class="fade-in-card item-select font-medium width-84 font-small">
@@ -140,12 +140,12 @@ export class ModalFilterComponent {
   @Input() monsterRace: string[] = [];
 
   @Input() statusComponentMagic: {fname?:string, offset?:number, race?:string, format?:string} = {};
-  @Input() magicFormat: string[] = [];;
-  @Input() magicRacer: string[] = [];;
+  @Input() magicFormat: string[] = [];
+  @Input() magicRacer: string[] = [];
 
   @Input() statusComponentTrap: {fname?:string, offset?:number, race?:string, format?:string} = {};
-  @Input() trapFormat: string[] = [];;
-  @Input() trapRace: string[] = [];;
+  @Input() trapFormat: string[] = [];
+  @Input() trapRace: string[] = [];
 
 
   constructor(
