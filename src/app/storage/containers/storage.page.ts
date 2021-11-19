@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { IonContent, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { PoperComponent } from '@ygopro/shared/generics/components/poper.component';
+import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { Card } from '@ygopro/shared/shared/models';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
 import { fromStorage, StorageActions } from '@ygopro/shared/storage';
@@ -146,7 +146,7 @@ export class StoragePage {
 
   async presentPopover(ev: any, info: Card) {
     const popover = await this.popoverController.create({
-      component: PoperComponent,
+      component: PopoverComponent,
       cssClass: 'my-custom-class',
       event: ev,
       translucent: true,

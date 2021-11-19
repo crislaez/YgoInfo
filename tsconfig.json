@@ -16,6 +16,7 @@
     "paths":{
       "@ygopro/shared/*": ["./src/app/shared/*"],
       "@ygopro/core/*": ["./src/app/core/*"],
+      "@ygopro/shared-ui/*": ["./src/app/shared-ui/*"],
     }
   },
   "angularCompilerOptions": {

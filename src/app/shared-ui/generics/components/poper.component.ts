@@ -16,14 +16,14 @@ import { NavParams, PopoverController } from '@ionic/angular';
   styleUrls: ['poper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PoperComponent {
+export class PopoverComponent {
 
   option: string = '';
 
 
   constructor(private navParams: NavParams, public popoverController: PopoverController) {
     this.option = this.navParams.get('button')
-   }
+  }
 
 
   send(bool:boolean): void{

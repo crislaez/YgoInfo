@@ -45,7 +45,8 @@
     "CLOSE":"Close",
     "DELETE":"Delete",
     "SAVE_CARD_SUCCESS":"Save card",
-    "DELETE_CARD_SUCCESS":"Delete card"
+    "DELETE_CARD_SUCCESS":"Delete card",
+    "FILTERS":"Filters"
   },
   "ERRORS":{
     "ERROR_LOAD_MONSTER_CARDS":"error loading monsters cards",

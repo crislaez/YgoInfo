@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
-import { IonContent, IonInfiniteScroll, Platform, PopoverController } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
+import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
+import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { fromFilter } from '@ygopro/shared/filter';
-import { PoperComponent } from '@ygopro/shared/generics/components/poper.component';
 import { Card } from '@ygopro/shared/shared/models';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
 import { StorageActions } from '@ygopro/shared/storage';
 import { fromTrap, TrapActions } from '@ygopro/shared/trap';
+import { combineLatest } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 
@@ -24,35 +26,24 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
         <div class="header-container-empty"></div>
       </div>
 
-
       <ng-container *ngIf="(traps$ | async) as traps">
         <ng-container *ngIf="(status$ | async) as status">
           <ng-container *ngIf="status !== 'pending'|| statusComponent?.offset !== 0; else loader">
             <ng-container *ngIf="status !== 'error'; else serverError">
 
+             <!-- FORM  -->
               <form (submit)="searchSubmit($event)" class="fade-in-card">
                 <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
               </form>
 
-              <ng-container *ngIf="(mosterFormats$ | async) as mosterFormats">
-                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-84">
-                    <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="statusComponent?.format" interface="action-sheet">
-                      <ion-select-option *ngFor="let format of mosterFormats" [value]="format">{{format}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
-              <ng-container *ngIf="(trapsRace$ | async) as trapsRace">
-                <ion-item *ngIf="trapsRace?.length > 0" class="fade-in-card item-select font-medium width-84">
-                  <ion-label>{{'COMMON.FILTER_BY_RACE' | translate}}</ion-label>
-                  <ion-select (ionChange)="changeFilter($any($event), 'race')" [value]="statusComponent?.race" interface="action-sheet">
-                    <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                    <ion-select-option *ngFor="let race of trapsRace" [value]="race">{{race}}</ion-select-option>
-                  </ion-select>
-                </ion-item>
+              <!-- FILTER  -->
+              <ng-container *ngIf="(trapFilters$ | async) as trapFilters">
+                <div class="width-84 margin-center">
+                  <ion-button class="displays-center class-ion-button" (click)="presentModal(trapFilters)">{{ 'COMMON.FILTERS' | translate }}</ion-button>
+                </div>
               </ng-container>
 
+              <!-- CARDS  -->
               <ng-container *ngIf="traps?.length > 0; else noData">
 
                 <ng-container *ngFor="let trap of traps; trackBy: trackById">
@@ -86,6 +77,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <ng-container *ngIf="(statusComponent?.offset + 21) <= total">
                     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
                       <ion-infinite-scroll-content color="primary" class="loadingspinner">
+                        <ion-spinner *ngIf="status === 'pending'" class="loadingspinner"></ion-spinner>
                       </ion-infinite-scroll-content>
                     </ion-infinite-scroll>
                   </ng-container>
@@ -160,13 +152,17 @@ export class TrapCardPage {
     format:'',
   };
 
-  mosterFormats$ = this.store.select(fromFilter.getFormats);
-  trapsRace$ = this.store.select(fromFilter.getRaces).pipe(
-    map(races => (races || [])?.filter(item => item === 'Normal' || item === 'Continuous' || item === 'Counter'))
-  );
-
   status$ = this.store.select(fromTrap.getStatusTraps);
   total$ = this.store.select(fromTrap.getTotal);
+
+  trapFilters$ = combineLatest([
+    this.store.select(fromFilter.getFormats),
+    this.store.select(fromFilter.getRaces).pipe(
+      map(races => (races || [])?.filter(item => item === 'Normal' || item === 'Continuous' || item === 'Counter'))
+    )
+  ]).pipe(
+    map(([trapFormat, trapRace]) => ({trapFormat, trapRace}))
+  );
 
   traps$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
@@ -183,7 +179,8 @@ export class TrapCardPage {
   constructor(
     private store: Store,
     public platform: Platform,
-    public popoverController: PopoverController
+    public popoverController: PopoverController,
+    public modalController: ModalController
   ) { }
 
 
@@ -225,14 +222,6 @@ export class TrapCardPage {
     }, 500);
   }
 
-  // FILTER
-  changeFilter({detail: {value}}, filter): void{
-    this.statusComponent = {...this.statusComponent, offset:0, [filter]: value};
-
-    this.infiniteScroll$.next(this.statusComponent)
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-  }
-
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
@@ -247,7 +236,7 @@ export class TrapCardPage {
 
   async presentPopover(ev: any, info: Card) {
     const popover = await this.popoverController.create({
-      component: PoperComponent,
+      component: PopoverComponent,
       cssClass: 'my-custom-class',
       event: ev,
       translucent: true,
@@ -259,6 +248,35 @@ export class TrapCardPage {
 
     const { role, data } = await popover.onDidDismiss();
     if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
+  }
+
+  // OPEN FILTER MODAL
+  async presentModal( trapFilters ) {
+    const { trapFormat = null, trapRace = null } = trapFilters || {};
+
+    const modal = await this.modalController.create({
+      component: ModalFilterComponent,
+      cssClass: 'my-custom-modal-css',
+      componentProps: {
+        statusComponentTrap: this.statusComponent,
+        containerName:'trap',
+        trapFormat,
+        trapRace
+      }
+    });
+
+    modal.onDidDismiss()
+      .then((res) => {
+        const { data } = res || {};
+
+        if(!!data){
+          this.statusComponent = { ...data }
+          this.infiniteScroll$.next(this.statusComponent)
+          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+        }
+    });
+
+    return await modal.present();
   }
 
 

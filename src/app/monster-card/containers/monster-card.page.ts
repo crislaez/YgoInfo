@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
-import { IonContent, IonInfiniteScroll, Platform, PopoverController } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
+import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
+import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { fromFilter } from '@ygopro/shared/filter';
-import { PoperComponent } from '@ygopro/shared/generics/components/poper.component';
 import { fromMonster, MonsterActions } from '@ygopro/shared/monster';
 import { Card } from '@ygopro/shared/shared/models';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
 import { StorageActions } from '@ygopro/shared/storage';
+import { combineLatest } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 
@@ -29,69 +31,19 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
             <ng-container *ngIf="status !== 'pending' || statusComponent?.offset !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
 
+                <!-- FORM  -->
                 <form (submit)="searchSubmit($event)" class="fade-in-card">
                   <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
                 </form>
 
-                <ng-container *ngIf="(mosterFormats$ | async) as mosterFormats">
-                  <ion-item *ngIf="mosterFormats?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="statusComponent?.format" interface="action-sheet">
-                      <ion-select-option *ngFor="let format of mosterFormats" [value]="format">{{format}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                <!-- FILTER  -->
+                <ng-container *ngIf="(mosnterFilters$ | async) as mosnterFilters">
+                  <div class="width-84 margin-center">
+                    <ion-button class="displays-center class-ion-button" (click)="presentModal(mosnterFilters)">{{ 'COMMON.FILTERS' | translate }}</ion-button>
+                  </div>
                 </ng-container>
 
-                <ng-container *ngIf="(monsterLevels$ | async) as monsterLevels">
-                  <ion-item *ngIf="monsterLevels?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_LEVEL' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'level')" [value]="statusComponent?.level" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                      <ion-select-option *ngFor="let level of monsterLevels" [value]="level">{{level}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
-                <ng-container *ngIf="(monstersType$ | async) as monstersType">
-                  <ion-item *ngIf="monstersType?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'type')" [value]="statusComponent?.typeCard" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                      <ion-select-option *ngFor="let type of monstersType" [value]="type">{{type}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
-                <ng-container *ngIf="(monstersArchetypes$ | async) as monstersArchetypes">
-                  <ion-item *ngIf="monstersArchetypes?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_ARCHETYPE' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'archetype')" [value]="statusComponent?.archetype" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                      <ion-select-option *ngFor="let archetype of monstersArchetypes" [value]="archetype">{{archetype}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
-                <ng-container *ngIf="(monstersAttributes$ | async) as monstersAttributes">
-                  <ion-item *ngIf="monstersAttributes?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_ATTIBUTE' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'attribute')" [value]="statusComponent?.attribute" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                      <ion-select-option *ngFor="let attribute of monstersAttributes" [value]="attribute">{{attribute}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
-                <ng-container *ngIf="(monstersRaces$ | async) as monstersRaces">
-                  <ion-item *ngIf="monstersRaces?.length > 0" class="fade-in-card item-select font-medium width-40">
-                    <ion-label>{{'COMMON.FILTER_BY_RACE' | translate}}</ion-label>
-                    <ion-select (ionChange)="changeFilter($any($event), 'race')" [value]="statusComponent?.race" interface="action-sheet">
-                      <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-                      <ion-select-option *ngFor="let race of monstersRaces" [value]="race">{{race}}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ng-container>
-
+                <!-- CARDS  -->
                 <ng-container *ngIf="monsters?.length > 0; else noData">
 
                   <ng-container *ngFor="let monster of monsters; trackBy: trackById">
@@ -125,6 +77,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                     <ng-container *ngIf="(statusComponent?.offset + 21) < total">
                       <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
                         <ion-infinite-scroll-content color="primary" class="loadingspinner">
+                          <ion-spinner *ngIf="status === 'pending'" class="loadingspinner"></ion-spinner>
                         </ion-infinite-scroll-content>
                       </ion-infinite-scroll>
                     </ng-container>
@@ -184,37 +137,41 @@ export class MonsterCardPage {
   emptyObject = emptyObject;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent;
-  infiniteScroll$ = new EventEmitter<{fname?:string, offset:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string, level?:string}>();
+  infiniteScroll$ = new EventEmitter<{fname?:string, offset?:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string, level?:string}>();
   banned = '../../../assets/images/Banned.png';
   limited = '../../../assets/images/Limited.png';
   semiLimited = '../../../assets/images/Semi-limited.png';
 
   search = new FormControl('');
   showButton: boolean = false;
-  statusComponent = {
+  statusComponent: {fname?:string, offset?:number, archetype?:string, attribute?:string, race?:string, typeCard?:string, format?:string, level?:string} = {
     fname:'',
     offset:0,
     archetype:'',
     attribute:'',
     race:'',
     typeCard:'',
-    format:'',
+    format:'normal',
     level:''
   };
 
-  monsterLevels$ = this.store.select(fromFilter.getLevels);
-  mosterFormats$ = this.store.select(fromFilter.getFormats);
-  monstersAttributes$ = this.store.select(fromFilter.getAttributes);
-  monstersArchetypes$ = this.store.select(fromFilter.getArchetypes);
-  monstersRaces$ = this.store.select(fromFilter.getRaces).pipe(
-    map(races => (races || [])?.filter(item => item !== 'Normal' && item !== 'Field' &&  item !== 'Equip' && item !== 'Continuous' && item !== 'Quick-Play' && item !== 'Ritual' && item !== 'Counter'))
-  );
-  monstersType$ = this.store.select(fromFilter.getTypes).pipe(
-    map(types => (types || []).filter(item => item !== 'Spell Card' && item !== 'Trap Card'))
-  );
-
   status$ = this.store.select(fromMonster.getStatusMonsters);
   total$ = this.store.select(fromMonster.getTotal);
+
+  mosnterFilters$ = combineLatest([
+    this.store.select(fromFilter.getLevels),
+    this.store.select(fromFilter.getFormats),
+    this.store.select(fromFilter.getAttributes),
+    this.store.select(fromFilter.getArchetypes),
+    this.store.select(fromFilter.getRaces).pipe(
+      map(races => (races || [])?.filter(item => item !== 'Normal' && item !== 'Field' &&  item !== 'Equip' && item !== 'Continuous' && item !== 'Quick-Play' && item !== 'Ritual' && item !== 'Counter'))
+    ),
+    this.store.select(fromFilter.getTypes).pipe(
+      map(types => (types || []).filter(item => item !== 'Spell Card' && item !== 'Trap Card'))
+    )
+  ]).pipe(
+    map(([monsterLevel, monsterFormat, monsterAttributes, monsterArchetypes, monsterRace, monsterType]) => ({monsterLevel, monsterFormat, monsterAttributes, monsterArchetypes, monsterRace, monsterType})),
+  );
 
   mosters$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
@@ -231,7 +188,8 @@ export class MonsterCardPage {
   constructor(
     private store: Store,
     public platform: Platform,
-    public popoverController: PopoverController
+    public popoverController: PopoverController,
+    public modalController: ModalController
   ) { }
 
 
@@ -273,15 +231,6 @@ export class MonsterCardPage {
     }, 500);
   }
 
-  // FILTER
-  changeFilter({detail: {value}}, filter): void{
-    if(filter === 'type') this.statusComponent = {...this.statusComponent, offset:0, typeCard: value};
-    else this.statusComponent = {...this.statusComponent, offset:0, [filter]: value};
-
-    this.infiniteScroll$.next(this.statusComponent)
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-  }
-
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
@@ -296,7 +245,7 @@ export class MonsterCardPage {
 
   async presentPopover(ev: any, info: Card) {
     const popover = await this.popoverController.create({
-      component: PoperComponent,
+      component: PopoverComponent,
       cssClass: 'my-custom-class',
       event: ev,
       translucent: true,
@@ -309,6 +258,40 @@ export class MonsterCardPage {
     const { role, data } = await popover.onDidDismiss();
     if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
+
+  // OPEN FILTER MODAL
+  async presentModal( monsterFilters ) {
+    const { monsterLevel = null, monsterFormat = null, monsterType = null, monsterArchetypes = null, monsterAttributes = null, monsterRace = null } = monsterFilters || {};
+
+    const modal = await this.modalController.create({
+      component: ModalFilterComponent,
+      cssClass: 'my-custom-modal-css',
+      componentProps: {
+        statusComponentMonster: this.statusComponent,
+        containerName:'monster',
+        monsterLevel,
+        monsterFormat,
+        monsterType,
+        monsterArchetypes,
+        monsterAttributes,
+        monsterRace
+      }
+    });
+
+    modal.onDidDismiss()
+      .then((res) => {
+        const { data } = res || {};
+
+        if(!!data){
+          this.statusComponent = { ...data }
+          this.infiniteScroll$.next(this.statusComponent)
+          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+        }
+    });
+
+    return await modal.present();
+  }
+
 
 
 }
