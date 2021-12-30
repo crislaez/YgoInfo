@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
+import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/shared/utils/models';
 import * as MonsterActions from '../actions/monster.actions';
-import { Card } from '@ygopro/shared/shared/models';
 
 export const monsterFeatureKey = 'monster';
 

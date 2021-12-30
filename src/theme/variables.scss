@@ -400,6 +400,7 @@ ion-searchbar{
   .searchbar-input-container {
     input{
       background: white !important;
+      color: $secondBackColor !important;
     }
 }
 }
@@ -408,17 +409,11 @@ ion-card{
   touch-action: pan-y !important;
   width: 23%;
   min-height: 15vh;
-  // height: 17ch;
-  // height: initial;
-  // width: 41%;
-  // width: 80%;
-  // background: $backfourthColor;
+  background: $backColor;
   color: $secondBackColor !important;
-  // --background: rgba(255,255,255,0.1);
 
   img{
     width: 100%;
-    // height: 9em;
   }
 
   //titulo de la card
@@ -447,7 +442,6 @@ ion-card{
     }
   }
 
-
   ion-icon {
     font-size: 25px;
   }
@@ -467,6 +461,7 @@ ion-button{
 ion-item{
   width: 94%;
   margin: 0 auto;
+  padding:0px !important;
 }
 
 form{
@@ -477,9 +472,11 @@ form{
 }
 
 ion-list{
+  background: #F4F4F4 !important;
   width:100%;
 
   ion-item{
+    --background: #F4F4F4 !important;
 
     ion-label{
       height:50px;
@@ -505,6 +502,7 @@ ion-avatar{
   display: block;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  overflow: scroll;
   --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
   --backdrop-opacity: var(--ion-backdrop-opacity, 0.32);
 }
@@ -575,6 +573,10 @@ ion-avatar{
 
 .width-half{
   width: 40%;
+}
+
+.max-size{
+  font-size: 30px !important;
 }
 
 .big-size{

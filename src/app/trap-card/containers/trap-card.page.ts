@@ -6,8 +6,8 @@ import { Store } from '@ngrx/store';
 import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { fromFilter } from '@ygopro/shared/filter';
-import { Card } from '@ygopro/shared/shared/models';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { fromTrap, TrapActions } from '@ygopro/shared/trap';
 import { combineLatest } from 'rxjs';
@@ -33,18 +33,18 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
              <!-- FORM  -->
               <form (submit)="searchSubmit($event)" class="fade-in-card">
-                <ion-searchbar color="light" [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
+                <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
               </form>
-
-              <!-- FILTER  -->
-              <ng-container *ngIf="(trapFilters$ | async) as trapFilters">
-                <div class="width-84 margin-center">
-                  <ion-button class="displays-center class-ion-button" (click)="presentModal(trapFilters)">{{ 'COMMON.FILTERS' | translate }}</ion-button>
-                </div>
-              </ng-container>
 
               <!-- CARDS  -->
               <ng-container *ngIf="traps?.length > 0; else noData">
+
+                <!-- FILTER  -->
+                <ng-container *ngIf="(trapFilters$ | async) as trapFilters">
+                  <div class="width-84 margin-center displays-center">
+                    <ion-button class="displays-center class-ion-button" (click)="presentModal(trapFilters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
+                  </div>
+                </ng-container>
 
                 <ng-container *ngFor="let trap of traps; trackBy: trackById">
                   <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+trap?.id]" ion-long-press [interval]="700" (pressed)="presentPopover($event, trap)">
@@ -76,7 +76,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngIf="(total$ | async) as total">
                   <ng-container *ngIf="(statusComponent?.offset + 21) <= total">
                     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
-                      <ion-infinite-scroll-content color="primary" class="loadingspinner">
+                      <ion-infinite-scroll-content class="loadingspinner">
                         <ion-spinner *ngIf="status === 'pending'" class="loadingspinner"></ion-spinner>
                       </ion-infinite-scroll-content>
                     </ion-infinite-scroll>
@@ -111,7 +111,11 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
       <!-- IS NO DATA  -->
       <ng-template #noData>
         <div class="error-serve">
-          <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
+          <div>
+            <span span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
+            <br>
+            <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
+          </div>
         </div>
       </ng-template>
 

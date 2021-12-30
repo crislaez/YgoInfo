@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@capacitor/storage';
 import { from, Observable, of, throwError } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Card } from '@ygopro/shared/shared/models';
+import { Card } from '@ygopro/shared/shared/utils/models';
 
 @Injectable({
   providedIn: 'root'

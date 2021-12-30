@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
-import { Card } from '@ygopro/shared/shared/models';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/shared/utils/models';
 import { fromStorage, StorageActions } from '@ygopro/shared/storage';
 import { startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -77,7 +77,11 @@ import { startWith, switchMap, tap } from 'rxjs/operators';
       <!-- IS NO DATA  -->
       <ng-template #noData>
         <div class="error-serve">
-          <span class="text-second-color">{{'COMMON.NO_DATA' | translate}}</span>
+          <div>
+            <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
+            <br>
+            <span class="text-second-color">{{'COMMON.NO_DATA' | translate}}</span>
+          </div>
         </div>
       </ng-template>
 

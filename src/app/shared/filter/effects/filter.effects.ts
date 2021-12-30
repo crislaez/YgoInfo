@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
+import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as FilterActions from '../actions/filter.actions';

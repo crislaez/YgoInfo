@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { CoreConfigService } from '../../../core/services/core-config.service';
-import { Card } from '@ygopro/shared/shared/models';
+import { Card } from '@ygopro/shared/shared/utils/models';
 
 @Injectable({
   providedIn: 'root'

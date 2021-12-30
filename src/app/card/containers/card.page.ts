@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { errorImage, gotToTop, trackById, emptyObject } from '@ygopro/shared/shared/utils/utils';
-import { IonInfiniteScroll } from '@ionic/angular';
-import { IonContent } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { tap, switchMap } from 'rxjs/operators';
+import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { Store } from '@ngrx/store';
 import { CardActions, fromCard } from '@ygopro/shared/card';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-card',

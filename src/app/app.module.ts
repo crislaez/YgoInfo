@@ -6,7 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { IonicGestureConfig } from '@ygopro/shared/shared/utils/IonicGestureConfig';
+import { IonicGestureConfig } from '@ygopro/shared/shared/utils/helpers/IonicGestureConfig';
 import { environment } from '../environments/environment';
 import * as appConfig from './app-config';
 import { AppRoutingModule } from './app-routing.module';

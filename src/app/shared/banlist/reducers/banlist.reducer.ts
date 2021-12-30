@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
+import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/shared/utils/models';
 import * as BanlistActions from '../actions/banlist.actions';
-import { Card } from '@ygopro/shared/shared/models';
 
 export const cardFeatureKey = 'banlist';
 

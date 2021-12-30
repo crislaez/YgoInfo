@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
-import { gotToTop, trackById } from '@ygopro/shared/shared/utils/utils';
+import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 
 @Component({
   selector: 'app-root',

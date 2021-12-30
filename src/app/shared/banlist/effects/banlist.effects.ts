@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { NotificationActions } from '@ygopro/shared/notification';
-import { EntityStatus } from '@ygopro/shared/shared/utils/utils';
+import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as BanlistActions from '../actions/banlist.actions';
 import { BanlistService } from '../services/banlist.service';
 
