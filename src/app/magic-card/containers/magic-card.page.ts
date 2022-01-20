@@ -1,3 +1,4 @@
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
@@ -18,13 +19,9 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   selector: 'app-magic-card',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-      <div class="container components-color-second">
+      <div class="empty-header components-color-third"></div>
 
-        <div class="header" no-border>
-          <div class="header-container-empty" ></div>
-          <h1 class="text-second-color">{{'COMMON.MAGIC_CARDS' | translate}}</h1>
-          <div class="header-container-empty"></div>
-        </div>
+      <div class="container components-color-second">
 
         <ng-container *ngIf="(magics$ | async) as magics">
           <ng-container *ngIf="(status$ | async) as status">
@@ -47,7 +44,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   </ng-container>
 
                   <ng-container *ngFor="let magic of magics; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+magic?.id]" ion-long-press [interval]="700" (pressed)="presentPopover($event, magic)">
+                    <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(magic)" ion-long-press [interval]="700" (pressed)="presentPopover($event, magic)">
                       <img [src]="magic?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                       <ng-container *ngIf="emptyObject(magic?.banlist_info)">
@@ -254,6 +251,17 @@ export class MagicCardPage {
     if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
+  // SHOW SINGLE CARD
+  async openSingleCardModal(card: Card) {
+    const modal = await this.modalController.create({
+      component: CardModalComponent,
+      componentProps:{
+        card
+      }
+    });
+    return await modal.present();
+  }
+
   // OPEN FILTER MODAL
   async presentModal( magicFilters ) {
     const { magicFormat = null, magicRacer = null } = magicFilters || {};
@@ -266,7 +274,9 @@ export class MagicCardPage {
         containerName:'magic',
         magicFormat,
         magicRacer
-      }
+      },
+      breakpoints: [0, 0.2, 0.5, 1],
+      initialBreakpoint: 0.4, //modal height
     });
 
     modal.onDidDismiss()

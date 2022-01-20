@@ -1,5 +1,7 @@
+import { filter, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 
@@ -8,13 +10,13 @@ import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
   template:`
   <ion-app >
     <!-- CABECERA  -->
-    <ion-header no-border>
-      <ion-toolbar mode="md|ios">
+    <ion-header class="ion-no-border">
+      <ion-toolbar *ngIf="currentSection$ | async as currentSection">
         <ion-button fill="clear" size="small" slot="start"  (click)="open()">
           <ion-menu-button class="text-color"></ion-menu-button>
         </ion-button>
 
-        <ion-title class="text-color" >{{'COMMON.TITLE' | translate}}</ion-title>
+        <ion-title class="text-color" >{{ currentSection | translate }}</ion-title>
 
         <div size="small" slot="end" class="div-clear"  >
         </div>
@@ -86,6 +88,21 @@ export class AppComponent {
       text:'COMMON.BANLIST',
     }
   ];
+
+  currentSection$: Observable<string> = this.router.events.pipe(
+    filter((event: any) => event instanceof NavigationStart),
+    map((event: NavigationEnd) => {
+      const { url = ''} = event || {};
+      console.log(url)
+      if(url === '/trap') return 'COMMON.TRAP_CARDS';
+      if(url === '/magic') return 'COMMON.MAGIC_CARDS';
+      if(url === '/monster') return 'COMMON.MONSTER_CARDS';
+      if(url === '/banlist') return 'COMMON.BANLIST';
+      if(url === '/storage') return 'COMMON.SAVED_CARDS';
+
+      return 'home';
+    })
+  );
 
 
   constructor(

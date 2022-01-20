@@ -20,11 +20,6 @@ const routes: Routes = [
     // canActivate: [LangGuard],
   },
   {
-    path: 'card',
-    loadChildren: () => import('./card/card.module').then( m => m.CardPageModule),
-    // canActivate: [LangGuard],
-  },
-  {
     path: 'storage',
     loadChildren: () => import('./storage/storage.module').then( m => m.StoragePageModule),
     // canActivate: [LangGuard],

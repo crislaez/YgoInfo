@@ -1,3 +1,4 @@
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
@@ -18,13 +19,10 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   selector: 'app-trap-card',
   template: `
   <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-    <div class="container components-color-second">
 
-      <div class="header" no-border>
-        <div class="header-container-empty" ></div>
-        <h1 class="text-second-color">{{'COMMON.TRAP_CARDS' | translate}}</h1>
-        <div class="header-container-empty"></div>
-      </div>
+    <div class="empty-header components-color-third"></div>
+
+    <div class="container components-color-second">
 
       <ng-container *ngIf="(traps$ | async) as traps">
         <ng-container *ngIf="(status$ | async) as status">
@@ -47,7 +45,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 </ng-container>
 
                 <ng-container *ngFor="let trap of traps; trackBy: trackById">
-                  <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+trap?.id]" ion-long-press [interval]="700" (pressed)="presentPopover($event, trap)">
+                  <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(trap)" ion-long-press [interval]="700" (pressed)="presentPopover($event, trap)">
                     <img [src]="trap?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                     <ng-container *ngIf="emptyObject(trap?.banlist_info)">
@@ -254,6 +252,17 @@ export class TrapCardPage {
     if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
+  // SHOW SINGLE CARD
+  async openSingleCardModal(card: Card) {
+    const modal = await this.modalController.create({
+      component: CardModalComponent,
+      componentProps:{
+        card
+      }
+    });
+    return await modal.present();
+  }
+
   // OPEN FILTER MODAL
   async presentModal( trapFilters ) {
     const { trapFormat = null, trapRace = null } = trapFilters || {};
@@ -266,7 +275,9 @@ export class TrapCardPage {
         containerName:'trap',
         trapFormat,
         trapRace
-      }
+      },
+      breakpoints: [0, 0.2, 0.5, 1],
+      initialBreakpoint: 0.4, //modal height
     });
 
     modal.onDidDismiss()

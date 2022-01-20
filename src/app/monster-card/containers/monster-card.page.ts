@@ -1,3 +1,4 @@
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
@@ -18,13 +19,9 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   selector: 'app-monster-card',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-      <div class="container components-color-second">
+      <div class="empty-header components-color-third"></div>
 
-        <div class="header" no-border>
-          <div class="header-container-empty" ></div>
-          <h1 class="text-second-color">{{'COMMON.MONSTER_CARDS' | translate}}</h1>
-          <div class="header-container-empty"></div>
-        </div>
+      <div class="container components-color-second">
 
         <ng-container *ngIf="(mosters$ | async) as monsters">
           <ng-container *ngIf="(status$ | async) as status">
@@ -47,7 +44,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   </ng-container>
 
                   <ng-container *ngFor="let monster of monsters; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+monster?.id]" ion-long-press [interval]="400" (pressed)="presentPopover($event, monster)">
+                    <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(monster)" ion-long-press [interval]="400" (pressed)="presentPopover($event, monster)">
                       <img [src]="monster?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                       <ng-container *ngIf="emptyObject(monster?.banlist_info)">
@@ -263,6 +260,17 @@ export class MonsterCardPage {
     if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
+  // SHOW SINGLE CARD
+  async openSingleCardModal(card: Card) {
+    const modal = await this.modalController.create({
+      component: CardModalComponent,
+      componentProps:{
+        card
+      }
+    });
+    return await modal.present();
+  }
+
   // OPEN FILTER MODAL
   async presentModal( monsterFilters ) {
     const { monsterLevel = null, monsterFormat = null, monsterType = null, monsterArchetypes = null, monsterAttributes = null, monsterRace = null } = monsterFilters || {};
@@ -279,7 +287,9 @@ export class MonsterCardPage {
         monsterArchetypes,
         monsterAttributes,
         monsterRace
-      }
+      },
+      breakpoints: [0, 0.2, 0.5, 1],
+      initialBreakpoint: 0.4, //modal height
     });
 
     modal.onDidDismiss()

@@ -1,6 +1,7 @@
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { BanlistActions, fromBanlist } from '@ygopro/shared/banlist';
 import { errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
@@ -12,13 +13,11 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   selector: 'app-banlist',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-      <div class="container components-color-second">
 
-        <div class="header" no-border>
-          <div class="header-container-empty" ></div>
-          <h1 class="text-second-color">{{'COMMON.BANLIST' | translate}}</h1>
-          <div class="header-container-empty"></div>
-        </div>
+      <div class="empty-header components-color-third"></div>
+
+      <div class="container components-color-second">
+        <div class="empty-header-mid"></div>
 
         <!-- Disabled Segment -->
         <ion-segment (ionChange)="segmentChanged($event)" [value]="banlistType[0]?.type">
@@ -34,7 +33,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
                 <ng-container *ngIf="banlist?.banlist?.length > 0; else noData">
                   <ion-list>
-                    <ion-item lines="full" *ngFor="let card of banlist?.banlist; trackBy: trackById" (click)="redirect(card)">
+                    <ion-item detail lines="full" *ngFor="let card of banlist?.banlist; trackBy: trackById" (click)="openSingleCardModal(card)">
                       <div>
                         <ion-label class="font-medium text-second-color label-name" >{{ sliceTest(card?.name) }}</ion-label>
                         <ion-label fixed class="label-image" ><img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)"></ion-label>
@@ -156,7 +155,8 @@ export class BanlistPage {
 
   constructor(
     private store: Store,
-    private router: Router
+    private router: Router,
+    public modalController: ModalController
   ) { }
 
 
@@ -198,8 +198,15 @@ export class BanlistPage {
     this.infiniteScroll$.next(this.componentStatus);
   }
 
-  redirect(card: Card): void{
-    this.router.navigate(['/card/' + card?.id])
+  // SHOW SINGLE CARD
+  async openSingleCardModal(card: Card) {
+    const modal = await this.modalController.create({
+      component: CardModalComponent,
+      componentProps:{
+        card
+      }
+    });
+    return await modal.present();
   }
 
 }

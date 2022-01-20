@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-modal-filter',
@@ -15,7 +14,7 @@ import { Store } from '@ngrx/store';
       </ion-toolbar>
     </ion-header>
 
-    <div class="displays-around height-100">
+    <div class="displays-around">
       <ng-container *ngIf="containerName === 'monster'">
         <ng-container *ngIf="monsterFormat">
           <ion-item *ngIf="monsterFormat?.length > 0" class="fade-in-card item-select font-medium width-84 font-small">

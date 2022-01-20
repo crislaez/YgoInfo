@@ -1,24 +1,21 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
-import { IonContent, PopoverController } from '@ionic/angular';
+import { IonContent, ModalController, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/shared/utils/models';
 import { fromStorage, StorageActions } from '@ygopro/shared/storage';
 import { startWith, switchMap, tap } from 'rxjs/operators';
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 
 
 @Component({
   selector: 'app-storage',
   template: `
   <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-    <div class="container components-color-second">
+    <div class="empty-header components-color-third"></div>
 
-      <div class="header" no-border>
-        <div class="header-container-empty" ></div>
-        <h1 class="text-second-color">{{'COMMON.SAVED_CARDS' | translate}}</h1>
-        <div class="header-container-empty"></div>
-      </div>
+    <div class="container components-color-second">
 
       <ng-container *ngIf="(storageCards$ | async) as storageCards">
         <ng-container *ngIf="(status$ | async) as status">
@@ -27,7 +24,7 @@ import { startWith, switchMap, tap } from 'rxjs/operators';
               <ng-container *ngIf="storageCards?.length > 0; else noData">
 
                 <ng-container *ngFor="let card of storageCards; trackBy: trackById">
-                  <ion-card class="ion-activatable ripple-parent" [routerLink]="['/card/'+card?.id]" ion-long-press [interval]="700" (pressed)="presentPopover($event, card)">
+                  <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(card)" ion-long-press [interval]="700" (pressed)="presentPopover($event, card)">
                     <img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
 
                     <ng-container *ngIf="emptyObject(card?.banlist_info)">
@@ -130,6 +127,7 @@ export class StoragePage {
   constructor(
     private store: Store,
     public popoverController: PopoverController,
+    public modalController: ModalController
   ) { }
 
 
@@ -147,6 +145,17 @@ export class StoragePage {
       event.target.complete();
     }, 500);
   }
+
+    // SHOW SINGLE CARD
+    async openSingleCardModal(card: Card) {
+      const modal = await this.modalController.create({
+        component: CardModalComponent,
+        componentProps:{
+          card
+        }
+      });
+      return await modal.present();
+    }
 
   async presentPopover(ev: any, info: Card) {
     const popover = await this.popoverController.create({
