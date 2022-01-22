@@ -20,6 +20,10 @@ export const trackById = (_: number, item: any): number => {
     content.scrollToTop(500);
   }
 
+  export const sliceTextSmall = (text: string) => {
+    return text?.length > 17 ? text?.slice(0, 17) + '...' : text;
+  }
+
   export const sliceTest = (text: string) => {
     return text?.length > 25 ? text?.slice(0, 25) + '...' : text;
   }

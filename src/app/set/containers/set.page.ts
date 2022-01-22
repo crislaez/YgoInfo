@@ -1,3 +1,4 @@
+import { CardSet } from './../../shared/shared/utils/models/index';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
@@ -6,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { emptyObject, errorImage, gotToTop, trackById, sliceTextSmall } from '@ygopro/shared/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { switchMap, tap, map } from 'rxjs/operators';
@@ -25,6 +26,79 @@ import { ActivatedRoute } from '@angular/router';
 
     <div class="container components-color-second">
 
+      <ng-container *ngIf="(cards$ | async) as cards">
+        <ng-container *ngIf="(status$ | async) as status">
+          <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
+            <ng-container *ngIf="status !== 'error'; else serverError">
+
+                <!-- FORM  -->
+                <form (submit)="searchSubmit($event)" class="fade-in-card">
+                  <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+                </form>
+
+              <ng-container *ngIf="cards?.length > 0; else noData">
+
+                  <!-- FILTER  -->
+                  <ng-container *ngIf="(filters$ | async) as filters">
+                    <div class="width-84 margin-center displays-center">
+                      <ion-button class="displays-center class-ion-button" (click)="presentModal(filters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
+                    </div>
+                  </ng-container>
+
+                 <!-- <ng-container *ngFor="let card of cards; trackBy: trackById">
+                    <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
+                      <img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+
+                      <ng-container *ngIf="emptyObject(card?.banlist_info)">
+                        <div class="banlist-div">
+                          <div *ngIf="!!card?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
+                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
+                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
+                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
+                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                          </div>
+                          <div *ngIf="!!card?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
+                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
+                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
+                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
+                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                  </ng-container> -->
+
+                  <ion-list>
+                    <ion-item detail *ngFor="let card of cards; let i = index; trackBy: trackById" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
+                      <ion-img [src]="card?.card_images[0]?.image_url_small" loading="lazy" (ionError)="errorImage($event)"></ion-img>
+                      <ion-label *ngIf="card?.name" >{{ sliceTextSmall(card?.name) }}</ion-label>
+                      <ion-label class="font-medium">
+                        <ng-container *ngFor="let set of getRarities(card?.card_sets)">
+                          <span>{{ getPriceAndRarity(set) }}</span>
+                          <br>
+                        </ng-container>
+                      </ion-label>
+                    </ion-item>
+                  </ion-list>
+
+                  <!-- INFINITE SCROLL  -->
+                  <ng-container *ngIf="(total$ | async) as total">
+                    <ng-container *ngIf="(statusComponent?.page + 21) < total">
+                      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
+                        <ion-infinite-scroll-content class="loadingspinner">
+                          <ion-spinner *ngIf="$any(status) === 'pending'" class="loadingspinner"></ion-spinner>
+                        </ion-infinite-scroll-content>
+                      </ion-infinite-scroll>
+                    </ng-container>
+                  </ng-container>
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
 
 
       <!-- REFRESH -->
@@ -45,7 +119,7 @@ import { ActivatedRoute } from '@angular/router';
 
       <!-- IS NO DATA  -->
       <ng-template #noData>
-        <div class="error-serve heigth-mid">
+        <div class="error-serve">
           <div>
             <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
             <br>
@@ -76,6 +150,7 @@ export class SetPage {
   trackById = trackById;
   errorImage = errorImage;
   emptyObject = emptyObject;
+  sliceTextSmall = sliceTextSmall;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
 
@@ -128,7 +203,6 @@ export class SetPage {
   ionViewWillEnter(): void{
     this.search.reset();
     this.statusComponent = { page:0, filter:{ cardset: this.route.snapshot.params?.setName || ''  } };
-    console.log(this.statusComponent)
     this.infiniteScroll$.next(this.statusComponent);
   }
 
@@ -136,7 +210,7 @@ export class SetPage {
   searchSubmit(event: Event): void{
     event.preventDefault();
     if(!this.platform.is('mobileweb')) Keyboard.hide();
-    this.statusComponent = {...this.statusComponent, filter:{ fname:this.search.value }, page:0 };
+    this.statusComponent = {...this.statusComponent, filter:{ fname:this.search.value, cardset: this.route.snapshot.params?.setName || '' }, page:0 };
     this.infiniteScroll$.next(this.statusComponent);
     if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
@@ -145,7 +219,7 @@ export class SetPage {
   clearSearch(event): void{
     if(!this.platform.is('mobileweb')) Keyboard.hide();
     this.search.reset();
-    this.statusComponent = {...this.statusComponent, filter:{ fname: ''}, page:0 };
+    this.statusComponent = {...this.statusComponent, filter:{ fname: '', cardset: this.route.snapshot.params?.setName || ''}, page:0 };
     this.infiniteScroll$.next(this.statusComponent);
     if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
@@ -175,7 +249,7 @@ export class SetPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = { page: 0, filter:{} };
+      this.statusComponent = { page: 0, filter:{ cardset: this.route.snapshot.params?.setName || '' } };
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 
@@ -240,5 +314,14 @@ export class SetPage {
     return await modal.present();
   }
 
+  getRarities(cardSets: CardSet[]): CardSet[] {
+    const setName = this.route.snapshot.params?.setName;
+    return (cardSets || [])?.filter(({set_name}) => set_name === setName);
+  }
+
+  getPriceAndRarity(cardSet: CardSet): string{
+    const { set_rarity = null, set_rarity_code = null, set_price = null } = cardSet || {}
+    return `${set_rarity} ${set_price} $`;
+  }
 
 }

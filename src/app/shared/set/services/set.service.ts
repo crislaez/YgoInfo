@@ -13,7 +13,6 @@ export class SetService {
 
   baseURL: string = `${this._coreConfig.getEndpoint()}`;
   baseNumber: string = `${this._coreConfig.getCardsNumber()}`;
-  types: string[] = this._coreConfig.getTypes()?.filter(item => item === 'Spell Card');
 
 
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }

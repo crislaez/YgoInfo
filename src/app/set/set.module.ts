@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModule } from '@ygopro/shared/card/card.module';
+import { FilterModule } from '@ygopro/shared/filter/filter.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { LongPressModule } from 'ionic-long-press';
 import { SetPage } from './containers/set.page';
@@ -16,6 +17,7 @@ import { SetPageRoutingModule } from './set-routing.module';
     FormsModule,
     IonicModule,
     CardModule,
+    FilterModule,
     SharedModule,
     LongPressModule,
     TranslateModule.forChild(),

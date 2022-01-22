@@ -23,15 +23,11 @@ export const reducer = createReducer(
   initialState,
   on(SetActions.loadSets, (state): State => ({ ...state,  error:undefined, status: EntityStatus.Pending })),
   on(SetActions.saveSets, (state, { sets, error, status }): State => {
-    const nowYear = new Date().getFullYear();
-
-    const lastSets = sets?.filter(item => {
-      const { tcg_date = null } = item || {}
-      const year = tcg_date?.split('-')[0]
-      if(year === nowYear?.toString()) return item
-    })?.slice(-10);
-
-    return ({ ...state, sets, lastSets, error, status})
+    const sortedSets = [...sets]?.sort((a,b) => {
+      return new Date(a.tcg_date).getTime() - new Date(b.tcg_date).getTime()
+    });
+    const reverseSortedSets = [...sortedSets]?.reverse();
+    return ({ ...state, sets: reverseSortedSets, lastSets: reverseSortedSets?.slice(0, 10), error, status})
   }),
 
 );

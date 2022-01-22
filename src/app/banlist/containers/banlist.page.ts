@@ -1,12 +1,11 @@
-import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { IonContent, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { BanlistActions, fromBanlist } from '@ygopro/shared/banlist';
-import { errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { errorImage, gotToTop, sliceTextSmall, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/shared/utils/models';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 
 
 @Component({
@@ -34,16 +33,14 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                 <ng-container *ngIf="banlist?.banlist?.length > 0; else noData">
                   <ion-list>
                     <ion-item detail lines="full" *ngFor="let card of banlist?.banlist; trackBy: trackById" (click)="openSingleCardModal(card)">
-                      <div>
-                        <ion-label class="font-medium text-second-color label-name" >{{ sliceTest(card?.name) }}</ion-label>
-                        <ion-label fixed class="label-image" ><img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)"></ion-label>
-                        <ng-container *ngIf="componentStatus?.banlistType === 'tcg'; else ocgTemplate">
-                          <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_tcg === 'Banned',  'limited':card?.banlist_info?.ban_tcg === 'Limited',  'semi-limited':card?.banlist_info?.ban_tcg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_tcg }}</ion-label>
-                        </ng-container>
-                        <ng-template #ocgTemplate>
-                          <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_ocg === 'Banned',  'limited':card?.banlist_info?.ban_ocg === 'Limited',  'semi-limited':card?.banlist_info?.ban_ocg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_ocg }}</ion-label>
-                        </ng-template>
-                      </div>
+                      <ion-label class="font-medium text-second-color label-name" >{{ sliceTextSmall(card?.name) }}</ion-label>
+                      <ion-img [src]="card?.card_images[0]?.image_url" loading="lazy" (ionError)="errorImage($event)"></ion-img>
+                      <ng-container *ngIf="componentStatus?.banlistType === 'tcg'; else ocgTemplate">
+                        <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_tcg === 'Banned',  'limited':card?.banlist_info?.ban_tcg === 'Limited',  'semi-limited':card?.banlist_info?.ban_tcg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_tcg }}</ion-label>
+                      </ng-container>
+                      <ng-template #ocgTemplate>
+                        <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_ocg === 'Banned',  'limited':card?.banlist_info?.ban_ocg === 'Limited',  'semi-limited':card?.banlist_info?.ban_ocg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_ocg }}</ion-label>
+                      </ng-template>
                     </ion-item>
                   </ion-list>
 
@@ -110,7 +107,7 @@ export class BanlistPage {
   gotToTop = gotToTop;
   trackById = trackById;
   errorImage = errorImage;
-  sliceTest = sliceTest;
+  sliceTextSmall = sliceTextSmall;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent
   infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number} >();

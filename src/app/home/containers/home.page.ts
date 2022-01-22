@@ -163,16 +163,16 @@ export class HomePage {
         }),
         map((objSet) => {
           return {
-            sets: Object.entries(objSet || {})?.slice(0, slice).reduce((acc, el) => {
+            sets:  Object.entries(objSet || {})?.slice(0, slice).reduce((acc, el) => {
               const [ key = null, values = null ] = el || [];
               return {
-                ...(acc ? acc : {}),
+                ...acc,
                 [key]:[
                   ...(acc?.[key] ? acc?.[key] : []),
                   ...(values ? (values as any) : [])
                 ]
               }
-            },{}),
+            },{}) || [],
             total: Object?.keys(objSet || {})?.length
           }
         })
@@ -228,6 +228,7 @@ export class HomePage {
       spaceBetween: 30,
       freeMode: true,
       pagination:{   clickable: true },
+      lazy: true
 
       // effect:'coverflow',
       // coverflowEffect:{

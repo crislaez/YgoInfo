@@ -105,7 +105,7 @@ import { combineLatest } from 'rxjs';
 
         <!-- IS NO DATA  -->
         <ng-template #noData>
-          <div class="error-serve heigth-mid">
+          <div class="error-serve">
             <div>
               <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
               <br>

@@ -277,8 +277,21 @@ ion-list {
   width:100%;
 
   ion-item{
-    background: #E9E8F5 !important;
+    touch-action: pan-y !important;
     width:100%;
+    padding: 4px;
+    --background: #E9E8F5 !important;
+    color: $secondBackColor;
+
+    ion-img{
+      width: 15%;
+    }
+
+    ion-label{
+      margin-left: 10%;
+      height:50px;
+    }
+
   }
 }
 
@@ -470,20 +483,6 @@ form{
   margin-bottom: 10px;
 }
 
-ion-list{
-  background: #E9E8F5 !important;
-  width:100%;
-
-  ion-item{
-    --background: #E9E8F5 !important;
-    color: $secondBackColor;
-    height: 60px;
-
-    ion-label{
-      height:50px;
-    }
-  }
-}
 
 ion-avatar{
   box-shadow: 0;
