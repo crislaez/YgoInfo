@@ -155,7 +155,6 @@ export class BanlistPage {
 
   constructor(
     private store: Store,
-    private router: Router,
     public modalController: ModalController
   ) { }
 

@@ -356,7 +356,7 @@ ion-spinner {
   position: absolute;
   margin: 0 auto;
   margin-top: 90%;
-  margin-left: 45%;
+  margin-left: 48%;
 }
 
 //HEADER PRINCIPAL
@@ -408,7 +408,7 @@ ion-card{
   touch-action: pan-y !important;
   width: 23%;
   min-height: 15vh;
-  background: $backColor;
+  background: white;
   color: $secondBackColor !important;
 
   img{
@@ -541,6 +541,10 @@ ion-avatar{
     width: 80%;
     text-align: center;
   }
+}
+
+.text-center{
+  text-align: center;
 }
 
 // CAPITAL LETTER
@@ -704,11 +708,15 @@ ion-avatar{
   // color: $textColor !important;
 }
 
+.heigth-mid{
+  height: 30vh !important;
+}
+
 //PAGE CONTAINER
 .header{
   width: 100%;
-  margin-top: 55px;
-  min-height: 80px !important;
+  // margin-top: 55px;
+  min-height: 50px !important;
   text-align: center;
   border: 0px !important;
   border-bottom-color: transparent !important;

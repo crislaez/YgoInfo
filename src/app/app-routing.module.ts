@@ -4,6 +4,14 @@ import { LangGuard } from './core/i18n/guards/lang.guard';
 
 const routes: Routes = [
   {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'search',
+    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
+  },
+  {
     path: 'magic',
     loadChildren: () => import('./magic-card/magic-card.module').then( m => m.MagicCardPageModule),
     // canLoad: [LangGuard],
@@ -31,7 +39,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'monster',
+    redirectTo: 'home',
     pathMatch: 'full',
   }
 ];

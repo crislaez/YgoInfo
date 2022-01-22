@@ -64,28 +64,25 @@ export class AppComponent {
   lateralMenu:{id:number, link:string, text:string}[] = [
     {
       id:1,
-      link:'monster',
-      text:'COMMON.MONSTER_CARDS',
+      link:'home',
+      text:'COMMON.SETS',
     },
+
     {
       id:2,
-      link:'magic',
-      text:'COMMON.MAGIC_CARDS',
+      link:'search',
+      text:'COMMON.SEARCH_PAGE',
     },
+
     {
       id:3,
-      link:'trap',
-      text:'COMMON.TRAP_CARDS',
-    },
-    {
-      id:3,
-      link:'storage',
-      text:'COMMON.SAVED_CARDS',
+      link:'banlist',
+      text:'COMMON.BANLIST',
     },
     {
       id:4,
-      link:'banlist',
-      text:'COMMON.BANLIST',
+      link:'storage',
+      text:'COMMON.SAVED_CARDS',
     }
   ];
 
@@ -93,14 +90,12 @@ export class AppComponent {
     filter((event: any) => event instanceof NavigationStart),
     map((event: NavigationEnd) => {
       const { url = ''} = event || {};
-      console.log(url)
-      if(url === '/trap') return 'COMMON.TRAP_CARDS';
-      if(url === '/magic') return 'COMMON.MAGIC_CARDS';
-      if(url === '/monster') return 'COMMON.MONSTER_CARDS';
+      // console.log(url)
       if(url === '/banlist') return 'COMMON.BANLIST';
       if(url === '/storage') return 'COMMON.SAVED_CARDS';
-
-      return 'home';
+      if(url === '/home') return 'COMMON.SETS';
+      if(url === '/search') return 'COMMON.SEARCH_PAGE';
+      return 'COMMON.MONSTER_CARDS';
     })
   );
 

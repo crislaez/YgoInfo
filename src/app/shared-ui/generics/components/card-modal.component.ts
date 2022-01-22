@@ -1,6 +1,7 @@
+import { Card } from './../../../shared/shared/utils/models/index';
 import { ModalController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 
 
 @Component({
@@ -9,9 +10,9 @@ import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/sha
   <!-- HEADER  -->
   <ion-header class="ion-no-border">
     <ion-toolbar>
-      <ion-title class="text-color-light">{{ this.card?.name }}</ion-title>
-      <ion-buttons class="text-color-light" slot="end">
-        <ion-button class="ion-button-close" (click)="dismiss()"><ion-icon fill="clear" class="text-color-light" name="close-outline"></ion-icon></ion-button>
+      <ion-title class="text-color">{{ sliceTest(this.card?.name) }}</ion-title>
+      <ion-buttons class="text-color" slot="end">
+        <ion-button class="ion-button-close" (click)="dismiss()"><ion-icon fill="clear" class="text-color" name="close-outline"></ion-icon></ion-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -180,7 +181,8 @@ export class CardModalComponent {
   trackById = trackById;
   errorImage = errorImage;
   emptyObject = emptyObject;
-  @Input() card: any;
+  sliceTest = sliceTest;
+  @Input() card: Card;
 
 
   constructor(

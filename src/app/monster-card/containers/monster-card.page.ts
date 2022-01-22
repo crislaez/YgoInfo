@@ -1,9 +1,9 @@
-import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
+import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
 import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { fromFilter } from '@ygopro/shared/filter';

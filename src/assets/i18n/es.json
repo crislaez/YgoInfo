@@ -46,17 +46,22 @@
     "DELETE":"Delete",
     "SAVE_CARD_SUCCESS":"Save card",
     "DELETE_CARD_SUCCESS":"Delete card",
-    "FILTERS":"Filters"
+    "SETS":"Sets",
+    "LAST_SETS":"Last sets",
+    "FILTERS":"Filters",
+    "YEAR":"Year",
+    "SEARCH_PAGE":"Search"
   },
   "ERRORS":{
-    "ERROR_LOAD_MONSTER_CARDS":"error loading monsters cards",
-    "ERROR_LOAD_MAGICS_CARDS":"error loading magics cards",
-    "ERROR_LOAD_TRAP_CARDS":"error loading magics cards",
-    "ERROR_LOAD_SAVE_CARDS":"error loading save cards",
-    "ERROR_LOAD_CARD":"error loading card",
-    "ERROR_TO_SAVE_CARDS":"error to save cards",
-    "ERROR_TO_DELETE_CARDS":"error to delete cards",
+    "ERROR_LOAD_SETS":"Error loading sets",
+    "ERROR_LOAD_MONSTER_CARDS":"Error loading monsters cards",
+    "ERROR_LOAD_MAGICS_CARDS":"Error loading magics cards",
+    "ERROR_LOAD_TRAP_CARDS":"Error loading trap cards",
+    "ERROR_LOAD_SAVE_CARDS":"Error loading save cards",
+    "ERROR_LOAD_CARD":"Error loading card",
+    "ERROR_TO_SAVE_CARDS":"Error to save cards",
+    "ERROR_TO_DELETE_CARDS":"Error to delete cards",
     "ERROR_LIMIT_EXCESS":"You cannot add more than the limit (3)",
-    "ERROR_LOAD_BANLIST":"error loading banlist"
+    "ERROR_LOAD_BANLIST":"Error loading banlist"
   }
 }
