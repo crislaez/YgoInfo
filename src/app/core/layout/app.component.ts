@@ -95,7 +95,7 @@ export class AppComponent {
       if(url === '/storage') return 'COMMON.SAVED_CARDS';
       if(url === '/home') return 'COMMON.SETS';
       if(url === '/search') return 'COMMON.SEARCH_PAGE';
-      return 'COMMON.MONSTER_CARDS';
+      return 'COMMON.SETS';
     })
   );
 

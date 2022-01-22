@@ -265,35 +265,35 @@ export class SearchPage {
     return await modal.present();
   }
 
-    // OPEN FILTER MODAL
-    async presentModal( filters ) {
-      const { cardFormat = null, cardType = null } = filters || {};
+  // OPEN FILTER MODAL
+  async presentModal( filters ) {
+    const { cardFormat = null, cardType = null } = filters || {};
 
-      const modal = await this.modalController.create({
-        component: ModalFilterComponent,
-        cssClass: 'my-custom-modal-css',
-        componentProps: {
-          statusComponent: this.statusComponent,
-          cardType,
-          cardFormat
-        },
-        breakpoints: [0, 0.2, 0.5, 1],
-        initialBreakpoint: 0.4, //modal height
-      });
+    const modal = await this.modalController.create({
+      component: ModalFilterComponent,
+      cssClass: 'my-custom-modal-css',
+      componentProps: {
+        statusComponent: this.statusComponent,
+        cardType,
+        cardFormat
+      },
+      breakpoints: [0, 0.2, 0.5, 1],
+      initialBreakpoint: 0.4, //modal height
+    });
 
-      modal.onDidDismiss()
-        .then((res) => {
-          const { data } = res || {};
+    modal.onDidDismiss()
+      .then((res) => {
+        const { data } = res || {};
 
-          if(!!data){
-            this.statusComponent = { ...data }
-            this.infiniteScroll$.next(this.statusComponent)
-            if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-          }
-      });
+        if(!!data){
+          this.statusComponent = { ...data }
+          this.infiniteScroll$.next(this.statusComponent)
+          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+        }
+    });
 
-      return await modal.present();
-    }
+    return await modal.present();
+  }
 
 
 }

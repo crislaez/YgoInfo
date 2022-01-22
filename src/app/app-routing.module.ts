@@ -5,27 +5,17 @@ import { LangGuard } from './core/i18n/guards/lang.guard';
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    // canActivate: [LangGuard],
   },
   {
     path: 'search',
-    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
-  },
-  {
-    path: 'magic',
-    loadChildren: () => import('./magic-card/magic-card.module').then( m => m.MagicCardPageModule),
-    // canLoad: [LangGuard],
+    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule),
     // canActivate: [LangGuard],
   },
   {
-    path: 'monster',
-    loadChildren: () => import('./monster-card/monster-card.module').then( m => m.MonsterCardPageModule),
-    // canActivate: [LangGuard],
-  },
-  {
-    path: 'trap',
-    loadChildren: () => import('./trap-card/trap-card.module').then( m => m.TrapCardPageModule),
-    // canActivate: [LangGuard],
+    path: 'set',
+    loadChildren: () => import('./set/set.module').then( m => m.SetPageModule)
   },
   {
     path: 'storage',

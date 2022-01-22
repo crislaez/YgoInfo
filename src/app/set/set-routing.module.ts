@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MagicCardPage } from './containers/magic-card.page';
+import { SetPage } from './containers/set.page';
 
 
 const routes: Routes = [
   {
-    path: '',
-    component: MagicCardPage
+    path: ':setName',
+    component: SetPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class MagicCardPageRoutingModule {}
+export class SetPageRoutingModule {}

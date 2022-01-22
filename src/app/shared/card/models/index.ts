@@ -6,4 +6,5 @@ export interface Filter{
   "attribute"?: string;
   "race"?: string;
   "type"?: string;
+  "cardset"?:string;
 }

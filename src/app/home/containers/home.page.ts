@@ -31,7 +31,7 @@ SwiperCore.use([ Navigation]);
                   <swiper #swiper effect="fade" [config]="getSliderConfig(lastSets)" >
                     <ng-template swiperSlide *ngFor="let set of lastSets; trackBy: trackById" >
                     <!-- [routerLink]="['/cards/'+set?.id]" [queryParams]="{name:set?.name}" -->
-                      <ion-card class="slide-ion-card" >
+                      <ion-card class="slide-ion-card" [routerLink]="['/set/'+set?.set_name]">
                         <ion-card-header >
                           <span class="big-size-medium span-bold">{{ sliceTestLong(set?.set_name) }}</span>
                         </ion-card-header>
@@ -57,7 +57,7 @@ SwiperCore.use([ Navigation]);
                     <swiper #swiper effect="fade" [config]="getSliderConfig(info?.sets[key])" >
                       <ng-template swiperSlide *ngFor="let set of info?.sets[key]; trackBy: trackById" >
                       <!-- [routerLink]="['/cards/'+set?.id]" [queryParams]="{name:set?.name}" -->
-                        <ion-card class="slide-ion-card" >
+                        <ion-card class="slide-ion-card" [routerLink]="['/set/'+set?.set_name]" [queryParams]="{name:set?.name}">
                           <ion-card-header >
                             <span class="big-size-medium span-bold">{{ sliceTestLong(set?.set_name) }}</span>
                           </ion-card-header>
