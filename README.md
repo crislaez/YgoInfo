@@ -6,24 +6,23 @@ YgoInfo es una aplicación hecha en Ionic (Angular, TypeScript, Sass/Css, Html, 
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_2.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_3.PNG" />
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_3.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_4.PNG" />
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_4.jpg" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_5.jpg" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_6.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_7.PNG" />
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_7.jpg" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_8.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_9.PNG" />
+<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_9.jpg" />
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_10.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_11.jpg" />
-<hr>
+
 
 ### Que hace el proyecto
 

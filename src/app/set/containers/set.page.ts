@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
-import { emptyObject, errorImage, gotToTop, trackById, sliceTextSmall } from '@ygopro/shared/shared/utils/helpers/functions';
+import { emptyObject, errorImage, gotToTop, trackById, sliceTest } from '@ygopro/shared/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { switchMap, tap, map } from 'rxjs/operators';
@@ -26,6 +26,10 @@ import { ActivatedRoute } from '@angular/router';
 
     <div class="container components-color-second">
 
+      <div class="header margin-top">
+        <h2 class="text-second-color">{{ title }}</h2>
+      </div>
+
       <ng-container *ngIf="(cards$ | async) as cards">
         <ng-container *ngIf="(status$ | async) as status">
           <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
@@ -36,7 +40,7 @@ import { ActivatedRoute } from '@angular/router';
                   <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
                 </form>
 
-              <ng-container *ngIf="cards?.length > 0; else noData">
+                <ng-container *ngIf="cards?.length > 0; else noData">
 
                   <!-- FILTER  -->
                   <ng-container *ngIf="(filters$ | async) as filters">
@@ -45,41 +49,16 @@ import { ActivatedRoute } from '@angular/router';
                     </div>
                   </ng-container>
 
-                 <!-- <ng-container *ngFor="let card of cards; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
-                      <img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
-
-                      <ng-container *ngIf="emptyObject(card?.banlist_info)">
-                        <div class="banlist-div">
-                          <div *ngIf="!!card?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
-                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
-                          </div>
-                          <div *ngIf="!!card?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
-                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
-                          </div>
-                        </div>
-                      </ng-container>
-
-                      <ion-ripple-effect></ion-ripple-effect>
-                    </ion-card>
-                  </ng-container> -->
-
                   <ion-list>
                     <ion-item detail *ngFor="let card of cards; let i = index; trackBy: trackById" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
-                      <ion-img [src]="card?.card_images[0]?.image_url_small" loading="lazy" (ionError)="errorImage($event)"></ion-img>
-                      <ion-label *ngIf="card?.name" >{{ sliceTextSmall(card?.name) }}</ion-label>
-                      <ion-label class="font-medium">
+                      <ion-img [src]="getImgage(card?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
+                      <ion-label *ngIf="card?.name" >{{ sliceTest(card?.name) }}</ion-label>
+                      <!-- <ion-label class="font-medium">
                         <ng-container *ngFor="let set of getRarities(card?.card_sets)">
                           <span>{{ getPriceAndRarity(set) }}</span>
                           <br>
                         </ng-container>
-                      </ion-label>
+                      </ion-label> -->
                     </ion-item>
                   </ion-list>
 
@@ -150,7 +129,7 @@ export class SetPage {
   trackById = trackById;
   errorImage = errorImage;
   emptyObject = emptyObject;
-  sliceTextSmall = sliceTextSmall;
+  sliceTest = sliceTest;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
 
@@ -158,6 +137,7 @@ export class SetPage {
   limited = '../../../assets/images/Limited.png';
   semiLimited = '../../../assets/images/Semi-limited.png';
 
+  title: string;
   showButton: boolean = false;
   perPageSum: number = 21;
   search = new FormControl('');
@@ -197,7 +177,9 @@ export class SetPage {
     public popoverController: PopoverController,
     public modalController: ModalController,
     private route: ActivatedRoute,
-  ) { }
+  ) {
+    this.title = this.route.snapshot.params?.setName || ''
+  }
 
 
   ionViewWillEnter(): void{
@@ -294,7 +276,8 @@ export class SetPage {
       componentProps: {
         statusComponent: this.statusComponent,
         cardType,
-        cardFormat
+        cardFormat,
+        bool: true
       },
       breakpoints: [0, 0.2, 0.5, 1],
       initialBreakpoint: 0.4, //modal height
@@ -314,14 +297,17 @@ export class SetPage {
     return await modal.present();
   }
 
-  getRarities(cardSets: CardSet[]): CardSet[] {
-    const setName = this.route.snapshot.params?.setName;
-    return (cardSets || [])?.filter(({set_name}) => set_name === setName);
+  getImgage(card_images: any[]): string{
+    return card_images?.[0]?.image_url_small || card_images?.[0]?.image_url;
   }
+  // getRarities(cardSets: CardSet[]): CardSet[] {
+  //   const setName = this.route.snapshot.params?.setName;
+  //   return (cardSets || [])?.filter(({set_name}) => set_name === setName);
+  // }
 
-  getPriceAndRarity(cardSet: CardSet): string{
-    const { set_rarity = null, set_rarity_code = null, set_price = null } = cardSet || {}
-    return `${set_rarity} ${set_price} $`;
-  }
+  // getPriceAndRarity(cardSet: CardSet): string{
+  //   const { set_rarity = null, set_rarity_code = null, set_price = null } = cardSet || {}
+  //   return `${set_rarity} ${set_price} $`;
+  // }
 
 }

@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromSet } from '@ygopro/shared/set';
-import { gotToTop, sliceTestLong, trackById, emptyObject, getObjectKeys } from '@ygopro/shared/shared/utils/helpers/functions';
-import { tap, startWith, switchMap, map } from 'rxjs/operators';
-import SwiperCore, { Navigation, Pagination, SwiperOptions } from 'swiper';
+import { emptyObject, getObjectKeys, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { map, startWith, switchMap } from 'rxjs/operators';
+import SwiperCore, { Navigation, SwiperOptions } from 'swiper';
 // Pagination
 SwiperCore.use([ Navigation]);
 
@@ -152,10 +152,11 @@ export class HomePage {
           return (allSets || [])?.reduce((acc, el) => {
             const { tcg_date = null } = el || {};
             const year = tcg_date?.split('-')[0] || 'Promotion';
+            const mont = Number(tcg_date?.split('-')[1]) < 7 ? 'A' : 'B';
             return {
               ...(acc ? acc : {}),
-              [year]:[
-                ...(acc?.[year] ? acc?.[year] : []),
+              [`${year} ${mont}`]:[
+                ...(acc?.[`${year} ${mont}`] ? acc?.[`${year} ${mont}`] : []),
                 ...(el ? [el]: [])
               ]
             }

@@ -45,7 +45,7 @@ import { combineLatest } from 'rxjs';
 
                   <ng-container *ngFor="let card of cards; trackBy: trackById">
                     <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
-                      <img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+                      <img [src]="getImgage(card?.card_images)" loading="lazy" (error)="errorImage($event)">
 
                       <ng-container *ngIf="emptyObject(card?.banlist_info)">
                         <div class="banlist-div">
@@ -214,7 +214,6 @@ export class SearchPage {
   // INIFINITE SCROLL
   loadData(event, total) {
     setTimeout(() => {
-      console.log(this.statusComponent?.page , this.perPageSum)
       this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
 
       if(this.statusComponent?.page >= total){
@@ -295,5 +294,8 @@ export class SearchPage {
     return await modal.present();
   }
 
+  getImgage(card_images: any[]): string{
+    return card_images?.[0]?.image_url_small || card_images?.[0]?.image_url;
+  }
 
 }

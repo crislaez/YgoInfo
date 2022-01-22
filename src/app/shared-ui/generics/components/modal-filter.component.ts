@@ -16,7 +16,7 @@ import { Filter } from '@ygopro/shared/card';
     </ion-header>
 
     <div class="displays-around">
-      <ng-container *ngIf="cardFormat">
+      <ng-container *ngIf="cardFormat && !bool">
         <ion-item *ngIf="cardFormat?.length > 0" class="fade-in-card item-select font-medium width-84">
           <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
           <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="getFormatSelectorValue()" interface="action-sheet">
@@ -47,6 +47,7 @@ export class ModalFilterComponent {
   @Input() statusComponent: {page?:string, filter?:Filter } = {};
   @Input() cardType: string[];
   @Input() cardFormat: string[];
+  @Input() bool: boolean = false;
   selectorTypes: string[] = ['Moster Card', 'Spell Card', 'Trap Card'];
 
 

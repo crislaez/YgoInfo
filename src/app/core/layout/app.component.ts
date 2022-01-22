@@ -11,15 +11,17 @@ import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
   <ion-app >
     <!-- CABECERA  -->
     <ion-header class="ion-no-border">
-      <ion-toolbar *ngIf="currentSection$ | async as currentSection">
-        <ion-button fill="clear" size="small" slot="start"  (click)="open()">
+      <ion-toolbar *ngIf="(currentSection$ | async) as currentSection">
+
+        <ion-button *ngIf="currentSection !== 'COMMON.SET'" fill="clear" size="small" slot="start"  (click)="open()">
           <ion-menu-button class="text-color"></ion-menu-button>
         </ion-button>
 
+        <ion-back-button *ngIf="currentSection === 'COMMON.SET'" class="text-color" slot="start" defaultHref="/home" [text]="''"></ion-back-button>
+
         <ion-title class="text-color" >{{ currentSection | translate }}</ion-title>
 
-        <div size="small" slot="end" class="div-clear"  >
-        </div>
+        <div size="small" slot="end" class="div-clear"></div>
       </ion-toolbar>
     </ion-header>
 
@@ -95,6 +97,7 @@ export class AppComponent {
       if(url === '/storage') return 'COMMON.SAVED_CARDS';
       if(url === '/home') return 'COMMON.SETS';
       if(url === '/search') return 'COMMON.SEARCH_PAGE';
+      if(url?.includes('/set/')) return 'COMMON.SET';
       return 'COMMON.SETS';
     })
   );

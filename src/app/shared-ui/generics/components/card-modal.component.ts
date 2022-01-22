@@ -113,7 +113,7 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
                   <br>
                   <span><span class="span-bold">{{ 'COMMON.RARITY' | translate}}: </span> <span>{{ cardSet?.set_rarity }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.PRICE' | translate}}: </span> <span>{{ cardSet?.set_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.PRICE' | translate}}: </span> <span class="text-color-four">{{ cardSet?.set_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
                   <br>
                 </ng-container>
@@ -125,15 +125,15 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
               <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.PRICES' | translate}}</span> </div>
               <div class="card-result font-medium">
                 <ng-container *ngFor="let prices of card?.card_prices">
-                  <span><span class="span-bold">{{ 'COMMON.CARD_MARKER' | translate}}: </span> <span>{{ prices?.cardmarket_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.CARD_MARKER' | translate}}: </span> <span class="text-color-four">{{ prices?.cardmarket_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.TCG_PLAYER' | translate}}: </span> <span>{{ prices?.tcgplayer_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.TCG_PLAYER' | translate}}: </span> <span class="text-color-four">{{ prices?.tcgplayer_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.EBAY' | translate}}: </span> <span>{{ prices?.ebay_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.EBAY' | translate}}: </span> <span class="text-color-four">{{ prices?.ebay_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.AMAZON' | translate}}: </span> <span>{{ prices?.amazon_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.AMAZON' | translate}}: </span> <span class="text-color-four">{{ prices?.amazon_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.COOL_STUFFINC' | translate}}: </span> <span>{{ prices?.coolstuffinc_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.COOL_STUFFINC' | translate}}: </span> <span class="text-color-four">{{ prices?.coolstuffinc_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>
                   <br>
                 </ng-container>

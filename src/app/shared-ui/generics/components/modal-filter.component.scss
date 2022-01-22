@@ -14,4 +14,6 @@ ion-button{
 
 ion-item{
   margin-top: 10px;
+  --background: white !important;
+  color: $secondBackColor;
 }
