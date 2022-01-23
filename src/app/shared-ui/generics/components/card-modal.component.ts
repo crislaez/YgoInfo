@@ -1,4 +1,4 @@
-import { Card } from './../../../shared/shared/utils/models/index';
+import { Card } from '@ygopro/shared/shared/utils/models/index';
 import { ModalController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
@@ -25,8 +25,8 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
 
       <div class="empty-header-mid"></div>
 
-        <ion-card class="ifade-in-card card-card">
-          <img [src]="card?.card_images[0]?.image_url" loading="lazy" (error)="errorImage($event)">
+        <ion-card *ngFor="let image of card?.card_images" class="ifade-in-card card-card">
+          <img [src]="image?.image_url" loading="lazy" (error)="errorImage($event)">
         </ion-card>
 
         <ion-card class="fade-in-card card-card">
@@ -111,7 +111,7 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
                   <br>
                   <span><span class="span-bold">{{ 'COMMON.EXPANSION_CODE' | translate}}: </span> <span>{{ cardSet?.set_code }}</span></span>
                   <br>
-                  <span><span class="span-bold">{{ 'COMMON.RARITY' | translate}}: </span> <span>{{ cardSet?.set_rarity }}</span></span>
+                  <span><span class="span-bold">{{ 'COMMON.RARITY' | translate}}: </span> <span>{{ cardSet?.set_rarity }} {{ cardSet?.set_rarity_code }}</span></span>
                   <br>
                   <span><span class="span-bold">{{ 'COMMON.PRICE' | translate}}: </span> <span class="text-color-four">{{ cardSet?.set_price | currency:'USD':'symbol':'1.2-2' }}</span></span>
                   <br>

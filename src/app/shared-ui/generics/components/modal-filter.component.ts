@@ -25,6 +25,16 @@ import { Filter } from '@ygopro/shared/card';
         </ion-item>
       </ng-container>
 
+      <ng-container *ngIf="archetype && !bool">
+        <ion-item *ngIf="archetype?.length > 0" class="fade-in-card item-select font-medium width-84">
+          <ion-label>{{'COMMON.FILTER_BY_ARCHETYPE' | translate}}</ion-label>
+          <ion-select (ionChange)="changeFilter($any($event), 'archetype')" [value]="getArchetypeSelectorValue()" interface="action-sheet">
+            <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
+            <ion-select-option *ngFor="let format of archetype" [value]="format">{{format}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ng-container>
+
       <ng-container *ngIf="selectorTypes">
         <ion-item *ngIf="selectorTypes?.length > 0" class="fade-in-card item-select font-medium width-84">
           <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
@@ -46,6 +56,7 @@ export class ModalFilterComponent {
 
   @Input() statusComponent: {page?:string, filter?:Filter } = {};
   @Input() cardType: string[];
+  @Input() archetype: string[];
   @Input() cardFormat: string[];
   @Input() bool: boolean = false;
   selectorTypes: string[] = ['Moster Card', 'Spell Card', 'Trap Card'];
@@ -62,6 +73,10 @@ export class ModalFilterComponent {
 
   getFormatSelectorValue(): string{
     return (!this.statusComponent?.filter?.format) ? 'normal' : this.statusComponent?.filter?.format;
+  }
+
+  getArchetypeSelectorValue(): string{
+    return (!this.statusComponent?.filter?.archetype) ? '' : this.statusComponent?.filter?.archetype;
   }
 
   getTypeSelectorValue(): string{

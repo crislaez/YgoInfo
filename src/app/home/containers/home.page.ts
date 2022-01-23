@@ -148,20 +148,20 @@ export class HomePage {
     startWith(this.statusComponent),
     switchMap(({slice}) =>
       this.store.select(fromSet.getSets).pipe(
-        map(allSets => {
-          return (allSets || [])?.reduce((acc, el) => {
-            const { tcg_date = null } = el || {};
-            const year = tcg_date?.split('-')[0] || 'Promotion';
-            const mont = Number(tcg_date?.split('-')[1]) < 7 ? 'A' : 'B';
-            return {
-              ...(acc ? acc : {}),
-              [`${year} ${mont}`]:[
-                ...(acc?.[`${year} ${mont}`] ? acc?.[`${year} ${mont}`] : []),
-                ...(el ? [el]: [])
-              ]
-            }
-          },{});
-        }),
+        // map(allSets => {
+        //   return (allSets || [])?.reduce((acc, el) => {
+        //     const { tcg_date = null } = el || {};
+        //     const year = tcg_date?.split('-')[0] || 'Promotion';
+        //     const mont = Number(tcg_date?.split('-')[1]) < 7 ? 'A' : 'B';
+        //     return {
+        //       ...(acc ? acc : {}),
+        //       [`${year} ${mont}`]:[
+        //         ...(acc?.[`${year} ${mont}`] ? acc?.[`${year} ${mont}`] : []),
+        //         ...(el ? [el]: [])
+        //       ]
+        //     }
+        //   },{});
+        // }),
         map((objSet) => {
           return {
             sets:  Object.entries(objSet || {})?.slice(0, slice).reduce((acc, el) => {
@@ -228,9 +228,9 @@ export class HomePage {
       slidesPerView: info?.length > 1 ? 2 : 1,
       spaceBetween: 30,
       freeMode: true,
-      pagination:{   clickable: true },
-      lazy: true
-
+      // pagination:{  clickable: true },
+      lazy: true,
+      preloadImages: false
       // effect:'coverflow',
       // coverflowEffect:{
       //   rotate: 50,

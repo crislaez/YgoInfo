@@ -10,7 +10,7 @@ import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
   template:`
   <ion-app >
     <!-- CABECERA  -->
-    <ion-header class="ion-no-border">
+    <ion-header class="ion-no-border height-60">
       <ion-toolbar *ngIf="(currentSection$ | async) as currentSection">
 
         <ion-button *ngIf="currentSection !== 'COMMON.SET'" fill="clear" size="small" slot="start"  (click)="open()">

@@ -4,15 +4,15 @@ import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
+import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
+import { fromFilter } from '@ygopro/shared/filter';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
-import { switchMap, tap, map } from 'rxjs/operators';
-import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
-import { fromFilter } from '@ygopro/shared/filter';
 import { combineLatest } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -151,9 +151,10 @@ export class SearchPage {
 
   filters$ = combineLatest([
     this.store.select(fromFilter.getFormats),
-    this.store.select(fromFilter.getTypes)
+    this.store.select(fromFilter.getTypes),
+    this.store.select(fromFilter.getArchetypes)
   ]).pipe(
-    map(([cardFormat, cardType]) => ({cardFormat, cardType})),
+    map(([cardFormat, cardType, archetype]) => ({cardFormat, cardType, archetype})),
   );
 
   infiniteScroll$ = new EventEmitter<{page:number, filter: Filter}>();
@@ -266,7 +267,7 @@ export class SearchPage {
 
   // OPEN FILTER MODAL
   async presentModal( filters ) {
-    const { cardFormat = null, cardType = null } = filters || {};
+    const { cardFormat = null, cardType = null, archetype = null } = filters || {};
 
     const modal = await this.modalController.create({
       component: ModalFilterComponent,
@@ -274,7 +275,8 @@ export class SearchPage {
       componentProps: {
         statusComponent: this.statusComponent,
         cardType,
-        cardFormat
+        cardFormat,
+        archetype
       },
       breakpoints: [0, 0.2, 0.5, 1],
       initialBreakpoint: 0.4, //modal height
