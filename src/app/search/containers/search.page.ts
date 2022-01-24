@@ -8,8 +8,8 @@ import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/moda
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { fromFilter } from '@ygopro/shared/filter';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
-import { Card } from '@ygopro/shared/shared/utils/models';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';

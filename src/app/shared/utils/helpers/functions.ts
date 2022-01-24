@@ -24,6 +24,10 @@ export const trackById = (_: number, item: any): number => {
     return text?.length > 17 ? text?.slice(0, 17) + '...' : text;
   }
 
+  export const sliceTestMid = (text: string) => {
+    return text?.length > 20 ? text?.slice(0, 20) + '...' : text;
+  }
+
   export const sliceTest = (text: string) => {
     return text?.length > 25 ? text?.slice(0, 25) + '...' : text;
   }

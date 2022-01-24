@@ -1,7 +1,7 @@
-import { Card } from '@ygopro/shared/shared/utils/models/index';
+import { Card } from '@ygopro/shared/utils/models/index';
 import { ModalController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
 
 
 @Component({

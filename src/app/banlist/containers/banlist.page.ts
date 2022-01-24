@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { BanlistActions, fromBanlist } from '@ygopro/shared/banlist';
-import { errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
-import { Card } from '@ygopro/shared/shared/utils/models';
+import { errorImage, gotToTop, sliceTestMid, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
 
@@ -35,7 +35,7 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
                     <ion-item detail lines="full" *ngFor="let card of banlist?.banlist; trackBy: trackById" (click)="openSingleCardModal(card)">
                       <ion-img [src]="getImgage(card?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
 
-                      <ion-label class="font-medium text-second-color label-name" >{{ sliceTest(card?.name) }}</ion-label>
+                      <ion-label class="font-medium text-second-color label-name" >{{ sliceTestMid(card?.name) }}</ion-label>
 
                       <ng-container *ngIf="componentStatus?.banlistType === 'tcg'; else ocgTemplate">
                         <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_tcg === 'Banned',  'limited':card?.banlist_info?.ban_tcg === 'Limited',  'semi-limited':card?.banlist_info?.ban_tcg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_tcg }}</ion-label>
@@ -111,7 +111,7 @@ export class BanlistPage {
   gotToTop = gotToTop;
   trackById = trackById;
   errorImage = errorImage;
-  sliceTest = sliceTest;
+  sliceTestMid = sliceTestMid;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent
   infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number} >();

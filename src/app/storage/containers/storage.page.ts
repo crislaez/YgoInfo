@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { IonContent, ModalController, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
+import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
-import { Card } from '@ygopro/shared/shared/utils/models';
 import { fromStorage, StorageActions } from '@ygopro/shared/storage';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models';
 import { startWith, switchMap, tap } from 'rxjs/operators';
-import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
-
 
 @Component({
   selector: 'app-storage',

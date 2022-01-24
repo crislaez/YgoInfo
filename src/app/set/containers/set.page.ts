@@ -1,21 +1,19 @@
-import { CardSet } from './../../shared/shared/utils/models/index';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/generics/components/card-modal.component';
+import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
-import { emptyObject, errorImage, gotToTop, trackById, sliceTest } from '@ygopro/shared/shared/utils/helpers/functions';
-import { Card } from '@ygopro/shared/shared/utils/models';
-import { StorageActions } from '@ygopro/shared/storage';
-import { switchMap, tap, map } from 'rxjs/operators';
-import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { fromFilter } from '@ygopro/shared/filter';
+import { Card } from '@ygopro/shared/utils/models';
+import { StorageActions } from '@ygopro/shared/storage';
+import { emptyObject, errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { combineLatest } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-
+import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-set',

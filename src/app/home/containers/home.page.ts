@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromSet } from '@ygopro/shared/set';
-import { emptyObject, getObjectKeys, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { emptyObject, getObjectKeys, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import SwiperCore, { Navigation, SwiperOptions } from 'swiper';
 // Pagination

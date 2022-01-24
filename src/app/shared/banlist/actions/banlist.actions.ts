@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
-import { Card } from '@ygopro/shared/shared/utils/models';
+import { EntityStatus } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models';
 
 
 export const loadBanlist = createAction(

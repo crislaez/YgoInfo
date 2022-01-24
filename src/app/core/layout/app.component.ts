@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
-import { trackById } from '@ygopro/shared/shared/utils/helpers/functions';
+import { trackById } from '@ygopro/shared/utils/helpers/functions';
 
 @Component({
   selector: 'app-root',

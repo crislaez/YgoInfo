@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/shared/utils/helpers/functions';
+import { EntityStatus } from '@ygopro/shared/utils/helpers/functions';
 import { Set } from '../models';
 
 
