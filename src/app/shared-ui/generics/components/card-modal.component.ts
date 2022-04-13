@@ -1,15 +1,14 @@
-import { Card } from '@ygopro/shared/utils/models/index';
-import { ModalController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { ModalController } from '@ionic/angular';
+import { emptyObject, errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models/index';
 
 
 @Component({
   selector: 'app-card-modal',
   template:`
-  <!-- HEADER  -->
   <ion-header class="ion-no-border">
-    <ion-toolbar>
+    <ion-toolbar >
       <ion-title class="text-color">{{ sliceTest(this.card?.name) }}</ion-title>
       <ion-buttons class="text-color" slot="end">
         <ion-button class="ion-button-close" (click)="dismiss()"><ion-icon fill="clear" class="text-color" name="close-outline"></ion-icon></ion-button>
@@ -25,8 +24,8 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
 
       <div class="empty-header-mid"></div>
 
-        <ion-card *ngFor="let image of card?.card_images" class="ifade-in-card card-card">
-          <img [src]="image?.image_url" loading="lazy" (error)="errorImage($event)">
+        <ion-card *ngFor="let image of card?.card_images" class="fade-in-card card-card">
+          <img class="principal-image" [src]="image?.image_url" loading="lazy" (error)="errorImage($event)">
         </ion-card>
 
         <ion-card class="fade-in-card card-card">
@@ -52,55 +51,12 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
               <br>
             </ng-container>
 
-            <ng-container *ngIf="!!card?.scale">
-              <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.SCALE' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.scale }}</span> </div>
-              <br>
-            </ng-container>
-
-            <ng-container *ngIf="!!card?.linkval">
-              <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.LINK' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.linkval }}</span> </div>
-              <br>
-            </ng-container>
-
-            <ng-container *ngIf="!!card?.type">
-              <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.TYPE' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.type }}</span> </div>
-              <br>
-            </ng-container>
-
-            <ng-container *ngIf="!!card?.attribute">
-              <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.ATTRIBUTE' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.attribute }}</span> </div>
-              <br>
-            </ng-container>
-
-            <ng-container *ngIf="!!card?.race">
-              <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.RACE' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.race }}</span> </div>
-              <br>
-            </ng-container>
-
-
-            <ng-container *ngIf="!!card?.atk">
-              <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.ATTACK' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.atk }}</span> </div>
-              <br>
-            </ng-container>
-
-
-            <ng-container *ngIf="!!card?.def">
-              <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.DEFENDING' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.def }}</span> </div>
-              <br>
-            </ng-container>
-
-
-            <ng-container *ngIf="!!card?.desc">
-              <div class="card-type span-bold mediun-size"> <span>{{ 'COMMON.DESCRIPTION' | translate}}</span> </div>
-              <div class="card-result font-medium">  <span>{{ card?.desc }}</span> </div>
-              <br>
+            <ng-container *ngFor="let item of iterates; let i = index; trackBy: trackById">
+              <ng-container *ngIf="!!card?.[item?.field]">
+                <div class="card-type span-bold mediun-size"> <span>{{ item?.label | translate}}</span> </div>
+                <div class="card-result font-medium">  <span>{{ card?.[item?.field] }}</span> </div>
+                <br>
+              </ng-container>
             </ng-container>
 
             <ng-container *ngIf="card?.card_sets?.length > 0">
@@ -162,14 +118,9 @@ import { emptyObject, sliceTest, errorImage, gotToTop, trackById } from '@ygopro
 
     <!-- LOADER  -->
     <ng-template #loader>
-      <ion-spinner class="loadingspinner"></ion-spinner>
+      <app-spinner [top]="'80%'"></app-spinner>
     </ng-template>
 
-
-    <!-- TO TOP BUTTON  -->
-    <!-- <ion-fab *ngIf="showButton" vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button class="color-button color-button-text" (click)="gotToTop(content)"> <ion-icon name="arrow-up-circle-outline"></ion-icon></ion-fab-button>
-    </ion-fab> -->
   </ion-content>
   `,
   styleUrls: ['./card-modal.component.scss'],
@@ -184,6 +135,16 @@ export class CardModalComponent {
   sliceTest = sliceTest;
   @Input() card: Card;
 
+  iterates = [
+    {id:1, field:'scale', label:'COMMON.SCALE'},
+    {id:2, field:'linkval', label:'COMMON.LINK'},
+    {id:3, field:'type', label:'COMMON.TYPE'},
+    {id:4, field:'attribute', label:'COMMON.ATTRIBUTE'},
+    {id:5, field:'race', label:'COMMON.RACE'},
+    {id:6, field:'atk', label:'COMMON.ATTACK'},
+    {id:7, field:'def', label:'COMMON.DEFENDING'},
+    {id:8, field:'desc', label:'COMMON.DESCRIPTION'}
+  ]
 
   constructor(
     private modalController: ModalController,

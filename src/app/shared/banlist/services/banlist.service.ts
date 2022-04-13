@@ -17,7 +17,6 @@ export class BanlistService {
 
 
   getBanlist(banlistType: string): Observable<any>{
-    // ban_tcg ban_ocg ban_goat
     return this.http.get<any>(`${this.baseURL}cardinfo.php?banlist=${banlistType}`).pipe(//&sort=name
       map(res => {
         const type = banlistType === 'tcg' ? 'ban_tcg' : 'ban_ocg';
@@ -27,13 +26,11 @@ export class BanlistService {
         const limited = data?.filter(({banlist_info}) => banlist_info[type] === 'Limited');
         const semiLimited = data?.filter(({banlist_info}) => banlist_info[type] === 'Semi-Limited');
 
-        let filterResponse = [
+        return [
           ...(banned ? banned : []),
           ...(limited ? limited : []),
-          ...(semiLimited? semiLimited : [])
-        ] || []
-
-        return filterResponse
+          ...(semiLimited ? semiLimited : [])
+        ] || [];
       }),
       catchError((error) => {
         if( error?.error === 'No card matching your query was found in the database. Please see https://db.ygoprodeck.com/api-guide/ for syntax usage.'){

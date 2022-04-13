@@ -9,114 +9,84 @@ import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/moda
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { fromFilter } from '@ygopro/shared/filter';
-import { Card } from '@ygopro/shared/utils/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { emptyObject, errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { Card } from '@ygopro/shared/utils/models';
 import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-set',
   template: `
-  <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
+    <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-    <div class="empty-header components-color-third"></div>
-
-    <div class="container components-color-second">
-
-      <div class="header margin-top">
-        <h2 class="text-second-color">{{ title }}</h2>
+      <div class="empty-header components-color-third">
+        <!-- FORM  -->
+        <form (submit)="searchSubmit($event)" class="fade-in-card">
+          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+        </form>
       </div>
 
-      <ng-container *ngIf="(cards$ | async) as cards">
-        <ng-container *ngIf="(status$ | async) as status">
-          <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
-            <ng-container *ngIf="status !== 'error'; else serverError">
+      <div class="container components-color-second">
 
-                <!-- FORM  -->
-                <form (submit)="searchSubmit($event)" class="fade-in-card">
-                  <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
-                </form>
+        <ng-container *ngIf="(cards$ | async) as cards">
+          <ng-container *ngIf="(status$ | async) as status">
+            <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
+              <ng-container *ngIf="status !== 'error'; else serverError">
+                  <ng-container *ngIf="cards?.length > 0; else noData">
 
-                <ng-container *ngIf="cards?.length > 0; else noData">
-
-                  <!-- FILTER  -->
-                  <ng-container *ngIf="(filters$ | async) as filters">
-                    <div class="width-84 margin-center displays-center">
-                      <ion-button class="displays-center class-ion-button" (click)="presentModal(filters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
-                    </div>
-                  </ng-container>
-
-                  <ion-list>
-                    <ion-item detail *ngFor="let card of cards; let i = index; trackBy: trackById" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
-                      <ion-img [src]="getImgage(card?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
-                      <ion-label *ngIf="card?.name" >{{ sliceTest(card?.name) }}</ion-label>
-                      <!-- <ion-label class="font-medium">
-                        <ng-container *ngFor="let set of getRarities(card?.card_sets)">
-                          <span>{{ getPriceAndRarity(set) }}</span>
-                          <br>
-                        </ng-container>
-                      </ion-label> -->
-                    </ion-item>
-                  </ion-list>
-
-                  <!-- INFINITE SCROLL  -->
-                  <ng-container *ngIf="(total$ | async) as total">
-                    <ng-container *ngIf="(statusComponent?.page + 21) < total">
-                      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
-                        <ion-infinite-scroll-content class="loadingspinner">
-                          <ion-spinner *ngIf="$any(status) === 'pending'" class="loadingspinner"></ion-spinner>
-                        </ion-infinite-scroll-content>
-                      </ion-infinite-scroll>
+                    <!-- FILTER  -->
+                    <ng-container *ngIf="(filters$ | async) as filters">
+                      <div class="width-84 margin-center margin-top displays-center">
+                        <ion-button class="displays-center class-ion-button" (click)="presentModal(filters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
+                      </div>
                     </ng-container>
-                  </ng-container>
 
+                    <app-infinite-scroll
+                      [from]="'set'"
+                      [page]="statusComponent?.page"
+                      [total]="(total$ | async)"
+                      [items]="cards"
+                      [status]="status"
+                      (loadDataTrigger)="loadData($event)"
+                      (openSingleCardModal)="openSingleCardModal($event)"
+                      (presentPopoverTrigger)="presentPopover($event)">
+                    </app-infinite-scroll>
+
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>
-      </ng-container>
 
 
-      <!-- REFRESH -->
-      <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-      </ion-refresher>
+        <!-- REFRESH -->
+        <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+          <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
 
-      <!-- IS ERROR -->
-      <ng-template #serverError>
-        <div class="error-serve">
-          <div>
-            <span><ion-icon class="text-second-color big-size" name="cloud-offline-outline"></ion-icon></span>
-            <br>
-            <span class="text-second-color">{{'COMMON.ERROR' | translate}}</span>
-          </div>
-        </div>
-      </ng-template>
+        <!-- IS ERROR -->
+        <ng-template #serverError>
+          <app-no-data [title]="'COMMON.ERROR'" [image]="'assets/images/error.png'" [top]="'30vh'"></app-no-data>
+        </ng-template>
 
-      <!-- IS NO DATA  -->
-      <ng-template #noData>
-        <div class="error-serve">
-          <div>
-            <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
-            <br>
-            <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
-          </div>
-        </div>
-      </ng-template>
+        <!-- IS NO DATA  -->
+        <ng-template #noData>
+          <app-no-data [title]="'COMMON.NORESULT'" [image]="'assets/images/empty.png'" [top]="'30vh'"></app-no-data>
+        </ng-template>
 
-      <!-- LOADER  -->
-      <ng-template #loader>
-        <ion-spinner class="loadingspinner"></ion-spinner>
-      </ng-template>
-    </div>
+        <!-- LOADER  -->
+        <ng-template #loader>
+          <app-spinner [top]="'80%'"></app-spinner>
+        </ng-template>
+      </div>
 
-    <!-- TO TOP BUTTON  -->
-    <ion-fab *ngIf="showButton" vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button class="color-button color-button-text" (click)="gotToTop(content)"> <ion-icon name="arrow-up-circle-outline"></ion-icon></ion-fab-button>
-    </ion-fab>
+      <!-- TO TOP BUTTON  -->
+      <ion-fab *ngIf="showButton" vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button class="color-button color-button-text" (click)="gotToTop(content)"> <ion-icon name="arrow-up-circle-outline"></ion-icon></ion-fab-button>
+      </ion-fab>
 
-  </ion-content>
+    </ion-content>
   `,
   styleUrls: ['./set.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -165,7 +135,6 @@ export class SetPage {
     switchMap(() =>
       this.store.select(fromCard.getCards)
     )
-    // ,tap((data) => console.log(data))
   );
 
 
@@ -211,18 +180,15 @@ export class SetPage {
   }
 
   // INIFINITE SCROLL
-  loadData(event, total) {
-    setTimeout(() => {
-      console.log(this.statusComponent?.page , this.perPageSum)
-      this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
+  loadData({event, total}) {
+    this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
 
-      if(this.statusComponent?.page >= total){
-        if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-      }
-      console.log(this.statusComponent)
-      this.infiniteScroll$.next(this.statusComponent)
-      event.target.complete();
-    }, 500);
+    if(this.statusComponent?.page >= total){
+      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
+    }
+
+    this.infiniteScroll$.next(this.statusComponent)
+    event.target.complete();
   }
 
   // REFRESH
@@ -237,11 +203,11 @@ export class SetPage {
     }, 500);
   }
 
-  async presentPopover(ev: any, info: Card) {
+  async presentPopover({event, info}) {
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       cssClass: 'my-custom-class',
-      event: ev,
+      event: event,
       translucent: true,
       componentProps:{
         button:'save'
@@ -265,7 +231,7 @@ export class SetPage {
   }
 
   // OPEN FILTER MODAL
-  async presentModal( filters ) {
+  async presentModal(filters) {
     const { cardFormat = null, cardType = null } = filters || {};
 
     const modal = await this.modalController.create({
@@ -295,17 +261,5 @@ export class SetPage {
     return await modal.present();
   }
 
-  getImgage(card_images: any[]): string{
-    return card_images?.[0]?.image_url_small || card_images?.[0]?.image_url;
-  }
-  // getRarities(cardSets: CardSet[]): CardSet[] {
-  //   const setName = this.route.snapshot.params?.setName;
-  //   return (cardSets || [])?.filter(({set_name}) => set_name === setName);
-  // }
-
-  // getPriceAndRarity(cardSet: CardSet): string{
-  //   const { set_rarity = null, set_rarity_code = null, set_price = null } = cardSet || {}
-  //   return `${set_rarity} ${set_price} $`;
-  // }
 
 }

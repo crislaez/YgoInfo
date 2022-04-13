@@ -2,81 +2,50 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromSet } from '@ygopro/shared/set';
-import { emptyObject, getObjectKeys, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/utils/helpers/functions';
-import { map, startWith, switchMap } from 'rxjs/operators';
-import SwiperCore, { Navigation, SwiperOptions } from 'swiper';
-// Pagination
-SwiperCore.use([ Navigation]);
+import { emptyObject, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-home',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
-      <div class="empty-header components-color-third"></div>
+      <div class="empty-header components-color-third">
+      </div>
 
       <div class="container components-color-second">
-
         <ng-container *ngIf="(status$ | async) as status">
           <ng-container *ngIf="status !== 'pending'; else loader">
             <ng-container *ngIf="status !== 'error'; else serverError">
 
-              <div class="header margin-top">
-                <h2 class="text-second-color">{{ 'COMMON.LAST_SETS' | translate }}</h2>
-              </div>
-
+              <!-- LAST SETS  -->
               <ng-container *ngIf="lastSets$ | async as lastSets">
                 <ng-container *ngIf="lastSets?.length > 0; else noData">
+                  <div class="header margin-top">
+                    <h2 class="text-second-color">{{ 'COMMON.LAST_SETS' | translate }}</h2>
+                  </div>
 
-                  <swiper #swiper effect="fade" [config]="getSliderConfig(lastSets)" >
-                    <ng-template swiperSlide *ngFor="let set of lastSets; trackBy: trackById" >
-                    <!-- [routerLink]="['/cards/'+set?.id]" [queryParams]="{name:set?.name}" -->
-                      <ion-card class="slide-ion-card" [routerLink]="['/set/'+set?.set_name]">
-                        <ion-card-header >
-                          <span class="big-size-medium span-bold">{{ sliceTestLong(set?.set_name) }}</span>
-                        </ion-card-header>
-                        <ion-card-content>
-                          <p class="font-medium text-center">{{ set?.tcg_date }}</p>
-                        </ion-card-content>
-                      </ion-card>
-                    </ng-template>
-                  </swiper>
-
+                  <app-swiper
+                    [items]="lastSets">
+                  </app-swiper>
                 </ng-container>
               </ng-container>
 
+              <!-- ALL SETS  -->
               <ng-container *ngIf="(info$ | async) as info">
                 <ng-container *ngIf="emptyObject(info?.sets); else noData">
+                  <div class="header margin-top">
+                    <h2 class="text-second-color">{{ 'COMMON.ALL_SETS' | translate }}</h2>
+                  </div>
 
-                  <ng-container *ngFor="let key of getObjectKeys(info?.sets); trackBy: trackById">
-
-                    <div class="header" no-border>
-                      <h2 class="text-second-color"> <span *ngIf="key !== 'Promotion'">{{ 'COMMON.YEAR' | translate }}</span> {{ key }}</h2>
-                    </div>
-
-                    <swiper #swiper effect="fade" [config]="getSliderConfig(info?.sets[key])" >
-                      <ng-template swiperSlide *ngFor="let set of info?.sets[key]; trackBy: trackById" >
-                      <!-- [routerLink]="['/cards/'+set?.id]" [queryParams]="{name:set?.name}" -->
-                        <ion-card class="slide-ion-card" [routerLink]="['/set/'+set?.set_name]" [queryParams]="{name:set?.name}">
-                          <ion-card-header >
-                            <span class="big-size-medium span-bold">{{ sliceTestLong(set?.set_name) }}</span>
-                          </ion-card-header>
-                          <ion-card-content>
-                            <p class="font-medium text-center">{{ set?.tcg_date }}</p>
-                          </ion-card-content>
-                        </ion-card>
-                      </ng-template>
-                    </swiper>
-                  </ng-container>
-
-                  <!-- INFINITE SCROLL  -->
-                  <ng-container *ngIf="statusComponent?.slice < info?.total">
-                    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, info?.total)">
-                      <ion-infinite-scroll-content class="loadingspinner">
-                      </ion-infinite-scroll-content>
-                    </ion-infinite-scroll>
-                  </ng-container>
-
+                  <app-infinite-scroll
+                    [from]="'home'"
+                    [page]="statusComponent?.slice"
+                    [total]="info?.total"
+                    [items]="info?.sets"
+                    [status]="status"
+                    (loadDataTrigger)="loadData($event)">
+                  </app-infinite-scroll>
                 </ng-container>
               </ng-container>
 
@@ -92,29 +61,17 @@ SwiperCore.use([ Navigation]);
 
         <!-- IS ERROR -->
         <ng-template #serverError>
-          <div class="error-serve">
-            <div>
-              <span><ion-icon class="text-second-color big-size" name="cloud-offline-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.ERROR' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.ERROR'" [image]="'assets/images/error.png'" [top]="'30vh'"></app-no-data>
         </ng-template>
 
         <!-- IS NO DATA  -->
         <ng-template #noData>
-          <div class="error-serve heigth-mid">
-            <div>
-              <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.NORESULT'" [image]="'assets/images/empty.png'" [top]="'20vh'"></app-no-data>
         </ng-template>
 
         <!-- LOADER  -->
         <ng-template #loader>
-          <ion-spinner class="loadingspinner"></ion-spinner>
+          <app-spinner [top]="'80%'"></app-spinner>
         </ng-template>
       </div>
 
@@ -133,7 +90,6 @@ export class HomePage {
   trackById = trackById;
   emptyObject = emptyObject;
   sliceTestLong = sliceTestLong;
-  getObjectKeys = getObjectKeys;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   showButton: boolean = false;
@@ -142,42 +98,18 @@ export class HomePage {
   lastSets$ = this.store.select(fromSet.getLastSets);
 
   infiniteScroll$ = new EventEmitter<{slice:number}>();
-  statusComponent: {slice: number} = {slice: 2};
+  statusComponent: {slice: number} = {slice: 20};
 
   info$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
     switchMap(({slice}) =>
       this.store.select(fromSet.getSets).pipe(
-        // map(allSets => {
-        //   return (allSets || [])?.reduce((acc, el) => {
-        //     const { tcg_date = null } = el || {};
-        //     const year = tcg_date?.split('-')[0] || 'Promotion';
-        //     const mont = Number(tcg_date?.split('-')[1]) < 7 ? 'A' : 'B';
-        //     return {
-        //       ...(acc ? acc : {}),
-        //       [`${year} ${mont}`]:[
-        //         ...(acc?.[`${year} ${mont}`] ? acc?.[`${year} ${mont}`] : []),
-        //         ...(el ? [el]: [])
-        //       ]
-        //     }
-        //   },{});
-        // }),
-        map((objSet) => {
+        map((allSets) => {
           return {
-            sets:  Object.entries(objSet || {})?.slice(0, slice).reduce((acc, el) => {
-              const [ key = null, values = null ] = el || [];
-              return {
-                ...acc,
-                [key]:[
-                  ...(acc?.[key] ? acc?.[key] : []),
-                  ...(values ? (values as any) : [])
-                ]
-              }
-            },{}) || [],
-            total: Object?.keys(objSet || {})?.length
+            sets: allSets?.slice(0, slice),
+            total: allSets?.length
           }
         })
-        // ,tap(d => console.log(d))
       )
     )
   );
@@ -197,7 +129,7 @@ export class HomePage {
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
-      this.statusComponent = {...this.statusComponent, slice: 2};
+      this.statusComponent = {...this.statusComponent, slice: 20};
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 
@@ -206,40 +138,17 @@ export class HomePage {
   }
 
   // INIFINITE SCROLL
-  loadData(event, total) {
-    setTimeout(() => {
-      this.statusComponent = { slice: this.statusComponent?.slice + 2 };
+  loadData({event, total}) {
+    this.statusComponent = { slice: this.statusComponent?.slice + 20 };
 
-      if(this.statusComponent?.slice >= total){
-        if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-      }
+    if(this.statusComponent?.slice >= total){
+      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
+    }
 
-      this.infiniteScroll$.next(this.statusComponent);
-      event.target.complete();
-    }, 500);
+    this.infiniteScroll$.next(this.statusComponent);
+    event.target.complete();
   }
 
-  // SLIDES CONFIG
-  getSliderConfig(info:any): SwiperOptions {
-    return {
-      // initialSlide: 0,
-      // speed: 400,
-      // slidesOffsetBefore: info?.length,
-      slidesPerView: info?.length > 1 ? 2 : 1,
-      spaceBetween: 30,
-      freeMode: true,
-      // pagination:{  clickable: true },
-      lazy: true,
-      preloadImages: false
-      // effect:'coverflow',
-      // coverflowEffect:{
-      //   rotate: 50,
-      //   stretch: 0,
-      //   depth: 100,
-      //   modifier: 1,
-      //   slideShadows: true
-      // }
-    };
-  }
+
 
 }

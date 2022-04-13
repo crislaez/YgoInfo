@@ -8,9 +8,9 @@ import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/moda
 import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { fromFilter } from '@ygopro/shared/filter';
+import { StorageActions } from '@ygopro/shared/storage';
 import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
-import { StorageActions } from '@ygopro/shared/storage';
 import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
@@ -18,27 +18,25 @@ import { map, switchMap, tap } from 'rxjs/operators';
 @Component({
   selector: 'app-search',
   template:`
-      <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
+    <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third"></div>
+      <div class="empty-header components-color-third">
+        <!-- FORM  -->
+        <form (submit)="searchSubmit($event)" class="fade-in-card">
+          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+        </form>
+      </div>
 
       <div class="container components-color-second">
-
         <ng-container *ngIf="(cards$ | async) as cards">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
-
-                <!-- FORM  -->
-                <form (submit)="searchSubmit($event)" class="fade-in-card">
-                  <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
-                </form>
-
                 <ng-container *ngIf="cards?.length > 0; else noData">
 
                   <!-- FILTER  -->
                   <ng-container *ngIf="(filters$ | async) as filters">
-                    <div class="width-84 margin-center displays-center">
+                    <div class="width-84 margin-center margin-top displays-center">
                       <ion-button class="displays-center class-ion-button" (click)="presentModal(filters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
                     </div>
                   </ng-container>
@@ -94,29 +92,17 @@ import { map, switchMap, tap } from 'rxjs/operators';
 
         <!-- IS ERROR -->
         <ng-template #serverError>
-          <div class="error-serve">
-            <div>
-              <span><ion-icon class="text-second-color big-size" name="cloud-offline-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.ERROR' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.ERROR'" [image]="'assets/images/error.png'" [top]="'30vh'"></app-no-data>
         </ng-template>
 
         <!-- IS NO DATA  -->
         <ng-template #noData>
-          <div class="error-serve">
-            <div>
-              <span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.NORESULT'" [image]="'assets/images/empty.png'" [top]="'30vh'"></app-no-data>
         </ng-template>
 
         <!-- LOADER  -->
         <ng-template #loader>
-          <ion-spinner class="loadingspinner"></ion-spinner>
+          <app-spinner [top]="'80%'"></app-spinner>
         </ng-template>
       </div>
 

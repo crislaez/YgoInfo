@@ -46,6 +46,7 @@
     "DELETE":"Delete",
     "SAVE_CARD_SUCCESS":"Save card",
     "DELETE_CARD_SUCCESS":"Delete card",
+    "ALL_SETS":"All sets",
     "SETS":"Sets",
     "SET":"Set",
     "LAST_SETS":"Last sets",

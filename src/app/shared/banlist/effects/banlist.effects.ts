@@ -20,10 +20,10 @@ export class BanlistEffects {
           map((banlist) => BanlistActions.saveBanlist({ banlist, error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
             if(error === 400){
-              return of(BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Loaded }))
+              return of(BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Error }))
             }
             return of(
-              BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Loaded }),
+              BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Error }),
               NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
             )
           })

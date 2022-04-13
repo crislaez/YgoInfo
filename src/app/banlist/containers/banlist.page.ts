@@ -18,44 +18,30 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
       <div class="container components-color-second">
         <div class="empty-header-mid"></div>
 
-        <!-- Disabled Segment -->
-        <ion-segment (ionChange)="segmentChanged($event)" [value]="banlistType[0]?.type">
-          <ion-segment-button [value]="ban?.type" *ngFor="let ban of banlistType; trackBy: trackById">
-            <ion-label>{{ ban?.type }}</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-
         <ng-container *ngIf="(banlist$ | async) as banlist">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending'; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
 
+                <!-- Disabled Segment -->
+                <!-- [value]="banlistType[0]?.type" -->
+                <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="selected">
+                  <ion-segment-button *ngFor="let ban of banlistType; trackBy: trackById" [value]="ban?.type">
+                    <ion-label>{{ ban?.type }}</ion-label>
+                  </ion-segment-button>
+                </ion-segment>
+
                 <ng-container *ngIf="banlist?.banlist?.length > 0; else noData">
-                  <ion-list>
-                    <ion-item detail lines="full" *ngFor="let card of banlist?.banlist; trackBy: trackById" (click)="openSingleCardModal(card)">
-                      <ion-img [src]="getImgage(card?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
-
-                      <ion-label class="font-medium text-second-color label-name" >{{ sliceTestMid(card?.name) }}</ion-label>
-
-                      <ng-container *ngIf="componentStatus?.banlistType === 'tcg'; else ocgTemplate">
-                        <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_tcg === 'Banned',  'limited':card?.banlist_info?.ban_tcg === 'Limited',  'semi-limited':card?.banlist_info?.ban_tcg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_tcg }}</ion-label>
-                      </ng-container>
-
-                      <ng-template #ocgTemplate>
-                        <ion-label class="label-banlist" [ngClass]="{'forbidden':card?.banlist_info?.ban_ocg === 'Banned',  'limited':card?.banlist_info?.ban_ocg === 'Limited',  'semi-limited':card?.banlist_info?.ban_ocg === 'Semi-Limited'}" >{{ card?.banlist_info?.ban_ocg }}</ion-label>
-                      </ng-template>
-
-                    </ion-item>
-                  </ion-list>
-
-                 <!-- INFINITE SCROLL  -->
-                  <ng-container *ngIf="componentStatus.perPage <= banlist?.total">
-                    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, banlist?.total)">
-                      <ion-infinite-scroll-content class="loadingspinner">
-                        <ion-spinner *ngIf="$any(status) === 'pending'" class="loadingspinner"></ion-spinner>
-                      </ion-infinite-scroll-content>
-                    </ion-infinite-scroll>
-                  </ng-container>
+                  <app-infinite-scroll
+                    [from]="'search'"
+                    [page]="componentStatus.perPage"
+                    [total]="banlist?.total"
+                    [items]="banlist?.banlist"
+                    [status]="status"
+                    [banlistType]="componentStatus?.banlistType"
+                    (loadDataTrigger)="loadData($event)"
+                    (openSingleCardModal)="openSingleCardModal($event)">
+                  </app-infinite-scroll>
                 </ng-container>
 
               </ng-container>
@@ -63,7 +49,7 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
           </ng-container>
         </ng-container>
 
-
+¡
         <!-- REFRESH -->
         <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
           <ion-refresher-content></ion-refresher-content>
@@ -71,29 +57,17 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
 
         <!-- IS ERROR -->
         <ng-template #serverError>
-          <div class="error-serve">
-            <div>
-              <span><ion-icon class="text-second-color big-size" name="cloud-offline-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.ERROR' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.ERROR'" [image]="'assets/images/error.png'" [top]="'30vh'"></app-no-data>
         </ng-template>
 
         <!-- IS NO DATA  -->
         <ng-template #noData>
-          <div class="error-serve">
-            <div>
-              <span span><ion-icon class="text-second-color max-size" name="clipboard-outline"></ion-icon></span>
-              <br>
-              <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
-            </div>
-          </div>
+          <app-no-data [title]="'COMMON.NORESULT'" [image]="'assets/images/empty.png'" [top]="'30vh'"></app-no-data>
         </ng-template>
 
         <!-- LOADER  -->
         <ng-template #loader>
-          <ion-spinner class="loadingspinner"></ion-spinner>
+          <app-spinner [top]="'80%'"></app-spinner>
         </ng-template>
       </div>
 
@@ -116,15 +90,10 @@ export class BanlistPage {
   @ViewChild(IonContent, {static: true}) content: IonContent
   infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number} >();
   showButton: boolean = false;
-  banlistType: {id:number, type: string}[] = [
-    {
-      id:1,
-      type: 'tcg'
-    },
-    {
-      id:1,
-      type: 'ocg'
-    }
+  selected = '';
+  banlistType = [
+    { id:1, type: 'tcg' },
+    { id:2, type: 'ocg' }
   ];
 
   componentStatus: {banlistType: string, perPage: number} = {
@@ -157,7 +126,9 @@ export class BanlistPage {
   constructor(
     private store: Store,
     public modalController: ModalController
-  ) { }
+  ) {
+    this.selected = this.banlistType?.[0]?.type
+  }
 
 
   // SCROLL EVENT
@@ -167,18 +138,15 @@ export class BanlistPage {
   }
 
   // INIFINITE SCROLL
-  loadData(event, total) {
-    setTimeout(() => {
-      // this.statusComponent = {...this.statusComponent, offset:(this.statusComponent?.offset + 21) };
-      this.componentStatus = {...this.componentStatus, perPage: this.componentStatus.perPage + 20};
+  loadData({event, total}) {
+    this.componentStatus = {...this.componentStatus, perPage: this.componentStatus.perPage + 20};
 
-      if(this.componentStatus?.perPage >= total){
-        if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-      }
+    if(this.componentStatus?.perPage >= total){
+      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
+    }
 
-      this.infiniteScroll$.next(this.componentStatus)
-      event.target.complete();
-    }, 500);
+    this.infiniteScroll$.next(this.componentStatus)
+    event.target.complete();
   }
 
   // REFRESH

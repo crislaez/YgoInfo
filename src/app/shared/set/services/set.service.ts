@@ -21,9 +21,6 @@ export class SetService {
   getSets(): Observable<{sets: Set[]}> {
     return this.http.get<any>(`${this.baseURL}cardsets.php`).pipe(
       map(res => ({sets: res || []})),
-      // map(() => {
-      //   throw throwError('error')
-      // }),
       catchError((error) => {
         if( error?.error === 'No card matching your query was found in the database. Please see https://db.ygoprodeck.com/api-guide/ for syntax usage.'){
           error = 400
