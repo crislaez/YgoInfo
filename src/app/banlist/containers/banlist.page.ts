@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { BanlistActions, fromBanlist } from '@ygopro/shared/banlist';
-import { errorImage, gotToTop, sliceTestMid, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
@@ -23,8 +23,6 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
             <ng-container *ngIf="status !== 'pending'; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
 
-                <!-- Disabled Segment -->
-                <!-- [value]="banlistType[0]?.type" -->
                 <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="selected">
                   <ion-segment-button *ngFor="let ban of banlistType; trackBy: trackById" [value]="ban?.type">
                     <ion-label>{{ ban?.type }}</ion-label>
@@ -33,7 +31,7 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
 
                 <ng-container *ngIf="banlist?.banlist?.length > 0; else noData">
                   <app-infinite-scroll
-                    [from]="'search'"
+                    [from]="'banlist'"
                     [page]="componentStatus.perPage"
                     [total]="banlist?.total"
                     [items]="banlist?.banlist"
@@ -84,8 +82,6 @@ export class BanlistPage {
 
   gotToTop = gotToTop;
   trackById = trackById;
-  errorImage = errorImage;
-  sliceTestMid = sliceTestMid;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent
   infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number} >();

@@ -5,17 +5,16 @@ import { Filter } from '@ygopro/shared/card';
 @Component({
   selector: 'app-modal-filter',
   template:`
-  <ion-content class="modal-wrapper">
-
-    <ion-header class="components-color">
+  <ion-content class="modal-wrapper components-color-second">
+    <ion-header class="ion-no-border  components-color-third">
       <ion-toolbar>
         <ion-buttons slot="end">
-          <ion-button fill="clear" class="components-color" (click)="dismissModal()"><ion-icon name="close-outline"></ion-icon></ion-button>
+          <ion-button fill="clear" (click)="dismissModal()"><ion-icon name="close-outline"></ion-icon></ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
-    <div class="displays-around">
+    <div class="displays-around modal-container">
       <ng-container *ngIf="cardFormat && !bool">
         <ion-item *ngIf="cardFormat?.length > 0" class="fade-in-card item-select font-medium width-84">
           <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>

@@ -6,7 +6,6 @@ import { GenericsModule } from '@ygopro/shared-ui/generics/generics.module';
 import { CardModule } from '@ygopro/shared/card/card.module';
 import { FilterModule } from '@ygopro/shared/filter/filter.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
-import { LongPressModule } from 'ionic-long-press';
 import { SearchPage } from './containers/search.page';
 import { SearchPageRoutingModule } from './search-routing.module';
 
@@ -18,7 +17,7 @@ import { SearchPageRoutingModule } from './search-routing.module';
     FilterModule,
     SharedModule,
     GenericsModule,
-    LongPressModule,
+    // LongPressModule,
     TranslateModule.forChild(),
     SearchPageRoutingModule
   ],

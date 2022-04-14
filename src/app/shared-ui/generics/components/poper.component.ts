@@ -5,7 +5,7 @@ import { NavParams, PopoverController } from '@ionic/angular';
 @Component({
   selector: 'app-poper',
   template: `
-  <ion-list>
+  <ion-list lines="none" >
     <ion-item detail (click)="send(true)">
       <ng-container *ngIf="option === 'save'">{{ 'COMMON.SAVE' | translate }}</ng-container>
       <ng-container *ngIf="option === 'delete'">{{ 'COMMON.DELETE' | translate }}</ng-container>

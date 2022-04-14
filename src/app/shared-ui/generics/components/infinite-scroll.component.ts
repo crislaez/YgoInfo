@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { EntityStatus, errorImage, getObjectKeys, sliceTest, sliceTestMid, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { emptyObject, EntityStatus, errorImage, getObjectKeys, sliceTest, sliceTestMid, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
 
 
@@ -8,7 +8,7 @@ import { Card } from '@ygopro/shared/utils/models';
   template:`
     <ng-container *ngIf="from === 'home'">
       <ion-list class="sets-list-wrapper margin-top">
-        <ion-item detail *ngFor="let item of items; let i = index; trackBy: trackById" [routerLink]="['/set/'+item?.set_name]" [queryParams]="{name:item?.name}">
+        <ion-item detail lines="none" *ngFor="let item of items; let i = index; trackBy: trackById" [routerLink]="['/set/'+item?.set_name]" [queryParams]="{name:item?.name}">
           <div class="width-90 displays-center">
             <div *ngIf="item?.set_name" >{{ sliceTest(item?.set_name) }}</div>
             <div *ngIf="item?.tcg_date" >{{ item?.tcg_date }}</div>
@@ -19,16 +19,16 @@ import { Card } from '@ygopro/shared/utils/models';
 
     <ng-container *ngIf="from === 'set'">
       <ion-list class="set-card-wrapper">
-        <ion-item detail *ngFor="let item of items; let i = index; trackBy: trackById" (click)="openSingleCardModal.next(item)" ion-long-press [interval]="400" (pressed)="presentPopover($event, item)">
+        <ion-item detail lines="none" *ngFor="let item of items; let i = index; trackBy: trackById" (click)="openSingleCardModal.next(item)" ion-long-press [interval]="400" (pressed)="presentPopover($event, item)">
           <ion-img [src]="getImgage(item?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
           <ion-label *ngIf="item?.name" >{{ sliceTest(item?.name) }}</ion-label>
         </ion-item>
       </ion-list>
     </ng-container>
 
-    <ng-container *ngIf="from === 'search'">
+    <ng-container *ngIf="from === 'banlist'">
       <ion-list class="banlist-list-wrapper">
-        <ion-item detail lines="full" *ngFor="let card of items; trackBy: trackById" (click)="openSingleCardModal.next(card)">
+        <ion-item detail lines="none" *ngFor="let card of items; trackBy: trackById" (click)="openSingleCardModal.next(card)">
           <ion-img [src]="getImgage(card?.card_images)" loading="lazy" (ionError)="errorImage($event)"></ion-img>
 
           <ion-label class="font-medium text-second-color label-name" >{{ sliceTestMid(card?.name) }}</ion-label>
@@ -46,6 +46,35 @@ import { Card } from '@ygopro/shared/utils/models';
           </ng-template>
         </ion-item>
       </ion-list>
+    </ng-container>
+
+    <ng-container *ngIf="from === 'search'">
+      <div class="width-max displays-around">
+        <ng-container *ngFor="let item of items; trackBy: trackById">
+            <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal.next(item)" ion-long-press [interval]="400" (pressed)="presentPopover($event, item)">
+              <img [src]="getImgage(item?.card_images)" loading="lazy" (error)="errorImage($event)">
+
+              <ng-container *ngIf="emptyObject(item?.banlist_info)">
+                <div class="banlist-div">
+                  <div *ngIf="!!item?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
+                    <span [ngClass]="{'forbidden': item?.banlist_info?.ban_tcg === 'Banned', 'limited': item?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': item?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
+                    <ng-container *ngIf="item?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
+                    <ng-container *ngIf="item?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
+                    <ng-container *ngIf="item?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                  </div>
+                  <div *ngIf="!!item?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
+                    <span [ngClass]="{'forbidden': item?.banlist_info?.ban_ocg === 'Banned', 'limited': item?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': item?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
+                    <ng-container *ngIf="item?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
+                    <ng-container *ngIf="item?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
+                    <ng-container *ngIf="item?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ion-ripple-effect></ion-ripple-effect>
+            </ion-card>
+        </ng-container>
+      </div>
     </ng-container>
 
     <!-- INFINITE SCROLL  -->
@@ -67,6 +96,7 @@ export class InfiniteScrollComponent {
   sliceTest = sliceTest;
   getObjectKeys = getObjectKeys;
   sliceTestMid = sliceTestMid;
+  emptyObject = emptyObject;
   @Input() from:string;
   @Input() page:number
   @Input() total:number
@@ -77,6 +107,9 @@ export class InfiniteScrollComponent {
   @Output() openSingleCardModal = new EventEmitter<Card>();
   @Output() presentPopoverTrigger = new EventEmitter<{event, info}>();
 
+  banned = '../../../../assets/Banned.png';
+  limited = './../../../assets/images/Limited.png';
+  semiLimited = './../../../assets/images/Semi-limited.png';
 
   constructor() { }
 
@@ -94,7 +127,7 @@ export class InfiniteScrollComponent {
   }
 
   get getPage(): number{
-    return (this.from === 'set') ? this.page + 21 : this.page;
+    return (['set', 'search']?.includes(this.from)) ? this.page + 21 : this.page;
   }
 
 

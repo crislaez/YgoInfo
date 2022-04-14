@@ -9,7 +9,7 @@ import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.co
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { fromFilter } from '@ygopro/shared/filter';
 import { StorageActions } from '@ygopro/shared/storage';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { gotToTop } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
 import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -41,42 +41,17 @@ import { map, switchMap, tap } from 'rxjs/operators';
                     </div>
                   </ng-container>
 
-                  <ng-container *ngFor="let card of cards; trackBy: trackById">
-                    <ion-card class="ion-activatable ripple-parent" (click)="openSingleCardModal(card)" ion-long-press [interval]="400" (pressed)="presentPopover($event, card)">
-                      <img [src]="getImgage(card?.card_images)" loading="lazy" (error)="errorImage($event)">
-
-                      <ng-container *ngIf="emptyObject(card?.banlist_info)">
-                        <div class="banlist-div">
-                          <div *ngIf="!!card?.banlist_info?.ban_tcg" class="card-result span-bold font-medium">
-                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ 'COMMON.TCG' | translate}}: </span>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Banned'"><img [src]="banned"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Limited'"><img [src]="limited"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_tcg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
-                          </div>
-                          <div *ngIf="!!card?.banlist_info?.ban_ocg" class="card-result span-bold font-medium">
-                            <span [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ 'COMMON.OCG' | translate}}: </span>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Banned'"><img [src]="banned"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Limited'"><img [src]="limited"/></ng-container>
-                            <ng-container *ngIf="card?.banlist_info?.ban_ocg === 'Semi-Limited'"><img [src]="semiLimited"/></ng-container>
-                          </div>
-                        </div>
-                      </ng-container>
-
-                      <!-- RIPPLE EFFECT  -->
-                      <ion-ripple-effect></ion-ripple-effect>
-                    </ion-card>
-                  </ng-container>
-
                   <!-- INFINITE SCROLL  -->
-                  <ng-container *ngIf="(total$ | async) as total">
-                    <ng-container *ngIf="(statusComponent?.page + 21) < total">
-                      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
-                        <ion-infinite-scroll-content class="loadingspinner">
-                          <ion-spinner *ngIf="$any(status) === 'pending'" class="loadingspinner"></ion-spinner>
-                        </ion-infinite-scroll-content>
-                      </ion-infinite-scroll>
-                    </ng-container>
-                  </ng-container>
+                  <app-infinite-scroll
+                    [from]="'search'"
+                    [page]="statusComponent?.page"
+                    [total]="(total$ | async)"
+                    [items]="cards"
+                    [status]="status"
+                    (loadDataTrigger)="loadData($event)"
+                    (openSingleCardModal)="openSingleCardModal($event)"
+                    (presentPopoverTrigger)="presentPopover($event)">
+                  </app-infinite-scroll>
 
                 </ng-container>
               </ng-container>
@@ -118,15 +93,8 @@ import { map, switchMap, tap } from 'rxjs/operators';
 export class SearchPage {
 
   gotToTop = gotToTop;
-  trackById = trackById;
-  errorImage = errorImage;
-  emptyObject = emptyObject;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
-
-  banned = '../../../assets/images/Banned.png';
-  limited = '../../../assets/images/Limited.png';
-  semiLimited = '../../../assets/images/Semi-limited.png';
 
   showButton: boolean = false;
   perPageSum: number = 21;
@@ -199,17 +167,15 @@ export class SearchPage {
   }
 
   // INIFINITE SCROLL
-  loadData(event, total) {
-    setTimeout(() => {
-      this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
+  loadData({event, total}) {
+    this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
 
-      if(this.statusComponent?.page >= total){
-        if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-      }
-      console.log(this.statusComponent)
-      this.infiniteScroll$.next(this.statusComponent)
-      event.target.complete();
-    }, 500);
+    if(this.statusComponent?.page >= total){
+      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
+    }
+    console.log(this.statusComponent)
+    this.infiniteScroll$.next(this.statusComponent)
+    event.target.complete();
   }
 
   // REFRESH
@@ -224,11 +190,11 @@ export class SearchPage {
     }, 500);
   }
 
-  async presentPopover(ev: any, info: Card) {
+  async presentPopover({event, info}) {
     const popover = await this.popoverController.create({
       component: PopoverComponent,
       cssClass: 'my-custom-class',
-      event: ev,
+      event: event,
       translucent: true,
       componentProps:{
         button:'save'

@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { fromSet } from '@ygopro/shared/set';
-import { emptyObject, gotToTop, sliceTestLong, trackById } from '@ygopro/shared/utils/helpers/functions';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-
+import { emptyObject, gotToTop } from '@ygopro/shared/utils/helpers/functions';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +27,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                   <app-swiper
                     [items]="lastSets">
                   </app-swiper>
+
                 </ng-container>
               </ng-container>
 
@@ -38,6 +38,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                     <h2 class="text-second-color">{{ 'COMMON.ALL_SETS' | translate }}</h2>
                   </div>
 
+                  <!-- INFINITE SCROLL  -->
                   <app-infinite-scroll
                     [from]="'home'"
                     [page]="statusComponent?.slice"
@@ -46,6 +47,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
                     [status]="status"
                     (loadDataTrigger)="loadData($event)">
                   </app-infinite-scroll>
+
                 </ng-container>
               </ng-container>
 
@@ -87,9 +89,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 export class HomePage {
 
   gotToTop = gotToTop;
-  trackById = trackById;
   emptyObject = emptyObject;
-  sliceTestLong = sliceTestLong;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   showButton: boolean = false;

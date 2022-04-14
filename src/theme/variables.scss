@@ -246,10 +246,10 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-$textColor: white;
+$textColor: #F7F7F7;
 $textSecondColor: rgb(189, 189, 189);
 $errorColor: red;
-$backColor: #F7FBFA;
+$backColor: #F9F9FC;
 $secondBackColor: #2B2B2B;
 $backSecondColor: #6463EB;
 $backThirdColor: #5C88CF;
@@ -262,18 +262,18 @@ ion-fab-button{
 }
 
 ion-content{
-  --background: #F7FBFA !important;
+  --background: #F9F9FC !important;
 }
 
 ion-list {
-  background: #F7FBFA !important;
+  background: #F9F9FC !important;
   width:100%;
 
   ion-item{
     touch-action: pan-y !important;
     width:100%;
     padding: 4px;
-    --background: #F7FBFA !important;
+    --background: #F9F9FC !important;
     color: $secondBackColor;
 
     ion-img{
@@ -415,9 +415,9 @@ ion-card{
   touch-action: pan-y !important;
   width: 23%;
   min-height: 15vh;
-  background: white;
+  background: none;
   color: $secondBackColor !important;
-  // box-shadow: none !important;
+  box-shadow: none !important;
 
   img{
     width: 100%;
@@ -699,17 +699,17 @@ ion-avatar{
   width: 100%;
   // margin-top: 55px;
   min-height: 50px !important;
-  text-align: center;
+  // text-align: center;
   border: 0px !important;
   border-bottom-color: transparent !important;
   background-image: none !important;
   border-bottom: none !important;
   --border-style: none;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-direction: row;
+  // flex-wrap: wrap;
+  // justify-content: space-between;
+  // align-items: center;
   // background: $textColor;
   background: none;
 

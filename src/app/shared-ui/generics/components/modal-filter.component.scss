@@ -1,8 +1,8 @@
 @import '../../../../theme/variables';
 
 ion-button{
-  --background: white !important;
-  --color: black !important;
+  --background: #6463EB !important;
+  --color: #F7F7F7 !important;
 }
 
 :host{
@@ -12,8 +12,12 @@ ion-button{
 }
 
 
+// .modal-container{
+//   height: 100%;
+// }
+
 ion-item{
   margin-top: 10px;
-  --background: white !important;
+  --background: #C7C5FE !important;
   color: $secondBackColor;
 }

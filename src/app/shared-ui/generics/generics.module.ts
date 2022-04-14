@@ -31,6 +31,7 @@ const COMPONENTS = [
     LongPressModule,
     SwiperModule,
     RouterModule,
+    LongPressModule,
     TranslateModule.forChild(),
   ],
   declarations: [
