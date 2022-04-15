@@ -12,7 +12,7 @@ import { StorageActions } from '@ygopro/shared/storage';
 import { gotToTop } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
 import { combineLatest } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -22,7 +22,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 
       <div class="empty-header components-color-third">
         <!-- FORM  -->
-        <form (submit)="searchSubmit($event)" class="fade-in-card">
+        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)" class="fade-in-card">
           <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
         </form>
       </div>
@@ -100,7 +100,7 @@ export class SearchPage {
   perPageSum: number = 21;
   search = new FormControl('');
 
-  status$ = this.store.select(fromCard.getStatus);
+  status$ = this.store.select(fromCard.getStatus).pipe(shareReplay(1));
   total$ = this.store.select(fromCard.getTotalCount);
 
   filters$ = combineLatest([

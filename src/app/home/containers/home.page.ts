@@ -1,15 +1,23 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
-import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { FormControl } from '@angular/forms';
+import { IonContent, IonInfiniteScroll, ModalController, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { fromSet } from '@ygopro/shared/set';
+import { fromSet, Set } from '@ygopro/shared/set';
 import { emptyObject, gotToTop } from '@ygopro/shared/utils/helpers/functions';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { Keyboard } from '@capacitor/keyboard';
+import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 
 @Component({
   selector: 'app-home',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
+
       <div class="empty-header components-color-third">
+        <!-- FORM  -->
+        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)" class="fade-in-card">
+          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
+        </form>
       </div>
 
       <div class="container components-color-second">
@@ -33,11 +41,16 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 
               <!-- ALL SETS  -->
               <ng-container *ngIf="(info$ | async) as info">
-                <ng-container *ngIf="emptyObject(info?.sets); else noData">
-                  <div class="header margin-top">
-                    <h2 class="text-second-color">{{ 'COMMON.ALL_SETS' | translate }}</h2>
-                  </div>
+                <div class="header margin-top">
+                  <h2 class="text-second-color">{{ 'COMMON.ALL_SETS' | translate }}</h2>
+                </div>
 
+                <!-- FILTER  -->
+                <div class="width-84 margin-center displays-center">
+                  <ion-button class="displays-center class-ion-button" (click)="presentModal(orderFilter)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
+                </div>
+
+                <ng-container *ngIf="emptyObject(info?.sets); else noData">
                   <!-- INFINITE SCROLL  -->
                   <app-infinite-scroll
                     [from]="'home'"
@@ -47,7 +60,6 @@ import { map, startWith, switchMap } from 'rxjs/operators';
                     [status]="status"
                     (loadDataTrigger)="loadData($event)">
                   </app-infinite-scroll>
-
                 </ng-container>
               </ng-container>
 
@@ -93,32 +105,70 @@ export class HomePage {
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   showButton: boolean = false;
-
+  search = new FormControl('');
+  orderFilter = ['ascending', 'descending']
   status$ = this.store.select(fromSet.getStatus);
   lastSets$ = this.store.select(fromSet.getLastSets);
 
-  infiniteScroll$ = new EventEmitter<{slice:number}>();
-  statusComponent: {slice: number} = {slice: 20};
+  infiniteScroll$ = new EventEmitter<{ slice:number, filter?:{name?:string, order?:string} }>();
+  statusComponent: { slice: number, filter?:{name?:string, order:string} } = {
+    slice: 20,
+    filter:{
+      name:'',
+      order:'descending'
+    }
+  };
 
   info$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
-    switchMap(({slice}) =>
+    switchMap(({slice, filter}) =>
       this.store.select(fromSet.getSets).pipe(
         map((allSets) => {
+          const { name = null, order = null } = filter || {};
+
+          const allSetOrder = order
+            ? this.orderFilterByDate(allSets, order)
+            : [...allSets];
+
+          const allSetsFilter = name
+            ? (allSetOrder || [])?.filter(({set_name}) => set_name?.toLowerCase()?.includes(name?.toLowerCase()))
+            : [...allSetOrder];
+
           return {
-            sets: allSets?.slice(0, slice),
-            total: allSets?.length
+            sets: allSetsFilter?.slice(0, slice),
+            total: allSetsFilter?.length
           }
         })
       )
     )
+    // ,tap(d => console.log(d))
   );
 
 
   constructor(
-    private store: Store
+    private store: Store,
+    public platform: Platform,
+    public modalController: ModalController
   ) { }
 
+
+  // SEARCH
+  searchSubmit(event: Event): void{
+    event.preventDefault();
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.statusComponent = {...this.statusComponent, filter:{ ...this.statusComponent.filter, name:this.search.value }, slice: 20 };
+    this.infiniteScroll$.next(this.statusComponent);
+    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+  }
+
+  // DELETE SEARCH
+  clearSearch(event): void{
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.search.reset();
+    this.statusComponent = {...this.statusComponent, filter:{ ...this.statusComponent.filter, name:'' }, slice: 20 };
+    this.infiniteScroll$.next(this.statusComponent);
+    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+  }
 
   // SCROLL EVENT
   logScrolling({detail:{scrollTop}}): void{
@@ -129,7 +179,8 @@ export class HomePage {
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
-      this.statusComponent = {...this.statusComponent, slice: 20};
+      this.search.reset();
+      this.statusComponent = {...this.statusComponent, slice: 20, filter:{order:'descending'}};
       this.infiniteScroll$.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 
@@ -139,7 +190,7 @@ export class HomePage {
 
   // INIFINITE SCROLL
   loadData({event, total}) {
-    this.statusComponent = { slice: this.statusComponent?.slice + 20 };
+    this.statusComponent = { ...this.statusComponent, slice: this.statusComponent?.slice + 20 };
 
     if(this.statusComponent?.slice >= total){
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
@@ -149,6 +200,48 @@ export class HomePage {
     event.target.complete();
   }
 
+  // OPEN FILTER MODAL
+  async presentModal( orderFilter ) {
+    const modal = await this.modalController.create({
+      component: ModalFilterComponent,
+      cssClass: 'my-custom-modal-css',
+      componentProps: {
+        statusComponent: this.statusComponent,
+        orderFilter,
+        showTypesFilter:false
+      },
+      breakpoints: [0, 0.2, 0.5, 1],
+      initialBreakpoint: 0.4, //modal height
+    });
 
+    modal.onDidDismiss()
+      .then((res) => {
+        const { data } = res || {};
+
+        if(!!data){
+          this.statusComponent = { ...data, slice:20 }
+          this.infiniteScroll$.next(this.statusComponent)
+          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+        }
+    });
+
+    return await modal.present();
+  }
+
+  orderFilterByDate(sets: Set[], order:string): Set[]{
+    return [...sets]?.sort((a,b) => {
+      const firstItem = (order === 'descending') ? {...b}: {...a};
+      const secondItem = (order === 'descending') ? {...a}: {...b};
+
+      if(new Date(firstItem.tcg_date).getTime() > new Date(secondItem.tcg_date).getTime()) return 1
+      if(new Date(firstItem.tcg_date).getTime() < new Date(secondItem.tcg_date).getTime()) return -1
+      return 0
+    });
+  }
+  // const sortedSets = [...sets]?.sort((a,b) => {
+  //   if(new Date(a.tcg_date).getTime() > new Date(b.tcg_date).getTime()) return 1
+  //   if(new Date(a.tcg_date).getTime() < new Date(b.tcg_date).getTime()) return -1
+  //   return 0
+  // });
 
 }

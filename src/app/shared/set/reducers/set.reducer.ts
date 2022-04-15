@@ -28,11 +28,11 @@ export const reducer = createReducer(
       if(new Date(a.tcg_date).getTime() > new Date(b.tcg_date).getTime()) return 1
       if(new Date(a.tcg_date).getTime() < new Date(b.tcg_date).getTime()) return -1
       return 0
-      // return new Date(a.tcg_date).getTime() - new Date(b.tcg_date).getTime()
     });
+
     const reverseSortedSets = [...sortedSets]?.reverse();
 
-    return ({ ...state, sets: reverseSortedSets, lastSets: reverseSortedSets?.slice(0, 10), error, status})
+    return ({ ...state, sets: reverseSortedSets?.slice(10), lastSets: reverseSortedSets?.slice(0, 10), error, status})
   }),
 
 );

@@ -1,19 +1,25 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
-import { IonContent, IonInfiniteScroll, ModalController } from '@ionic/angular';
+import { FormControl } from '@angular/forms';
+import { Keyboard } from '@capacitor/keyboard';
+import { IonContent, IonInfiniteScroll, ModalController, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { BanlistActions, fromBanlist } from '@ygopro/shared/banlist';
 import { gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { CardModalComponent } from './../../shared-ui/generics/components/card-modal.component';
-
 
 @Component({
   selector: 'app-banlist',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third"></div>
+      <div class="empty-header components-color-third">
+        <!-- FORM  -->
+        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)" class="fade-in-card">
+          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+        </form>
+      </div>
 
       <div class="container components-color-second">
         <div class="empty-header-mid"></div>
@@ -47,7 +53,6 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
           </ng-container>
         </ng-container>
 
-¡
         <!-- REFRESH -->
         <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
           <ion-refresher-content></ion-refresher-content>
@@ -84,20 +89,22 @@ export class BanlistPage {
   trackById = trackById;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   @ViewChild(IonContent, {static: true}) content: IonContent
-  infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number} >();
+  infiniteScroll$ = new EventEmitter<{banlistType: string, perPage: number, search:string}>();
   showButton: boolean = false;
   selected = '';
   banlistType = [
     { id:1, type: 'tcg' },
     { id:2, type: 'ocg' }
   ];
+  search = new FormControl('');
 
-  componentStatus: {banlistType: string, perPage: number} = {
+  componentStatus: {banlistType: string, perPage: number, search:string} = {
     banlistType: 'tcg',
-    perPage: 20
+    perPage: 20,
+    search:''
   };
 
-  status$ = this.store.select(fromBanlist.getStatus);
+  status$ = this.store.select(fromBanlist.getStatus).pipe(shareReplay(1));
 
   banlist$ = this.infiniteScroll$.pipe(
     startWith(this.componentStatus),
@@ -106,26 +113,48 @@ export class BanlistPage {
         this.store.dispatch(BanlistActions.loadBanlist({banlistType}));
       }
     }),
-    switchMap(({perPage}) =>
+    switchMap(({perPage, search}) =>
       this.store.select(fromBanlist.getBanlist).pipe(
         map(banlist => {
+          const updateBanlist = search
+                ? banlist?.filter(({name}) => name?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))
+                : banlist;
           return {
-            banlist: banlist?.slice(0, perPage),
-            total: banlist?.length
+            banlist: updateBanlist?.slice(0, perPage),
+            total: updateBanlist?.length
           }
         })
       )
     )
+    // ,tap(d => console.log(d))
   );
 
 
   constructor(
     private store: Store,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public platform: Platform,
   ) {
-    this.selected = this.banlistType?.[0]?.type
+    this.selected = this.banlistType?.[0]?.type;
   }
 
+
+  searchSubmit(event: Event): void{
+    event.preventDefault();
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.componentStatus = {...this.componentStatus, search:this.search.value, perPage: 20 };
+    this.infiniteScroll$.next(this.componentStatus);
+    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+  }
+
+  // DELETE SEARCH
+  clearSearch(event): void{
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.search.reset();
+    this.componentStatus = {...this.componentStatus, search:this.search.value, perPage: 20 };
+    this.infiniteScroll$.next(this.componentStatus);
+    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+  }
 
   // SCROLL EVENT
   logScrolling({detail:{scrollTop}}): void{
@@ -148,7 +177,8 @@ export class BanlistPage {
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
-      this.componentStatus = {...this.componentStatus, perPage: 20};
+      this.search.reset();
+      this.componentStatus = {...this.componentStatus, perPage: 20, search:''};
       this.infiniteScroll$.next(this.componentStatus)
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 
@@ -158,7 +188,8 @@ export class BanlistPage {
 
   segmentChanged(event): void{
     const { detail:{value = ''} } = event || {};
-    this.componentStatus = { ...this.componentStatus, banlistType: value, perPage: 20};
+    this.search.reset();
+    this.componentStatus = { ...this.componentStatus, banlistType: value, perPage: 20, search:''};
     this.infiniteScroll$.next(this.componentStatus);
   }
 

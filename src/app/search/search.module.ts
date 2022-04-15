@@ -17,7 +17,6 @@ import { SearchPageRoutingModule } from './search-routing.module';
     FilterModule,
     SharedModule,
     GenericsModule,
-    // LongPressModule,
     TranslateModule.forChild(),
     SearchPageRoutingModule
   ],

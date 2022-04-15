@@ -52,7 +52,8 @@
     "LAST_SETS":"Last sets",
     "FILTERS":"Filters",
     "YEAR":"Year",
-    "SEARCH_PAGE":"Search"
+    "SEARCH_PAGE":"Search",
+    "ORDER":"Order"
   },
   "ERRORS":{
     "ERROR_LOAD_SETS":"Error loading sets",

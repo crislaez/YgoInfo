@@ -33,11 +33,13 @@ import { Card } from '@ygopro/shared/utils/models/index';
 
             <ng-container *ngIf="emptyObject(card?.banlist_info)">
               <div class="card-type span-bold mediun-size">  <span>{{ 'COMMON.BANLIST' | translate}}</span> </div>
-              <div *ngIf="!!card?.banlist_info?.ban_tcg" class="card-result span-bold font-medium"> <span>{{ 'COMMON.TCG' | translate}}: </span>
-                <span [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_tcg }}</span>
+              <div *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10 card-result span-bold font-medium">
+                <span class="banlist-chip">{{ 'COMMON.TCG' | translate}}: </span>
+                <span class="banlist-chip" [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_tcg }}</span>
               </div>
-              <div *ngIf="!!card?.banlist_info?.ban_ocg" class="card-result span-bold font-medium"> <span>{{ 'COMMON.OCG' | translate}}: </span>
-                <span [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_ocg }}</span>
+              <div *ngIf="!!card?.banlist_info?.ban_ocg" class="margin-top-10 card-result span-bold font-medium">
+                <span class="banlist-chip">{{ 'COMMON.OCG' | translate}}: </span>
+                <span class="banlist-chip" [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_ocg }}</span>
               </div>
               <br>
             </ng-container>

@@ -6,7 +6,7 @@ import { Filter } from '@ygopro/shared/card';
   selector: 'app-modal-filter',
   template:`
   <ion-content class="modal-wrapper components-color-second">
-    <ion-header class="ion-no-border  components-color-third">
+    <ion-header translucent class="ion-no-border  components-color-third">
       <ion-toolbar>
         <ion-buttons slot="end">
           <ion-button fill="clear" (click)="dismissModal()"><ion-icon name="close-outline"></ion-icon></ion-button>
@@ -34,12 +34,21 @@ import { Filter } from '@ygopro/shared/card';
         </ion-item>
       </ng-container>
 
-      <ng-container *ngIf="selectorTypes">
+      <ng-container *ngIf="selectorTypes && showTypesFilter">
         <ion-item *ngIf="selectorTypes?.length > 0" class="fade-in-card item-select font-medium width-84">
           <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
           <ion-select (ionChange)="changeFilter($any($event), 'type')" [value]="getTypeSelectorValue()" interface="action-sheet">
             <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
             <ion-select-option *ngFor="let type of selectorTypes" [value]="type">{{type}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ng-container>
+
+      <ng-container *ngIf="orderFilter">
+        <ion-item *ngIf="orderFilter?.length > 0" class="fade-in-card item-select font-medium width-84">
+          <ion-label>{{'COMMON.ORDER' | translate}}</ion-label>
+          <ion-select (ionChange)="changeFilter($any($event), 'order')" [value]="getAscDescSelectorValue()" interface="action-sheet">
+            <ion-select-option *ngFor="let format of orderFilter" [value]="format">{{format}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ng-container>
@@ -53,11 +62,13 @@ import { Filter } from '@ygopro/shared/card';
 })
 export class ModalFilterComponent {
 
-  @Input() statusComponent: {page?:string, filter?:Filter } = {};
+  @Input() statusComponent: {page?:string, filter?:(Filter & {order:string}) } = {};
   @Input() cardType: string[];
   @Input() archetype: string[];
   @Input() cardFormat: string[];
+  @Input() orderFilter: string[];
   @Input() bool: boolean = false;
+  @Input() showTypesFilter: boolean = true;
   selectorTypes: string[] = ['Moster Card', 'Spell Card', 'Trap Card'];
 
 
@@ -76,6 +87,10 @@ export class ModalFilterComponent {
 
   getArchetypeSelectorValue(): string{
     return (!this.statusComponent?.filter?.archetype) ? '' : this.statusComponent?.filter?.archetype;
+  }
+
+  getAscDescSelectorValue(): string{
+    return this.statusComponent?.filter?.order
   }
 
   getTypeSelectorValue(): string{
