@@ -14,9 +14,9 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third">
+      <div class="empty-header components-color-third displays-center">
         <!-- FORM  -->
-        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)" class="fade-in-card">
+        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)">
           <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
         </form>
       </div>

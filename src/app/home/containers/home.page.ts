@@ -1,23 +1,28 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { fromSet, Set } from '@ygopro/shared/set';
-import { emptyObject, gotToTop } from '@ygopro/shared/utils/helpers/functions';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-import { Keyboard } from '@capacitor/keyboard';
 import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
+import { fromSet, Set } from '@ygopro/shared/set';
+import { emptyObject, getObjectKeys, gotToTop } from '@ygopro/shared/utils/helpers/functions';
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-home',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third">
-        <!-- FORM  -->
-        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)" class="fade-in-card">
-          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
-        </form>
+      <div class="empty-header components-color-third displays-center">
+        <ng-container *ngIf="!['pending','error']?.includes(status$ | async)">
+          <!-- FORM  -->
+          <!-- <form (submit)="searchSubmit($event)">
+            <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
+          </form> -->
+          <!-- FILTER  -->
+          <!-- <ion-button class="displays-center class-ion-button" (click)="presentModal(orderFilter)"><ion-icon name="options-outline"></ion-icon> </ion-button> -->
+        </ng-container>
       </div>
 
       <div class="container components-color-second">
@@ -28,38 +33,35 @@ import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/moda
               <!-- LAST SETS  -->
               <ng-container *ngIf="lastSets$ | async as lastSets">
                 <ng-container *ngIf="lastSets?.length > 0; else noData">
-                  <div class="header margin-top">
-                    <h2 class="text-second-color">{{ 'COMMON.LAST_SETS' | translate }}</h2>
-                  </div>
-
                   <app-swiper
-                    [items]="lastSets">
+                    [items]="lastSets"
+                    [showMore]="false"
+                    [key]="null"
+                    [title]="'COMMON.LAST_SETS' | translate">
                   </app-swiper>
-
                 </ng-container>
               </ng-container>
 
               <!-- ALL SETS  -->
               <ng-container *ngIf="(info$ | async) as info">
-                <div class="header margin-top">
-                  <h2 class="text-second-color">{{ 'COMMON.ALL_SETS' | translate }}</h2>
-                </div>
-
-                <!-- FILTER  -->
-                <div class="width-84 margin-center displays-center">
-                  <ion-button class="displays-center class-ion-button" (click)="presentModal(orderFilter)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
-                </div>
-
                 <ng-container *ngIf="emptyObject(info?.sets); else noData">
+                  <ng-container *ngFor="let key of getObjectKeys(info?.sets); trackBy: trackById">
+                    <app-swiper
+                      [items]="info?.sets?.[key]"
+                      [showMore]="true"
+                      [key]="key"
+                      [title]="getTitle(key)">
+                    </app-swiper>
+                  </ng-container>
+
                   <!-- INFINITE SCROLL  -->
-                  <app-infinite-scroll
-                    [from]="'home'"
-                    [page]="statusComponent?.slice"
-                    [total]="info?.total"
-                    [items]="info?.sets"
+                  <app-infinite
+                    [slice]="getObjectKeys(info?.sets)?.length"
                     [status]="status"
+                    [total]="info?.total"
                     (loadDataTrigger)="loadData($event)">
-                  </app-infinite-scroll>
+                  </app-infinite>
+
                 </ng-container>
               </ng-container>
 
@@ -102,17 +104,20 @@ export class HomePage {
 
   gotToTop = gotToTop;
   emptyObject = emptyObject;
+  getObjectKeys = getObjectKeys;
+
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
+
   showButton: boolean = false;
   search = new FormControl('');
-  orderFilter = ['ascending', 'descending']
-  status$ = this.store.select(fromSet.getStatus);
+  orderFilter = ['ascending', 'descending'];
+  status$ = this.store.select(fromSet.getStatus).pipe(shareReplay(1));
   lastSets$ = this.store.select(fromSet.getLastSets);
 
   infiniteScroll$ = new EventEmitter<{ slice:number, filter?:{name?:string, order?:string} }>();
   statusComponent: { slice: number, filter?:{name?:string, order:string} } = {
-    slice: 20,
+    slice: 10,
     filter:{
       name:'',
       order:'descending'
@@ -122,26 +127,39 @@ export class HomePage {
   info$ = this.infiniteScroll$.pipe(
     startWith(this.statusComponent),
     switchMap(({slice, filter}) =>
-      this.store.select(fromSet.getSets).pipe(
+      this.store.select(fromSet.getSets)
+      .pipe(
         map((allSets) => {
-          const { name = null, order = null } = filter || {};
+          // const { name = null, order = null } = filter || {};
 
-          const allSetOrder = order
-            ? this.orderFilterByDate(allSets, order)
-            : [...allSets];
+          // const allSetOrder = order
+          //   ? this.orderFilterByDate(allSets, order)
+          //   : [...allSets];
 
-          const allSetsFilter = name
-            ? (allSetOrder || [])?.filter(({set_name}) => set_name?.toLowerCase()?.includes(name?.toLowerCase()))
-            : [...allSetOrder];
+          // const allSetsFilter = name
+          //   ? (allSetOrder || [])?.filter(({set_name}) => set_name?.toLowerCase()?.includes(name?.toLowerCase()))
+          //   : [...allSetOrder];
+
+          // return {
+          //   sets: allSetsFilter?.slice(0, slice),
+          //   total: allSetsFilter?.length
+          // }
+          const sliceSets = (Object.entries(allSets || {}) || [])?.slice(0, slice)?.reduce((acc, el) => {
+            const [ key = null, value = null ] = el || [];
+            return {
+              ...(acc ?? {}),
+              ...(key ? {[key]:value} : {})
+            }
+          },{});
 
           return {
-            sets: allSetsFilter?.slice(0, slice),
-            total: allSetsFilter?.length
+            sets:sliceSets,
+            total: Object.keys(allSets || {})?.length
           }
         })
       )
     )
-    // ,tap(d => console.log(d))
+    ,tap(d => console.log(d))
   );
 
 
@@ -190,12 +208,7 @@ export class HomePage {
 
   // INIFINITE SCROLL
   loadData({event, total}) {
-    this.statusComponent = { ...this.statusComponent, slice: this.statusComponent?.slice + 20 };
-
-    if(this.statusComponent?.slice >= total){
-      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-    }
-
+    this.statusComponent = { ...this.statusComponent, slice: this.statusComponent?.slice + 10 };
     this.infiniteScroll$.next(this.statusComponent);
     event.target.complete();
   }
@@ -237,6 +250,10 @@ export class HomePage {
       if(new Date(firstItem.tcg_date).getTime() < new Date(secondItem.tcg_date).getTime()) return -1
       return 0
     });
+  }
+
+  getTitle(key:string): string {
+    return `Date ${key}`
   }
   // const sortedSets = [...sets]?.sort((a,b) => {
   //   if(new Date(a.tcg_date).getTime() > new Date(b.tcg_date).getTime()) return 1

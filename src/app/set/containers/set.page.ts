@@ -20,11 +20,15 @@ import { map, switchMap, tap } from 'rxjs/operators';
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third">
-        <!-- FORM  -->
-        <form (submit)="searchSubmit($event)" class="fade-in-card">
-          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
-        </form>
+      <div class="empty-header components-color-third displays-center">
+        <ng-container *ngIf="!['pending','error']?.includes(status$ | async)">
+          <!-- FORM  -->
+          <form (submit)="searchSubmit($event)">
+            <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+          </form>
+           <!-- FILTER  -->
+          <ion-button *ngIf="(filters$ | async) as filters" class="displays-center class-ion-button" (click)="presentModal(filters)"> <ion-icon name="options-outline"></ion-icon> </ion-button>
+        </ng-container>
       </div>
 
       <div class="container components-color-second">
@@ -34,13 +38,6 @@ import { map, switchMap, tap } from 'rxjs/operators';
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
                   <ng-container *ngIf="cards?.length > 0; else noData">
-
-                    <!-- FILTER  -->
-                    <ng-container *ngIf="(filters$ | async) as filters">
-                      <div class="width-84 margin-center margin-top displays-center">
-                        <ion-button class="displays-center class-ion-button" (click)="presentModal(filters)">{{ 'COMMON.FILTERS' | translate }} <ion-icon name="options-outline"></ion-icon> </ion-button>
-                      </div>
-                    </ng-container>
 
                     <app-infinite-scroll
                       [from]="'set'"

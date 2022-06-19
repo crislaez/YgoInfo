@@ -1,1 +1,12 @@
 @import '../../../theme/variables';
+
+.active-class {
+  ion-icon {
+    font-size: 33px;
+  }
+  color: $backThirdColor;
+}
+
+ion-tabs, ion-tab-bar{
+  border: none !important;
+}

@@ -7,6 +7,7 @@ import { LongPressModule } from 'ionic-long-press';
 import { SwiperModule } from 'swiper/angular';
 import { CardModalComponent } from './components/card-modal.component';
 import { InfiniteScrollComponent } from './components/infinite-scroll.component';
+import { InfiniteComponent } from './components/infinite.component';
 import { ModalFilterComponent } from './components/modal-filter.component';
 import { NoDataComponent } from './components/no-data.component';
 import { PopoverComponent } from './components/poper.component';
@@ -21,7 +22,8 @@ const COMPONENTS = [
   SpinnerComponent,
   NoDataComponent,
   InfiniteScrollComponent,
-  SwiperComponent
+  SwiperComponent,
+  InfiniteComponent
 ];
 
 @NgModule({
