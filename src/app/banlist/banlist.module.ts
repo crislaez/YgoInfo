@@ -7,6 +7,7 @@ import { GenericsModule } from '@ygopro/shared-ui/generics/generics.module';
 import { BanlistModule } from '@ygopro/shared/banlist/banlist.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { BanlistPageRoutingModule } from './banlist-routing.module';
+import { BanlistListComponent } from './components/banlist-list.component';
 import { BanlistPage } from './containers/banlist.page';
 
 
@@ -21,6 +22,9 @@ import { BanlistPage } from './containers/banlist.page';
     TranslateModule.forChild(),
     BanlistPageRoutingModule
   ],
-  declarations: [BanlistPage]
+  declarations: [
+    BanlistPage,
+    BanlistListComponent
+  ]
 })
 export class BanlistPageModule {}

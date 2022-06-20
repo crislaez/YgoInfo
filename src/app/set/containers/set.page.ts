@@ -10,10 +10,11 @@ import { PopoverComponent } from '@ygopro/shared-ui/generics/components/poper.co
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { fromFilter } from '@ygopro/shared/filter';
 import { StorageActions } from '@ygopro/shared/storage';
-import { emptyObject, errorImage, gotToTop, sliceTest, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
 import { Card } from '@ygopro/shared/utils/models';
 import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-set',
@@ -37,18 +38,21 @@ import { map, switchMap, tap } from 'rxjs/operators';
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
-                  <ng-container *ngIf="cards?.length > 0; else noData">
+                <ng-container *ngIf="cards?.length > 0; else noData">
 
-                    <app-infinite-scroll
-                      [from]="'set'"
-                      [page]="statusComponent?.page"
-                      [total]="(total$ | async)"
-                      [items]="cards"
-                      [status]="status"
-                      (loadDataTrigger)="loadData($event)"
-                      (openSingleCardModal)="openSingleCardModal($event)"
-                      (presentPopoverTrigger)="presentPopover($event)">
-                    </app-infinite-scroll>
+                  <app-set-list
+                    [items]="cards"
+                    (openSingleCardModal)="openSingleCardModal($event)"
+                    (presentPopoverTrigger)="presentPopover($event)">
+                  </app-set-list>
+
+                  <!-- INFINITE SCROLL  -->
+                  <app-infinite
+                    [slice]="cards?.length"
+                    [status]="status"
+                    [total]="(total$ | async)"
+                    (loadDataTrigger)="loadData($event)">
+                  </app-infinite>
 
                 </ng-container>
               </ng-container>
@@ -94,7 +98,6 @@ export class SetPage {
   trackById = trackById;
   errorImage = errorImage;
   emptyObject = emptyObject;
-  sliceTest = sliceTest;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
 

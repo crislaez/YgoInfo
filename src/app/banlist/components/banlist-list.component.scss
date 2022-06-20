@@ -1,0 +1,55 @@
+@import '../../../theme/variables';
+
+:host{
+  width: 100%;
+
+  .banlist-list-wrapper {
+    ion-item{
+      --min-height: 90px;
+      --border-color: #DFE3FF;
+
+      ion-label{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-left: 2%;
+        align-content: center;
+      }
+
+    }
+
+    margin-top: 20px;
+
+    .label-name {
+      width: 50% !important;
+    }
+
+    .label-banlist{
+      justify-content: center;
+      border-radius: 15px;
+      max-width: 32% !important;
+    }
+
+    .label-image {
+      max-width: 10% !important;
+    }
+
+    .forbidden{
+      background: red !important;
+      color: black;
+    }
+
+    .limited{
+      background: orange !important;
+      color: black;
+    }
+
+    .semi-limited{
+      background: yellow !important;
+      color: black;
+    }
+
+  }
+
+}

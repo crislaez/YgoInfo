@@ -5,8 +5,8 @@ import { IonContent, IonInfiniteScroll, ModalController, Platform } from '@ionic
 import { Store } from '@ngrx/store';
 import { ModalFilterComponent } from '@ygopro/shared-ui/generics/components/modal-filter.component';
 import { fromSet, Set } from '@ygopro/shared/set';
-import { emptyObject, getObjectKeys, gotToTop } from '@ygopro/shared/utils/helpers/functions';
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { emptyObject, getObjectKeys, gotToTop, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -103,6 +103,7 @@ import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 export class HomePage {
 
   gotToTop = gotToTop;
+  trackById = trackById;
   emptyObject = emptyObject;
   getObjectKeys = getObjectKeys;
 
@@ -159,7 +160,7 @@ export class HomePage {
         })
       )
     )
-    ,tap(d => console.log(d))
+    // ,tap(d => console.log(d))
   );
 
 

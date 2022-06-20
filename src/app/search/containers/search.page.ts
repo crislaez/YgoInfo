@@ -38,17 +38,19 @@ import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
               <ng-container *ngIf="status !== 'error'; else serverError">
                 <ng-container *ngIf="cards?.length > 0; else noData">
 
-                  <!-- INFINITE SCROLL  -->
-                  <app-infinite-scroll
-                    [from]="'search'"
-                    [page]="statusComponent?.page"
-                    [total]="(total$ | async)"
+                  <app-search-list
                     [items]="cards"
-                    [status]="status"
-                    (loadDataTrigger)="loadData($event)"
                     (openSingleCardModal)="openSingleCardModal($event)"
                     (presentPopoverTrigger)="presentPopover($event)">
-                  </app-infinite-scroll>
+                  </app-search-list>
+
+                  <!-- INFINITE SCROLL  -->
+                  <app-infinite
+                    [slice]="cards?.length"
+                    [status]="status"
+                    [total]="(total$ | async)"
+                    (loadDataTrigger)="loadData($event)">
+                  </app-infinite>
 
                 </ng-container>
               </ng-container>

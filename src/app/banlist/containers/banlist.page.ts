@@ -36,16 +36,19 @@ import { CardModalComponent } from './../../shared-ui/generics/components/card-m
                 </ion-segment>
 
                 <ng-container *ngIf="banlist?.banlist?.length > 0; else noData">
-                  <app-infinite-scroll
-                    [from]="'banlist'"
-                    [page]="componentStatus.perPage"
-                    [total]="banlist?.total"
+                  <app-banlist-list
                     [items]="banlist?.banlist"
-                    [status]="status"
                     [banlistType]="componentStatus?.banlistType"
-                    (loadDataTrigger)="loadData($event)"
                     (openSingleCardModal)="openSingleCardModal($event)">
-                  </app-infinite-scroll>
+                  </app-banlist-list>
+
+                  <!-- INFINITE SCROLL  -->
+                  <app-infinite
+                    [slice]="banlist?.banlist?.length"
+                    [status]="status"
+                    [total]="banlist?.total"
+                    (loadDataTrigger)="loadData($event)">
+                  </app-infinite>
                 </ng-container>
 
               </ng-container>

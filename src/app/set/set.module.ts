@@ -8,6 +8,7 @@ import { CardModule } from '@ygopro/shared/card/card.module';
 import { FilterModule } from '@ygopro/shared/filter/filter.module';
 import { SharedModule } from '@ygopro/shared/shared/shared.module';
 import { LongPressModule } from 'ionic-long-press';
+import { SetListComponent } from './components/set-list.component';
 import { SetPage } from './containers/set.page';
 import { SetPageRoutingModule } from './set-routing.module';
 
@@ -25,6 +26,9 @@ import { SetPageRoutingModule } from './set-routing.module';
     TranslateModule.forChild(),
     SetPageRoutingModule
   ],
-  declarations: [SetPage]
+  declarations: [
+    SetPage,
+    SetListComponent
+  ]
 })
 export class SetPageModule {}

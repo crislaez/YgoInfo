@@ -3,10 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { LongPressModule } from 'ionic-long-press';
 import { SwiperModule } from 'swiper/angular';
 import { CardModalComponent } from './components/card-modal.component';
-import { InfiniteScrollComponent } from './components/infinite-scroll.component';
+import { GenericCardComponent } from './components/generic-card.component';
 import { InfiniteComponent } from './components/infinite.component';
 import { ModalFilterComponent } from './components/modal-filter.component';
 import { NoDataComponent } from './components/no-data.component';
@@ -21,19 +20,17 @@ const COMPONENTS = [
   CardModalComponent,
   SpinnerComponent,
   NoDataComponent,
-  InfiniteScrollComponent,
   SwiperComponent,
-  InfiniteComponent
+  InfiniteComponent,
+  GenericCardComponent
 ];
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
-    LongPressModule,
     SwiperModule,
     RouterModule,
-    LongPressModule,
     TranslateModule.forChild(),
   ],
   declarations: [

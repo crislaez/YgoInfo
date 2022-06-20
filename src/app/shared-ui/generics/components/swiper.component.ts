@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { getSliderConfig, sliceTest, trackById } from '@ygopro/shared/utils/helpers/functions';
+import { getSliderConfig, sliceText, trackById } from '@ygopro/shared/utils/helpers/functions';
 import SwiperCore, { Navigation, Pagination } from 'swiper';
 
 // Pagination
@@ -13,21 +13,22 @@ SwiperCore.use([Pagination, Navigation]);
     <div class="header margin-top">
       <div class="div-center">
         <h2 class="text-second-color">{{ title }}</h2>
-        <!-- [routerLink]="['/show-all/'+hash]" -->
-        <span class="text-second-color" *ngIf="showMore && items?.length > 5" (click)="redirect()" >{{ 'COMMON.SHEE_MORE' | translate }}</span>
+        <span class="text-color-four" *ngIf="showMore && items?.length > 5" (click)="redirect()" >{{ 'COMMON.SHEE_MORE' | translate }}</span>
       </div>
     </div>
 
     <swiper #swiper effect="fade" [config]="getSliderConfig(items)" >
       <ng-template swiperSlide *ngFor="let set of items?.slice(0, 5); trackBy: trackById" >
-        <ion-card class="slide-ion-card" [routerLink]="['/set/'+set?.set_name]" [queryParams]="{name:set?.name}">
+        <ion-card class="slide-ion-card ion-activatable ripple-parent" [routerLink]="['/set/'+set?.set_name]" [queryParams]="{name:set?.name}">
           <ion-card-header >
-            <span class="big-size-medium span-bold">{{ sliceTest(set?.set_name) }}</span>
+            <span class="big-size-medium span-bold">{{ sliceText(set?.set_name, 25) }}</span>
           </ion-card-header>
 
           <ion-card-content>
             <p class="font-medium text-center">{{ set?.tcg_date }}</p>
           </ion-card-content>
+
+          <ion-ripple-effect></ion-ripple-effect>
         </ion-card>
       </ng-template>
     </swiper>
@@ -37,7 +38,7 @@ SwiperCore.use([Pagination, Navigation]);
 })
 export class SwiperComponent {
 
-  sliceTest = sliceTest;
+  sliceText = sliceText;
   getSliderConfig = getSliderConfig;
   trackById = trackById;
   @Input() items: any[]
