@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/utils/helpers/functions';
+import { EntityStatus } from '@ygopro/shared/utils/functions';
 import * as FiltersActions from '../actions/filter.actions';
 
 export const filterFeatureKey = 'filter';

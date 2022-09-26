@@ -1,0 +1,8 @@
+@import '../../../../theme/variables.scss';
+
+ion-button{
+  --border-radius: 5px !important;
+  --background: none;
+  color: $textColor;
+  width: 15%;
+}

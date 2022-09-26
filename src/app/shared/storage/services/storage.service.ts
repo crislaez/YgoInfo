@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@capacitor/storage';
-import { Card } from '@ygopro/shared/utils/models';
+import { Card } from '@ygopro/shared/models';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

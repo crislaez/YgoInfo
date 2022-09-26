@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { NotificationActions } from '@ygopro/shared/notification';
-import { EntityStatus } from '@ygopro/shared/utils/helpers/functions';
+import { EntityStatus } from '@ygopro/shared/utils/functions';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as SetActions from '../actions/set.actions';

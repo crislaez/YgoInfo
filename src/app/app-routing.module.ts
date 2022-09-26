@@ -4,27 +4,27 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    loadChildren: () => import('./views/home/home.module').then( m => m.HomePageModule),
   },
   {
     path: 'show-all',
-    loadChildren: () => import('./show-all/show-all.module').then( m => m.ShowAllPageModule)
+    loadChildren: () => import('./views/show-all/show-all.module').then( m => m.ShowAllPageModule)
   },
   {
     path: 'search',
-    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule),
+    loadChildren: () => import('./views/search/search.module').then( m => m.SearchPageModule),
   },
   {
     path: 'set',
-    loadChildren: () => import('./set/set.module').then( m => m.SetPageModule)
+    loadChildren: () => import('./views/set/set.module').then( m => m.SetPageModule)
   },
   {
     path: 'storage',
-    loadChildren: () => import('./storage/storage.module').then( m => m.StoragePageModule),
+    loadChildren: () => import('./views/storage/storage.module').then( m => m.StoragePageModule),
   },
   {
     path: 'banlist',
-    loadChildren: () => import('./banlist/banlist.module').then( m => m.BanlistPageModule),
+    loadChildren: () => import('./views/banlist/banlist.module').then( m => m.BanlistPageModule),
   },
   {
     path: '**',

@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { EntityStatus } from '@ygopro/shared/utils/helpers/functions';
+import { EntityStatus } from '@ygopro/shared/utils/functions';
 import * as SetActions from '../actions/set.actions';
 import { Set } from '../models';
 

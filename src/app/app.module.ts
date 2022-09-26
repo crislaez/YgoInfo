@@ -1,12 +1,12 @@
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { IonicGestureConfig } from '@ygopro/shared/utils/helpers/IonicGestureConfig';
+import { IonicGestureConfig } from '@ygopro/shared/utils/IonicGestureConfig';
 import { environment } from '../environments/environment';
 import * as appConfig from './app-config';
 import { AppRoutingModule } from './app-routing.module';

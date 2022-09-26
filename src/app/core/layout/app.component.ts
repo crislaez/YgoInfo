@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
-import { trackById } from '@ygopro/shared/utils/helpers/functions';
+import { trackById } from '@ygopro/shared/utils/functions';
 import { filter, map, shareReplay } from 'rxjs/operators';
 
 @Component({
@@ -12,9 +12,9 @@ import { filter, map, shareReplay } from 'rxjs/operators';
     <ion-header class="ion-no-border height-60">
       <ion-toolbar *ngIf="(currentSection$ | async) as currentSection">
 
-        <ion-button *ngIf="navItems?.includes(currentSection?.label)" fill="clear" size="small" slot="start"  (click)="open()">
+        <!-- <ion-button *ngIf="navItems?.includes(currentSection?.label)" fill="clear" size="small" slot="start"  (click)="open()">
           <ion-menu-button class="text-color"></ion-menu-button>
-        </ion-button>
+        </ion-button> -->
 
         <ion-back-button *ngIf="!navItems?.includes(currentSection?.label)" class="text-color" slot="start" defaultHref="/home" [text]="''"></ion-back-button>
 
@@ -103,6 +103,5 @@ export class AppComponent {
   openEnd() {
     this.menu.close();
   }
-
 
 }

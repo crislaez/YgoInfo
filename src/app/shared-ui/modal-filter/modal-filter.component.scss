@@ -1,0 +1,17 @@
+@import '../../../theme/variables';
+
+
+ion-button{
+  --background: #3C396E !important;
+  --color: #FFFFFF !important;
+}
+
+// .modal-container{
+//   height: 100%;
+// }
+
+ion-item{
+  margin-top: 10px;
+  --background: #FFFFFF !important;
+  color: $secondBackColor;
+}
