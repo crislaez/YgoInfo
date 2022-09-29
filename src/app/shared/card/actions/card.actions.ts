@@ -13,3 +13,15 @@ export const saveCards = createAction(
   '[Card] Save Cards',
   props<{ cards: Card[], page: number, filter?: Filter, totalCount: number, error:unknown, status:EntityStatus }>()
 );
+
+
+
+export const loadSetCards = createAction(
+  '[Card] Load Set Cards',
+  props<{ setName: string, page: number, filter?: Filter }>()
+);
+
+export const saveSetCards = createAction(
+  '[Card] Save Set Cards',
+  props<{ setName: string, cards: Card[], page: number, filter?: Filter, totalCount: number, error:unknown, status:EntityStatus }>()
+);

@@ -29,6 +29,29 @@ export class CardEffects {
     )
   });
 
+  loadSetCards$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CardActions.loadSetCards),
+      switchMap(({setName, page, filter}) => {
+        return this._card.getAllCards(page, filter).pipe(
+          map(({cards, totalCount }) => CardActions.saveSetCards({ setName, cards, page, totalCount, filter, error:undefined, status:EntityStatus.Loaded })),
+          catchError(error => {
+            return of(
+              CardActions.saveSetCards({ setName, cards:[], page:1, totalCount:0, error, status:EntityStatus.Error }),
+              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
+            )
+          })
+        )
+      })
+    )
+  });
+
+  tryloadCards$ = createEffect(() => {
+    return of(
+      CardActions.loadCards({page:0, filter:{}})
+    )
+  });
+
 
   constructor(
     private actions$: Actions,

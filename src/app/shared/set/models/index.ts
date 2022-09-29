@@ -4,3 +4,8 @@ export interface Set {
   "num_of_cards": number;
   "tcg_date": string;
 }
+
+export interface SetFilter {
+  "search"?:string;
+  "year"?:string
+}

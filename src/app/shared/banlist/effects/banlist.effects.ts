@@ -12,18 +12,18 @@ import { BanlistService } from '../services/banlist.service';
 @Injectable()
 export class BanlistEffects {
 
-  loadCard$ = createEffect(() => {
+  loadTCGBanlist$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(BanlistActions.loadBanlist),
-      switchMap(({ banlistType }) => {
-        return this._banlist.getBanlist( banlistType ).pipe(
-          map((banlist) => BanlistActions.saveBanlist({ banlist, error:undefined, status:EntityStatus.Loaded })),
+      ofType(BanlistActions.loadTCGBanlist),
+      switchMap(() => {
+        return this._banlist.getBanlist('tcg').pipe(
+          map((banlistTCG) => BanlistActions.saveTCGBanlist({ banlistTCG, error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
             if(error === 400){
-              return of(BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Error }))
+              return of(BanlistActions.saveTCGBanlist({ banlistTCG:[], error, status:EntityStatus.Error }))
             }
             return of(
-              BanlistActions.saveBanlist({ banlist:[], error, status:EntityStatus.Error }),
+              BanlistActions.saveTCGBanlist({ banlistTCG:[], error, status:EntityStatus.Error }),
               NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
             )
           })
@@ -31,6 +31,33 @@ export class BanlistEffects {
       })
     );
   });
+
+  loadOCGBanlist$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(BanlistActions.loadOCGBanlist),
+      switchMap(() => {
+        return this._banlist.getBanlist('ocg').pipe(
+          map((banlistOCG) => BanlistActions.saveOCGBanlist({ banlistOCG, error:undefined, status:EntityStatus.Loaded })),
+          catchError(error => {
+            if(error === 400){
+              return of(BanlistActions.saveOCGBanlist({ banlistOCG:[], error, status:EntityStatus.Error }))
+            }
+            return of(
+              BanlistActions.saveOCGBanlist({ banlistOCG:[], error, status:EntityStatus.Error }),
+              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
+            )
+          })
+        )
+      })
+    );
+  });
+
+  loadAlBanlist$ = createEffect(() => {
+    return of(
+      BanlistActions.loadTCGBanlist(),
+      BanlistActions.loadOCGBanlist()
+    )
+  })
 
 
   constructor(

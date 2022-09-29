@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ShowAllPage } from './containers/show-all.page';
-
+import { CardPage } from './containers/card.page';
 
 const routes: Routes = [
   {
-    path: ':date',
-    component: ShowAllPage
+    path: '',
+    component: CardPage
   }
 ];
 
@@ -14,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ShowAllPageRoutingModule {}
+export class CardPageRoutingModule {}

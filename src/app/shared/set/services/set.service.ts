@@ -12,7 +12,6 @@ import { Set } from '../models';
 export class SetService {
 
   baseURL: string = `${this._coreConfig.getEndpoint()}`;
-  baseNumber: string = `${this._coreConfig.getCardsNumber()}`;
 
 
   constructor(private http: HttpClient, private _coreConfig: CoreConfigService) { }

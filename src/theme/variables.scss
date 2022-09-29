@@ -248,9 +248,9 @@
 }
 
 $textColor: #FFFFFF;
-$textSecondColor: rgb(189, 189, 189);
+$textSecondColor: #EBEBEB;
 $errorColor: red;
-$backColor: #F6F7FF;
+$backColor: #F7F7F7;
 $secondBackColor: #2B2B2B;
 $backSecondColor: #3C396E;
 $backThirdColor: #5C88CF;
@@ -263,18 +263,18 @@ ion-fab-button{
 }
 
 ion-content{
-  --background: #F6F7FF !important;
+  --background: #FFFFFF !important;
 }
 
 ion-list {
-  background: #F6F7FF !important;
+  background: #FFFFFF !important;
   width:100%;
 
   ion-item{
     touch-action: pan-y !important;
     width:100%;
     padding: 4px;
-    --background: #F6F7FF !important;
+    --background: #FFFFFF !important;
     color: $secondBackColor;
 
     ion-img{
@@ -301,10 +301,14 @@ ion-menu{
   }
 }
 
-ion-select{
-  border-bottom: 10px;
-  height: 30px;
-}
+// ion-select{
+//   border-bottom: 10px;
+//   height: 30px;
+// }
+
+// ion-spinner{
+//   display: none;
+// }
 
 // PAGE COLOR
 .text-color{
@@ -328,6 +332,7 @@ ion-select{
 }
 
 // PAGE BACKGROUND COLOR
+
 .components-color{
   background: $textColor;
 }
@@ -353,6 +358,7 @@ ion-refresher {
   ion-spinner{
     position: relative;
     display: flex;
+    // background: $textColor;
     margin: 0;
   }
 }
@@ -361,6 +367,7 @@ ion-refresher {
 ion-spinner {
   display: block;
   position: absolute;
+  color: $backSecondColor;
   margin: 0 auto;
   margin-top: 90%;
   margin-left: 48%;
@@ -368,19 +375,26 @@ ion-spinner {
 
 //HEADER PRINCIPAL
 ion-header{
-  background: $backSecondColor;
+  background: $textColor;
+  overflow: hidden;
+  height: 50px;
 
-  //header principa
   ion-toolbar{
     width: 100%;
-    --background: $backSecondColor;
+    --background: $backColor;
     border: 0px !important;
     border-bottom-color: transparent !important;
     background-image: none !important;
     border-bottom: none !important;
 
     ion-title{
-      text-align: center;
+      width: 85%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      // font-weight: bold !important;
+      text-align: start;
+      font-weight: 800;
+      font-size: 25px;
     }
 
     div{
@@ -389,6 +403,18 @@ ion-header{
   }
 }
 
+.action-sheet-group{
+  background: white !important;
+
+  button{
+    color: #141415 !important;
+  }
+}
+
+// ion-select-option{
+//   background: white;
+// }
+
 ion-footer, ion-toolbar{
   height:50px;
   --background: $backSecondColor !important;
@@ -396,20 +422,21 @@ ion-footer, ion-toolbar{
 
 //footer barra abajo
 ion-tab-bar{
-  // background: $backColor;
-  background: $backSecondColor;
+  background: $backColor;
+  // background: $backSecondColor;
 }
 
 //buscador
 ion-searchbar{
   --box-shadow: none !important;
   --border-radius: 50px !important;
+  transform: scaleY(0.8);
 
   .searchbar-input-container {
     input{
-      background: #65629B !important;
-      // color: $secondBackColor !important;
-      color: $backColor !important;
+      background: $textSecondColor !important;
+      color: $secondBackColor !important;
+      // color: $backColor !important;
     }
   }
 }
@@ -471,7 +498,9 @@ ion-button{
 ion-item{
   width: 94%;
   margin: 0 auto;
-  padding:0px !important;
+  // padding:0px !important;
+  --background: #fff;
+
 }
 
 form{
@@ -530,12 +559,20 @@ ion-avatar{
   height:auto;
 }
 
+.padding-5{
+  padding: 5px;
+}
+
+.height-30{
+  min-height: 30px;
+}
+
 .width-max{
   width: 100%;
 }
 
 .width-90{
-  width: 90%;
+  width: 90% !important;
 }
 
 .width-84{
@@ -575,11 +612,19 @@ ion-avatar{
 }
 
 .font-medium{
-  font-size: 13px !important;
+  font-size: 11px !important;
+}
+
+.font-size-9{
+  font-size: 9px !important;
 }
 
 .font-small{
-  font-size: 9px !important;
+  font-size: 7px !important;
+}
+
+.margin-bottom-5{
+  margin-bottom: 5px
 }
 
 .margin-top{
@@ -588,6 +633,10 @@ ion-avatar{
 
 .margin-top-10{
   margin-top: 10px !important;
+}
+
+.margin-top-25{
+  margin-top: 25px;
 }
 
 .margin-top-30{
@@ -613,6 +662,10 @@ ion-avatar{
 
 .height-60{
   min-height: 60px;
+}
+
+.toast-wrapper{
+  color: $textColor !important;
 }
 
 .chip{
@@ -652,13 +705,29 @@ ion-avatar{
   align-items: center;
 }
 
+.displays-center-down{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+}
+
 .div-center{
   width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: center;
+
+  h2 {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 10px;
+    min-width: 35%;
+    margin-left: 3%;
+  }
 }
 
 .border-around{
@@ -674,10 +743,12 @@ ion-avatar{
 }
 
 .item-select{
+  width: 90%;
+  height: 40px;
+  margin: auto;
   border-radius: 20px;
-  margin-bottom: 10px;
-  color: #808080;
-  // color: $textColor !important;
+  margin-top: 25px;
+  color: #808080 !important;
 }
 
 .heigth-mid{
@@ -687,27 +758,18 @@ ion-avatar{
 //PAGE CONTAINER
 .header{
   width: 100%;
-  // margin-top: 55px;
   min-height: 50px !important;
-  // text-align: center;
   border: 0px !important;
   border-bottom-color: transparent !important;
   background-image: none !important;
   border-bottom: none !important;
   --border-style: none;
-  // display: flex;
-  // flex-direction: row;
-  // flex-wrap: wrap;
-  // justify-content: space-between;
-  // align-items: center;
-  // background: $textColor;
   background: none;
 
   h1, h2{
     font-weight: bold;
     font-size: 25px;
     margin-top: 0px;
-    // width: 74%;
     margin-left: 5%;
   }
 
@@ -730,14 +792,18 @@ ion-avatar{
 
 .empty-header{
   width: 100%;
-  height: 160px;
+  height: 125px;
 }
 
 .empty-header-mid{
   width: 100%;
-  height: 50px;
+  height: 250px;
 }
 
+.empty-div{
+  width: 100%;
+  height: 30px;
+}
 
 .header-container-empty{
   width: 10%;
@@ -786,16 +852,12 @@ ion-avatar{
 }
 
 .banlist-div{
-  // position: absolute;
   z-index: 2px;
-  // background: red;
-  // color: red;
   margin-top: -74px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-end;
-  // align-items: flex-end;
 
   >div{
     width: 70%;
@@ -841,12 +903,11 @@ ion-avatar{
 }
 // END MODAL
 
-// .my-custom-class .alert-wrapper {
-//   background: #e5e5e5;
-// }
-
+.loadingspinner{
+  stroke: #ef473a;
+  fill: #ef473a;
+}
 .fade-in-card {
-  // animation: fadeIn 2s;
   animation: fadeInUp 0.2s;
 }
 

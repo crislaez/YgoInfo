@@ -3,6 +3,10 @@
 ion-button{
   --border-radius: 5px !important;
   --background: none;
-  color: $textColor;
+  color: $secondBackColor;
   width: 15%;
+}
+
+ygopro-generic-card{
+  width: 47%;
 }

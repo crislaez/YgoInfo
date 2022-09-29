@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificationModule } from '@ygopro/shared/notification/notification.module';
-import { StoreModule } from '@ngrx/store';
+import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { NotificationModule } from '@ygopro/shared/notification/notification.module';
 import { BanlistEffects } from './effects/banlist.effects';
-import * as fromBanlist from './reducers/banlist.reducer';
+import { combineFeatureKey, reducer } from './reducers';
 
 
 @NgModule({
@@ -12,7 +12,7 @@ import * as fromBanlist from './reducers/banlist.reducer';
   imports: [
     CommonModule,
     NotificationModule,
-    StoreModule.forFeature(fromBanlist.cardFeatureKey, fromBanlist.reducer),
+    StoreModule.forFeature(combineFeatureKey, reducer),
     EffectsModule.forFeature([BanlistEffects]),
   ]
 })

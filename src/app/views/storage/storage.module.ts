@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModalModule } from '@ygopro/shared-ui/card-modal/card-modal.module';
+import { CardItemModule } from '@ygopro/shared-ui/card/card.module';
 import { NoDataModule } from '@ygopro/shared-ui/no-data/no-data.module';
 import { PopoverModule } from '@ygopro/shared-ui/popover/popover.module';
 import { SpinnerModule } from '@ygopro/shared-ui/spinner/spinner.module';
@@ -20,6 +21,7 @@ const SHARED_UI_MODULE = [
   NoDataModule,
   SpinnerModule,
   PopoverModule,
+  CardItemModule,
   CardModalModule
 ];
 

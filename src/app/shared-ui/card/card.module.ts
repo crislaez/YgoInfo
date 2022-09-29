@@ -2,23 +2,21 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { GenericCardModule } from '../generic-card/generic-card.module';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { CardModalComponent } from './card-modal.component';
+import { LongPressModule } from 'ionic-long-press';
+import { CardComponent } from './card.component.';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
-    SpinnerModule,
-    GenericCardModule,
+    // LongPressModule,
     TranslateModule.forChild(),
   ],
   declarations: [
-    CardModalComponent
+    CardComponent
   ],
   exports:[
-    CardModalComponent
+    CardComponent
   ]
 })
-export class CardModalModule {}
+export class CardItemModule {}

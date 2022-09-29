@@ -3,24 +3,22 @@ import { Card } from '@ygopro/shared/models';
 import { EntityStatus } from '@ygopro/shared/utils/functions';
 import * as BanlistActions from '../actions/banlist.actions';
 
-export const cardFeatureKey = 'banlist';
+export const banlistTCGFeatureKey = 'banlist-tcg';
 
 export interface State {
   status: EntityStatus;
-  banlist?: Card[];
-  banlistType?:string;
+  banlistTCG?: Card[];
   error?: unknown;
 }
 
 export const initialState: State = {
   status: EntityStatus.Initial,
-  banlist: [],
-  banlistType:'',
+  banlistTCG: [],
   error: undefined
 };
 
 export const reducer = createReducer(
   initialState,
-  on(BanlistActions.loadBanlist, (state, { banlistType }): State => ({ ...state, banlistType, error: undefined, status: EntityStatus.Pending })),
-  on(BanlistActions.saveBanlist, (state, { banlist, status, error }): State => ({ ...state, banlist, status, error }))
+  on(BanlistActions.loadTCGBanlist, (state): State => ({ ...state, error: undefined, status: EntityStatus.Pending })),
+  on(BanlistActions.saveTCGBanlist, (state, { banlistTCG, status, error }): State => ({ ...state, banlistTCG, status, error }))
 );

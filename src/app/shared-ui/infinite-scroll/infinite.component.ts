@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { EntityStatus } from '@ygopro/shared/utils/functions';
 
 @Component({
-  selector: 'app-infinite',
+  selector: 'ygopro-infinite',
   template:`
   <ng-container *ngIf="slice < total">
-    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event, total)">
-      <ion-infinite-scroll-content class="loadingspinner">
+    <ion-infinite-scroll class="loadingspinner" threshold="100px" (ionInfinite)="loadData($event, total)">
+      <ion-infinite-scroll-content>
         <app-spinner [top]="'0%'" *ngIf="$any(status) === 'pending'"></app-spinner>
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>

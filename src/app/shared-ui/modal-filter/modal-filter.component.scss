@@ -6,12 +6,12 @@ ion-button{
   --color: #FFFFFF !important;
 }
 
-// .modal-container{
-//   height: 100%;
-// }
-
 ion-item{
   margin-top: 10px;
-  --background: #FFFFFF !important;
-  color: $secondBackColor;
+  --background: #EBEBEB !important;
+  // color: $secondBackColor;
+
+  ion-labe{
+    color: #FFFFFF !important;
+  }
 }

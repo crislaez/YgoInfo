@@ -9,17 +9,27 @@ import { filter, map, shareReplay } from 'rxjs/operators';
   template:`
   <ion-app >
     <!-- HEADER  -->
-    <ion-header class="ion-no-border height-60">
+    <ion-header class="ion-no-border">
       <ion-toolbar *ngIf="(currentSection$ | async) as currentSection">
 
         <!-- <ion-button *ngIf="navItems?.includes(currentSection?.label)" fill="clear" size="small" slot="start"  (click)="open()">
           <ion-menu-button class="text-color"></ion-menu-button>
         </ion-button> -->
 
-        <ion-back-button *ngIf="!navItems?.includes(currentSection?.label)" class="text-color" slot="start" defaultHref="/home" [text]="''"></ion-back-button>
+        <ion-back-button
+          *ngIf="!isNotShowBackButtons?.includes(currentSection?.route)"
+          class="text-second-color"
+          slot="start"
+          [defaultHref]="redirectoTo(currentSection)"
+          [text]="''">
+        </ion-back-button>
 
-        <ion-title class="text-color" >{{ currentSection?.label | translate }}</ion-title>
-        <div size="small" slot="end" class="div-clear"></div>
+        <ion-title
+          class="text-second-color"
+          slot="start">
+          {{ currentSection?.label | translate }}
+        </ion-title>
+
       </ion-toolbar>
     </ion-header>
 
@@ -39,14 +49,17 @@ import { filter, map, shareReplay } from 'rxjs/operators';
    <!-- RUTER  -->
    <ion-router-outlet id="main"></ion-router-outlet>
 
-       <!-- TAB FOOTER  -->
-    <ion-tabs *ngIf="currentSection$ | async as currentSection">
+   <!-- TAB FOOTER  -->
+    <!-- <ion-tabs *ngIf="currentSection$ | async as currentSection">
       <ion-tab-bar [translucent]="true" slot="bottom">
-        <ion-tab-button *ngFor="let item of lateralMenu" class="text-color" [ngClass]="{'active-class': [item?.link]?.includes(currentSection?.route)}" [routerLink]="[item?.link]">
+        <ion-tab-button
+        *ngFor="let item of lateralMenu; trackBy: trackById"
+          class="text-color-four"
+          [ngClass]="{'active-class': [item?.link]?.includes(currentSection?.route)}" [routerLink]="[item?.link]">
           <ion-icon [name]="item?.icon"></ion-icon>
         </ion-tab-button>
       </ion-tab-bar>
-    </ion-tabs>
+    </ion-tabs> -->
 
  </ion-app>
  `,
@@ -56,13 +69,13 @@ import { filter, map, shareReplay } from 'rxjs/operators';
 export class AppComponent {
 
   trackById = trackById;
+  isNotShowBackButtons = ['home'];
   lateralMenu = [
     { id:1, link:'home', text:'COMMON.SETS', icon:'home-outline' },
     { id:2, link:'search', text:'COMMON.SEARCH_PAGE', icon:'search-outline' },
     { id:3, link:'banlist', text:'COMMON.BANLIST', icon:'close-circle-outline' },
     { id:4, link:'storage', text:'COMMON.SAVED_CARDS', icon:'bookmark-outline' }
   ];
-  navItems = ['COMMON.BANLIST','COMMON.SAVED_CARDS','COMMON.SETS','COMMON.SEARCH_PAGE','COMMON.SEARCH_PAGE'];
 
   currentSection$= this.router.events.pipe(
     filter((event) => event instanceof NavigationStart),
@@ -70,16 +83,18 @@ export class AppComponent {
       const { url = ''} = event || {};
       const [,,setName] =  url?.split('/') || [];
 
-      if(url?.includes('/set/')) return {label:setName?.replace(/%20/g,' '), route:''};
-      if(url?.includes('/show-all/')) return {label:setName?.replace(/%20/g,' '), route:''};
+      if(url?.includes('/set/')) return {label:setName?.replace(/%20/g,' '), route:'set'};
 
       return {
-        '/banlist':{label:'COMMON.BANLIST', route:'banlist'},
+        '/home':{label:'COMMON.TITLE', route:'home'},
+        '/cards':{label:'COMMON.CARDS', route:'cards'},
+        '/sets': {label:'COMMON.SETS', route:'sets'},
+        // '/set': {label:'COMMON.SET', route:'set'},
         '/storage':{label:'COMMON.SAVED_CARDS', route:'storage'},
-        '/home':{label:'COMMON.SETS', route:'home'},
-        '/search': {label:'COMMON.SEARCH_PAGE', route:'search'},
-      }[url] || {label:'COMMON.SETS', route:''}
+        '/banlist':{label:'COMMON.BANLIST', route:'banlist'},
+      }[url] || {llabel:'COMMON.TITLE', route:'home'}
     })
+    // ,tap(d => console.log(d))
     ,shareReplay(1)
   );
 
@@ -89,6 +104,14 @@ export class AppComponent {
     private router: Router
   ) {}
 
+
+  redirectoTo(currentSection:any): string{
+    const { route = null} = currentSection || {};
+    // console.log(currentSection)
+    // console.log(route)
+    if(route === 'set') return '/sets'
+    return '/home';
+  }
 
   open() {
     this.menu.enable(true, 'first');

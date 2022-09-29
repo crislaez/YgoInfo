@@ -4,7 +4,7 @@ import { EntityStatus } from '@ygopro/shared/utils/functions';
 import * as CardActions from '../actions/card.actions';
 import { Filter } from '../models';
 
-export const cardFeatureKey = 'card';
+export const cardListFeatureKey = 'cardList';
 
 export interface State {
   status: EntityStatus;

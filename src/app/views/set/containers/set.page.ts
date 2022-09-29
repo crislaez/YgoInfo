@@ -3,26 +3,32 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
+import { concatLatestFrom } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.component';
 import { ModalFilterComponent } from '@ygopro/shared-ui/modal-filter/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/popover/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
-import { fromFilter } from '@ygopro/shared/filter';
-import { StorageActions } from '@ygopro/shared/storage';
-import { emptyObject, errorImage, gotToTop, trackById } from '@ygopro/shared/utils/functions';
 import { Card } from '@ygopro/shared/models';
-import { combineLatest } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { StorageActions } from '@ygopro/shared/storage';
+import { appColors, errorImage, getLastNumber, gotToTop, trackById } from '@ygopro/shared/utils/functions';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import * as fromSet from '../selectors/set.selectors';
 
+export interface SetComponentStatus {
+  setName?: string;
+  page?:number;
+  filter?: Filter;
+  refresh?: boolean;
+};
 
 @Component({
-  selector: 'app-set',
+  selector: 'ygopro-set',
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third displays-center">
-        <ng-container *ngIf="!['pending','error']?.includes(status$ | async)">
+      <div class="empty-header components-color displays-center margin-top-25">
+        <ng-container *ngIf="!['pending']?.includes(status$ | async)">
           <!-- FORM  -->
           <form (submit)="searchSubmit($event)">
             <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
@@ -32,27 +38,30 @@ import { map, switchMap, tap } from 'rxjs/operators';
         </ng-container>
       </div>
 
-      <div class="container components-color-second">
+      <div class="container components-color">
 
-        <ng-container *ngIf="(cards$ | async) as cards">
+        <ng-container *ngIf="(info$ | async) as info">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
-                <ng-container *ngIf="cards?.length > 0; else noData">
+                <ng-container *ngIf="info?.cards?.length > 0; else noData">
 
-                  <app-set-list
-                    [items]="cards"
+                  <ygopro-card-component
+                    *ngFor="let card of info?.cards; let i = index; trackBy: trackById"
+                    [card]="card"
+                    [isSetName]="info?.setName"
+                    [from]="'set'"
                     (openSingleCardModal)="openSingleCardModal($event)"
                     (presentPopoverTrigger)="presentPopover($event)">
-                  </app-set-list>
+                  </ygopro-card-component>
 
                   <!-- INFINITE SCROLL  -->
-                  <app-infinite
-                    [slice]="cards?.length"
+                  <ygopro-infinite
+                    [slice]="info?.cards?.length"
                     [status]="status"
-                    [total]="(total$ | async)"
-                    (loadDataTrigger)="loadData($event)">
-                  </app-infinite>
+                    [total]="info?.total"
+                    (loadDataTrigger)="loadData($event, info?.page)">
+                  </ygopro-infinite>
 
                 </ng-container>
               </ng-container>
@@ -96,44 +105,57 @@ export class SetPage {
 
   gotToTop = gotToTop;
   trackById = trackById;
+  appColors = appColors;
   errorImage = errorImage;
-  emptyObject = emptyObject;
+  getLastNumber = getLastNumber;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
-
-  banned = '../../../assets/images/Banned.png';
-  limited = '../../../assets/images/Limited.png';
-  semiLimited = '../../../assets/images/Semi-limited.png';
-
   title: string;
   showButton: boolean = false;
-  perPageSum: number = 21;
+  perPageSum: number = 22;
   search = new FormControl('');
 
-  status$ = this.store.select(fromCard.getStatus);
-  total$ = this.store.select(fromCard.getTotalCount);
-
-  filters$ = combineLatest([
-    this.store.select(fromFilter.getFormats),
-    this.store.select(fromFilter.getTypes)
-  ]).pipe(
-    map(([cardFormat, cardType]) => ({cardFormat, cardType})),
+  filters$ = this.store.select(fromSet.setSelectors);
+  status$ = this.route.params.pipe(
+    switchMap(({setName}) =>
+      this.store.select(fromCard.selectSetCardsStatus(setName))
+    )
+    ,shareReplay(1)
   );
 
-  infiniteScroll$ = new EventEmitter<{page:number, filter: Filter}>();
-  statusComponent: {page: number, filter: Filter} = {
-    page: 0,
-    filter: {
-      cardset: this.route.snapshot.params?.setName || ''
-    }
-  };
+  trigger = new EventEmitter<SetComponentStatus>();
+  statusComponent:SetComponentStatus = {};
 
-  cards$ = this.infiniteScroll$.pipe(
-    tap(({page, filter}) => {
-      this.store.dispatch(CardActions.loadCards({page, filter}))
+  info$ = this.trigger.pipe(
+    concatLatestFrom(() => this.store.select(fromCard.selectAllSetsCards)),
+    tap(([{setName, page, filter, refresh}, setCardList]) => {
+
+      if(!refresh){
+        const { filter: storeFilter = null } = setCardList?.[setName] || {};
+        const { fname = null, type = null } = storeFilter || {};
+        this.search.setValue(fname);
+        this.statusComponent = {
+          ...this.statusComponent,
+          filter:{
+            ...this.statusComponent?.filter,
+            ...(fname ? {fname} : {}),
+            ...(type ? {type} : {})
+          }
+        }
+      }
+
+      if(!setCardList?.[setName] || page > 0 || !!refresh){
+        this.store.dispatch(CardActions.loadSetCards({setName, page, filter}))
+      }
     }),
-    switchMap(() =>
-      this.store.select(fromCard.getCards)
+    switchMap(([{setName}]) =>
+      this.store.select(fromCard.selectSetCards(setName)).pipe(
+        concatLatestFrom(() => [
+          this.store.select(fromCard.selectSetCardTotalCount(setName)),
+          this.store.select(fromCard.selectSetCardTPage(setName))
+        ]),
+        map(([cards = [], total = 0, page = 0]) => ({cards, total, page, setName}))
+      )
     )
   );
 
@@ -141,9 +163,9 @@ export class SetPage {
   constructor(
     private store: Store,
     public platform: Platform,
-    public popoverController: PopoverController,
-    public modalController: ModalController,
     private route: ActivatedRoute,
+    public modalController: ModalController,
+    public popoverController: PopoverController,
   ) {
     this.title = this.route.snapshot.params?.setName || ''
   }
@@ -151,16 +173,32 @@ export class SetPage {
 
   ionViewWillEnter(): void{
     this.search.reset();
-    this.statusComponent = { page:0, filter:{ cardset: this.route.snapshot.params?.setName || ''  } };
-    this.infiniteScroll$.next(this.statusComponent);
+    const setName = this.route.snapshot.params?.setName || '';
+    this.statusComponent = {
+      setName,
+      page:0,
+      filter:{
+        cardset: setName
+      },
+      refresh: false
+    };
+    this.trigger.next(this.statusComponent);
   }
 
   // SEARCH
   searchSubmit(event: Event): void{
     event.preventDefault();
     if(!this.platform.is('mobileweb')) Keyboard.hide();
-    this.statusComponent = {...this.statusComponent, filter:{ fname:this.search.value, cardset: this.route.snapshot.params?.setName || '' }, page:0 };
-    this.infiniteScroll$.next(this.statusComponent);
+    this.statusComponent = {
+      ...this.statusComponent,
+      filter:{
+        ...(this.statusComponent?.filter ?? {}),
+        fname:this.search.value,
+      },
+      page:0,
+      refresh: true
+    };
+    this.trigger.next(this.statusComponent);
     if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
 
@@ -168,8 +206,16 @@ export class SetPage {
   clearSearch(event): void{
     if(!this.platform.is('mobileweb')) Keyboard.hide();
     this.search.reset();
-    this.statusComponent = {...this.statusComponent, filter:{ fname: '', cardset: this.route.snapshot.params?.setName || ''}, page:0 };
-    this.infiniteScroll$.next(this.statusComponent);
+    this.statusComponent = {
+      ...this.statusComponent,
+      filter:{
+        ...(this.statusComponent?.filter ?? {}),
+        fname: '',
+      },
+      page:0,
+      refresh: true
+    };
+    this.trigger.next(this.statusComponent);
     if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
 
@@ -180,14 +226,13 @@ export class SetPage {
   }
 
   // INIFINITE SCROLL
-  loadData({event, total}) {
-    this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
-
-    if(this.statusComponent?.page >= total){
-      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-    }
-
-    this.infiniteScroll$.next(this.statusComponent)
+  loadData({event, total}, statusPage: number) {
+    this.statusComponent = {
+      ...this.statusComponent,
+       page: (statusPage + this.perPageSum),//(this.statusComponent?.page + this.perPageSum),
+       refresh: false
+    };
+    this.trigger.next(this.statusComponent);
     event.target.complete();
   }
 
@@ -195,8 +240,15 @@ export class SetPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = { page: 0, filter:{ cardset: this.route.snapshot.params?.setName || '' } };
-      this.infiniteScroll$.next(this.statusComponent);
+      this.statusComponent = {
+        ...this.statusComponent,
+        page: 0,
+        filter:{
+          cardset: this.route.snapshot.params?.setName || ''
+        },
+        refresh: true
+      };
+      this.trigger.next(this.statusComponent);
       if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
 
       event.target.complete();
@@ -227,6 +279,7 @@ export class SetPage {
         card
       }
     });
+
     return await modal.present();
   }
 
@@ -244,21 +297,16 @@ export class SetPage {
         bool: true
       },
       breakpoints: [0, 0.2, 0.5, 1],
-      initialBreakpoint: 0.4, //modal height
+      initialBreakpoint: 0.2,
     });
 
-    modal.onDidDismiss()
-      .then((res) => {
-        const { data } = res || {};
+    modal.present();
 
-        if(!!data){
-          this.statusComponent = { ...data }
-          this.infiniteScroll$.next(this.statusComponent)
-          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-        }
-    });
+    const { data = null } = await modal.onDidDismiss();
+    if(!data || Object.keys(data || {})?.length === 0) return;
 
-    return await modal.present();
+    this.statusComponent = { ...data, refresh:true };
+    this.trigger.next(this.statusComponent)
   }
 
 

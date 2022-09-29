@@ -18,10 +18,6 @@ YgoInfo es una aplicación hecha en Ionic (Angular, TypeScript, Sass/Css, Html, 
 <hr>
 <img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_8.jpg" />
 <hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_9.jpg" />
-<hr>
-<img src="https://github.com/crislaez/YgoInfo/blob/master/src/assets/images/ygoInfo_10.jpg" />
-<hr>
 
 
 ### Que hace el proyecto

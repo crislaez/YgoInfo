@@ -2,11 +2,17 @@
 
 .active-class {
   ion-icon {
-    font-size: 33px;
+    font-size: 40px;
   }
   color: $backThirdColor;
 }
 
 ion-tabs, ion-tab-bar{
   border: none !important;
+
+  ion-icon{
+    // font-weight: bold !important;
+    font-size: 35px;
+  }
 }
+

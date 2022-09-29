@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Filter } from '@ygopro/shared/card';
+import { trackById } from '@ygopro/shared/utils/functions';
 
 @Component({
   selector: 'app-modal-filter',
@@ -15,40 +16,53 @@ import { Filter } from '@ygopro/shared/card';
     </ion-header>
 
     <div class="displays-around modal-container">
-      <ng-container *ngIf="cardFormat && !bool">
-        <ion-item *ngIf="cardFormat?.length > 0" class="fade-in-card item-select font-medium width-84">
-          <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
-          <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="getFormatSelectorValue()" interface="action-sheet">
-            <ion-select-option *ngFor="let format of cardFormat" [value]="format">{{format}}</ion-select-option>
-          </ion-select>
-        </ion-item>
+
+      <ng-container *ngIf="!yearFilter">
+        <ng-container *ngIf="cardFormat && !bool">
+          <ion-item *ngIf="cardFormat?.length > 0" class="item-select font-medium">
+            <ion-label>{{'COMMON.FILTER_BY_FORMAT' | translate}}</ion-label>
+            <ion-select (ionChange)="changeFilter($any($event), 'format')" [value]="getFormatSelectorValue()" interface="action-sheet">
+              <ion-select-option *ngFor="let format of cardFormat; trackBy: trackById" [value]="format">{{format}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ng-container>
+
+        <ng-container *ngIf="archetype && !bool">
+          <ion-item *ngIf="archetype?.length > 0" class="item-select font-medium">
+            <ion-label>{{'COMMON.FILTER_BY_ARCHETYPE' | translate}}</ion-label>
+            <ion-select (ionChange)="changeFilter($any($event), 'archetype')" [value]="getArchetypeSelectorValue()" interface="action-sheet">
+              <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
+              <ion-select-option *ngFor="let format of archetype; trackBy: trackById" [value]="format">{{format}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ng-container>
+
+        <ng-container *ngIf="selectorTypes && showTypesFilter">
+          <ion-item *ngIf="selectorTypes?.length > 0" class="item-select font-medium">
+            <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
+            <ion-select (ionChange)="changeFilter($any($event), 'type')" [value]="getTypeSelectorValue()" interface="action-sheet">
+              <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
+              <ion-select-option *ngFor="let type of selectorTypes; trackBy: trackById" [value]="type">{{type}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ng-container>
+
+        <ng-container *ngIf="orderFilter">
+          <ion-item *ngIf="orderFilter?.length > 0" class="item-select font-medium">
+            <ion-label>{{'COMMON.ORDER' | translate}}</ion-label>
+            <ion-select (ionChange)="changeFilter($any($event), 'order')" [value]="getAscDescSelectorValue()" interface="action-sheet">
+              <ion-select-option *ngFor="let format of orderFilter; trackBy: trackById" [value]="format">{{format}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ng-container>
       </ng-container>
 
-      <ng-container *ngIf="archetype && !bool">
-        <ion-item *ngIf="archetype?.length > 0" class="fade-in-card item-select font-medium width-84">
-          <ion-label>{{'COMMON.FILTER_BY_ARCHETYPE' | translate}}</ion-label>
-          <ion-select (ionChange)="changeFilter($any($event), 'archetype')" [value]="getArchetypeSelectorValue()" interface="action-sheet">
+      <ng-container *ngIf="yearFilter">
+        <ion-item *ngIf="yearFilter?.length > 0" class="item-select font-medium">
+          <ion-label>{{'COMMON.YEAR' | translate}}</ion-label>
+          <ion-select (ionChange)="changeFilter($any($event), 'year')" [value]="getYearValue()" interface="action-sheet">
             <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-            <ion-select-option *ngFor="let format of archetype" [value]="format">{{format}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ng-container>
-
-      <ng-container *ngIf="selectorTypes && showTypesFilter">
-        <ion-item *ngIf="selectorTypes?.length > 0" class="fade-in-card item-select font-medium width-84">
-          <ion-label>{{'COMMON.FILTER_BY_TYPE' | translate}}</ion-label>
-          <ion-select (ionChange)="changeFilter($any($event), 'type')" [value]="getTypeSelectorValue()" interface="action-sheet">
-            <ion-select-option value="">{{'COMMON.EVERYONE' | translate}}</ion-select-option>
-            <ion-select-option *ngFor="let type of selectorTypes" [value]="type">{{type}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ng-container>
-
-      <ng-container *ngIf="orderFilter">
-        <ion-item *ngIf="orderFilter?.length > 0" class="fade-in-card item-select font-medium width-84">
-          <ion-label>{{'COMMON.ORDER' | translate}}</ion-label>
-          <ion-select (ionChange)="changeFilter($any($event), 'order')" [value]="getAscDescSelectorValue()" interface="action-sheet">
-            <ion-select-option *ngFor="let format of orderFilter" [value]="format">{{format}}</ion-select-option>
+            <ion-select-option *ngFor="let year of yearFilter; trackBy: trackById" [value]="year">{{year}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ng-container>
@@ -62,8 +76,10 @@ import { Filter } from '@ygopro/shared/card';
 })
 export class ModalFilterComponent {
 
-  @Input() statusComponent: {page?:string, filter?:(Filter & {order:string}) } = {};
+  trackById = trackById;
+  @Input() statusComponent: {page?:string, filter?:(Filter & {order:string} & {year:string}) } = {};
   @Input() cardType: string[];
+  @Input() yearFilter: string[];
   @Input() archetype: string[];
   @Input() cardFormat: string[];
   @Input() orderFilter: string[];
@@ -89,6 +105,10 @@ export class ModalFilterComponent {
     return (!this.statusComponent?.filter?.archetype) ? '' : this.statusComponent?.filter?.archetype;
   }
 
+  getYearValue(): string{
+    return this.statusComponent?.filter?.year
+  }
+
   getAscDescSelectorValue(): string{
     return this.statusComponent?.filter?.order
   }
@@ -102,8 +122,8 @@ export class ModalFilterComponent {
 
   changeFilter({detail: {value}}, filter): void{
     let selectedValue = (filter === 'type' && value === 'Moster Card')
-    ? (this.cardType || [])?.filter(item => (item !== 'Spell Card' && item !== 'Trap Card'))?.join(',')
-    : value;
+                  ? (this.cardType || [])?.filter(item => (item !== 'Spell Card' && item !== 'Trap Card'))?.join(',')
+                  : value;
 
     selectedValue = (filter === 'format' && value === 'normal') ? '' : selectedValue
 

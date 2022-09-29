@@ -7,12 +7,12 @@ const routes: Routes = [
     loadChildren: () => import('./views/home/home.module').then( m => m.HomePageModule),
   },
   {
-    path: 'show-all',
-    loadChildren: () => import('./views/show-all/show-all.module').then( m => m.ShowAllPageModule)
+    path: 'cards',
+    loadChildren: () => import('./views/card/card.module').then( m => m.CardPageModule)
   },
   {
-    path: 'search',
-    loadChildren: () => import('./views/search/search.module').then( m => m.SearchPageModule),
+    path: 'sets',
+    loadChildren: () => import('./views/sets/sets.module').then( m => m.SetsPageModule)
   },
   {
     path: 'set',

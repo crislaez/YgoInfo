@@ -2,6 +2,11 @@
 
 
 ion-segment-button{
-  color: $backThirdColor;
-  text-transform: uppercase;
+  color: #2B2B2B;
+  // text-transform: uppercase;
+  --color-checked: #3C396E;
+}
+
+ygopro-card-component {
+  width: 47%;
 }

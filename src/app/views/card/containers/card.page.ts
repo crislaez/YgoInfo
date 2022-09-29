@@ -1,3 +1,4 @@
+import { concatLatestFrom } from '@ngrx/effects';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
@@ -7,20 +8,24 @@ import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.comp
 import { ModalFilterComponent } from '@ygopro/shared-ui/modal-filter/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/popover/poper.component';
 import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
-import { fromFilter } from '@ygopro/shared/filter';
 import { Card } from '@ygopro/shared/models';
 import { StorageActions } from '@ygopro/shared/storage';
-import { gotToTop } from '@ygopro/shared/utils/functions';
-import { combineLatest } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { gotToTop, trackById } from '@ygopro/shared/utils/functions';
+import { shareReplay, switchMap, tap, map, filter } from 'rxjs/operators';
+import * as fromCardPage from '../selectors/card.selectors';
 
+export interface CardComponentStatus {
+  page:number,
+  filter: Filter,
+  refresh?: boolean;
+};
 
 @Component({
-  selector: 'app-search',
+  selector: 'ygopro-card',
   template:`
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color-third displays-center">
+      <div class="empty-header components-color displays-center margin-top-25">
         <ng-container *ngIf="!['pending','error']?.includes(status$ | async)">
           <!-- FORM  -->
           <form (submit)="searchSubmit($event)">
@@ -31,26 +36,29 @@ import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
         </ng-container>
       </div>
 
-      <div class="container components-color-second">
-        <ng-container *ngIf="(cards$ | async) as cards">
+      <div class="container components-color">
+        <ng-container *ngIf="(info$ | async) as info">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
-                <ng-container *ngIf="cards?.length > 0; else noData">
+                <ng-container *ngIf="info?.cards?.length > 0; else noData">
 
-                  <app-search-list
-                    [items]="cards"
+                  <ygopro-card-component
+                    *ngFor="let card of info?.cards; let i = index; trackBy: trackById"
+                    [card]="card"
+                    [isSetName]="null"
+                    [from]="'card'"
                     (openSingleCardModal)="openSingleCardModal($event)"
                     (presentPopoverTrigger)="presentPopover($event)">
-                  </app-search-list>
+                  </ygopro-card-component>
 
                   <!-- INFINITE SCROLL  -->
-                  <app-infinite
-                    [slice]="cards?.length"
+                  <ygopro-infinite
+                    [slice]="info?.cards?.length"
                     [status]="status"
-                    [total]="(total$ | async)"
-                    (loadDataTrigger)="loadData($event)">
-                  </app-infinite>
+                    [total]="info?.total"
+                    (loadDataTrigger)="loadData($event, info?.page)">
+                  </ygopro-infinite>
 
                 </ng-container>
               </ng-container>
@@ -86,42 +94,59 @@ import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
       </ion-fab>
     </ion-content>
   `,
-  styleUrls: ['./search.page.scss'],
+  styleUrls: ['./card.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchPage {
+export class CardPage  {
 
   gotToTop = gotToTop;
+  trackById = trackById;
   @ViewChild(IonContent, {static: true}) content: IonContent;
   @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
 
   showButton: boolean = false;
-  perPageSum: number = 21;
+  perPageSum: number = 22;
   search = new FormControl('');
 
-  status$ = this.store.select(fromCard.getStatus).pipe(shareReplay(1));
-  total$ = this.store.select(fromCard.getTotalCount);
+  filters$ = this.store.select(fromCardPage.cardFilterSelectors);
+  status$ = this.store.select(fromCard.selectStatus).pipe(shareReplay(1));
 
-  filters$ = combineLatest([
-    this.store.select(fromFilter.getFormats),
-    this.store.select(fromFilter.getTypes),
-    this.store.select(fromFilter.getArchetypes)
-  ]).pipe(
-    map(([cardFormat, cardType, archetype]) => ({cardFormat, cardType, archetype})),
-  );
-
-  infiniteScroll$ = new EventEmitter<{page:number, filter: Filter}>();
-  statusComponent: {page: number, filter: Filter} = {
+  trigger = new EventEmitter<CardComponentStatus>();
+  statusComponent: CardComponentStatus = {
     page: 0,
     filter: {}
   };
 
-  cards$ = this.infiniteScroll$.pipe(
-    tap(({page, filter}) => {
-      this.store.dispatch(CardActions.loadCards({page, filter}))
+  info$ = this.trigger.pipe(
+    concatLatestFrom(() => this.store.select(fromCard.selectFilters)),
+    tap(([{page, filter, refresh}, storeFilter]) => {
+      if(!refresh){
+        const { fname = null, type = null, format = null } = storeFilter || {};
+
+        this.search.setValue(fname);
+        this.statusComponent = {
+          ...this.statusComponent,
+          filter:{
+            ...this.statusComponent?.filter,
+            ...(fname ? {fname} : {}),
+            ...(type ? {type} : {}),
+            ...(format ? {format} : {})
+          }
+        };
+      }
+
+      if(page > 0 || !!refresh){
+        this.store.dispatch(CardActions.loadCards({page, filter}))
+      }
     }),
-    switchMap(() =>
-      this.store.select(fromCard.getCards)
+    switchMap(([, storeFilter = {}]) =>
+      this.store.select(fromCard.selectCards).pipe(
+        concatLatestFrom(() => [
+          this.store.select(fromCard.selectPage),
+          this.store.select(fromCard.selectTotalCount),
+        ]),
+        map(([cards = [], page = 0, total = 0]) => ({cards, page, total, filter:storeFilter}))
+      )
     )
     // ,tap((data) => console.log(data))
   );
@@ -130,33 +155,47 @@ export class SearchPage {
   constructor(
     private store: Store,
     public platform: Platform,
-    public popoverController: PopoverController,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public popoverController: PopoverController
   ) { }
 
 
   ionViewWillEnter(): void{
     this.search.reset();
     this.statusComponent = { page:0, filter:{} };
-    this.infiniteScroll$.next(this.statusComponent);
+    this.trigger.next(this.statusComponent);
   }
 
   // SEARCH
   searchSubmit(event: Event): void{
     event.preventDefault();
     if(!this.platform.is('mobileweb')) Keyboard.hide();
-    this.statusComponent = {...this.statusComponent, filter:{ fname:this.search.value }, page:0 };
-    this.infiniteScroll$.next(this.statusComponent);
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+    this.statusComponent = {
+      ...this.statusComponent,
+      filter:{
+        ...this.statusComponent?.filter,
+        fname: this.search.value
+      },
+      page:0,
+      refresh: true
+    };
+    this.trigger.next(this.statusComponent);
   }
 
   // DELETE SEARCH
   clearSearch(event): void{
     if(!this.platform.is('mobileweb')) Keyboard.hide();
     this.search.reset();
-    this.statusComponent = {...this.statusComponent, filter:{ fname: ''}, page:0 };
-    this.infiniteScroll$.next(this.statusComponent);
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+    this.statusComponent = {
+      ...this.statusComponent,
+      filter:{
+        ...this.statusComponent?.filter,
+        fname: ''
+      },
+      page:0,
+      refresh: true
+    };
+    this.trigger.next(this.statusComponent);
   }
 
   // SCROLL EVENT
@@ -166,14 +205,13 @@ export class SearchPage {
   }
 
   // INIFINITE SCROLL
-  loadData({event, total}) {
-    this.statusComponent = {...this.statusComponent, page:(this.statusComponent?.page + this.perPageSum) };
-
-    if(this.statusComponent?.page >= total){
-      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = true
-    }
-    console.log(this.statusComponent)
-    this.infiniteScroll$.next(this.statusComponent)
+  loadData({event, total}, storePage: number) {
+    this.statusComponent = {
+      ...this.statusComponent,
+      page:(storePage + this.perPageSum),  //(this.statusComponent?.page + this.perPageSum)
+      refresh: false
+    };
+    this.trigger.next(this.statusComponent)
     event.target.complete();
   }
 
@@ -181,9 +219,12 @@ export class SearchPage {
   doRefresh(event) {
     setTimeout(() => {
       this.search.reset();
-      this.statusComponent = { page: 0, filter:{} };
-      this.infiniteScroll$.next(this.statusComponent);
-      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
+      this.statusComponent = {
+        page: 0,
+        filter:{},
+        refresh: true
+      };
+      this.trigger.next(this.statusComponent);
 
       event.target.complete();
     }, 500);
@@ -201,8 +242,9 @@ export class SearchPage {
     });
     await popover.present();
 
-    const { role, data } = await popover.onDidDismiss();
-    if(data) this.store.dispatch(StorageActions.saveCard({card:info}))
+    const { data } = await popover.onDidDismiss();
+    if(!data) return;
+    this.store.dispatch(StorageActions.saveCard({card:info}))
   }
 
   // SHOW SINGLE CARD
@@ -233,22 +275,18 @@ export class SearchPage {
       initialBreakpoint: 0.4, //modal height
     });
 
-    modal.onDidDismiss()
-      .then((res) => {
-        const { data } = res || {};
+    modal.present();
 
-        if(!!data){
-          this.statusComponent = { ...data }
-          this.infiniteScroll$.next(this.statusComponent)
-          if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-        }
-    });
+    const { data = null } = await modal.onDidDismiss();
+    if(!data || Object.keys(data || {})?.length === 0) return;
 
-    return await modal.present();
+    this.statusComponent = { ...data, refresh:true };
+    this.trigger.next(this.statusComponent);
   }
 
   getImgage(card_images: any[]): string{
     return card_images?.[0]?.image_url_small || card_images?.[0]?.image_url;
   }
+
 
 }
