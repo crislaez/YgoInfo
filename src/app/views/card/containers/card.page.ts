@@ -1,8 +1,8 @@
-import { concatLatestFrom } from '@ngrx/effects';
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
+import { concatLatestFrom } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.component';
 import { ModalFilterComponent } from '@ygopro/shared-ui/modal-filter/modal-filter.component';
@@ -11,7 +11,7 @@ import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
 import { Card } from '@ygopro/shared/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { gotToTop, trackById } from '@ygopro/shared/utils/functions';
-import { shareReplay, switchMap, tap, map, filter } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import * as fromCardPage from '../selectors/card.selectors';
 
 export interface CardComponentStatus {
@@ -25,23 +25,29 @@ export interface CardComponentStatus {
   template:`
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color displays-center margin-top-25">
-        <ng-container *ngIf="!['pending','error']?.includes(status$ | async)">
+      <div class="empty-header text-color">
+        <div class="empty-div-50"> </div>
+
+        <h1 class="padding-top-10">{{ 'COMMON.CARDS' | translate }}
+        </h1>
+
+        <div *ngIf="!['pending','error']?.includes(status$ | async)" class="displays-center">
           <!-- FORM  -->
           <form (submit)="searchSubmit($event)">
             <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
           </form>
           <!-- FILTER  -->
           <ion-button *ngIf="(filters$ | async) as filters" class="displays-center class-ion-button" (click)="presentModal(filters)"><ion-icon name="options-outline"></ion-icon> </ion-button>
-        </ng-container>
+        </div>
       </div>
 
-      <div class="container components-color">
+      <div class="container components-color-second">
         <ng-container *ngIf="(info$ | async) as info">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
                 <ng-container *ngIf="info?.cards?.length > 0; else noData">
+                  <div class="empty-div" ></div>
 
                   <ygopro-card-component
                     *ngFor="let card of info?.cards; let i = index; trackBy: trackById"
@@ -121,7 +127,7 @@ export class CardPage  {
     concatLatestFrom(() => this.store.select(fromCard.selectFilters)),
     tap(([{page, filter, refresh}, storeFilter]) => {
       if(!refresh){
-        const { fname = null, type = null, format = null } = storeFilter || {};
+        const { fname = null, type = null, format = null, archetype = null } = storeFilter || {};
 
         this.search.setValue(fname);
         this.statusComponent = {
@@ -130,7 +136,8 @@ export class CardPage  {
             ...this.statusComponent?.filter,
             ...(fname ? {fname} : {}),
             ...(type ? {type} : {}),
-            ...(format ? {format} : {})
+            ...(format ? {format} : {}),
+            ...(archetype ? {archetype} : {})
           }
         };
       }
@@ -148,7 +155,7 @@ export class CardPage  {
         map(([cards = [], page = 0, total = 0]) => ({cards, page, total, filter:storeFilter}))
       )
     )
-    // ,tap((data) => console.log(data))
+    // ,ap((data) => console.log(data))
   );
 
 

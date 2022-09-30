@@ -24,21 +24,32 @@ export interface BanlistComponentStatus {
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header textColor displays-center margin-top-25">
-        <!-- FORM  -->
-        <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)">
-          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
-        </form>
+      <div class="empty-header text-color">
+        <div class="empty-div-50"> </div>
+
+        <h1 class="padding-top-10">{{ 'COMMON.BANLIST' | translate }}
+        </h1>
+
+        <div class="displays-center">
+          <!-- FORM  -->
+          <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)">
+            <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+          </form>
+          <!-- FILTER  -->
+          <ion-button class="displays-center class-ion-button" ></ion-button>
+        </div>
       </div>
 
-      <div class="container components-color">
+      <div class="container components-color-second">
         <ng-container *ngIf="(banlist$ | async) as banlist">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending'; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
 
                 <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="selected">
-                  <ion-segment-button *ngFor="let ban of banlistType; trackBy: trackById" [value]="ban?.type">
+                  <ion-segment-button
+                    *ngFor="let ban of banlistType; trackBy: trackById"
+                    [value]="ban?.type">
                     <ion-label class="span-bold">{{ ban?.type }}</ion-label>
                   </ion-segment-button>
                 </ion-segment>

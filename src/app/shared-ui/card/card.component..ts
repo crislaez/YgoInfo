@@ -9,8 +9,7 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
     [ngStyle]="{'background':cardColor(card)}"
     (click)="openSingleCardModal.next(card)"
     >
-    <div class="card-title displays-around"
-      [ngStyle]="{'color': card?.type === 'XYZ Monster' ? '#F7F7F7' : '#2B2B2B' }">
+    <div class="card-title displays-around text-color">
       <div class="card-title-div span-bold">{{ card?.name }}</div>
       <div class="card-title-icon" (click)="presentPopover($event, card)"><ion-icon name="ellipsis-vertical-outline"></ion-icon></div>
     </div>
@@ -20,26 +19,26 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
         <ng-container *ngIf="['set']?.includes(from)">
           <ng-container *ngIf="getCardInfo(card?.card_sets) as selectedSetCard">
             <ion-chip *ngIf="selectedSetCard?.set_code as set_code">
-              <ion-label class="text-second-color">{{ set_code }}</ion-label>
+              <ion-label class="text-color">{{ set_code }}</ion-label>
             </ion-chip>
             <ion-chip *ngIf="selectedSetCard?.set_rarity as set_rarity" class="text-color">
-              <ion-label class="text-second-color">{{ set_rarity }}</ion-label>
+              <ion-label class="text-color">{{ set_rarity }}</ion-label>
             </ion-chip>
             <ion-chip *ngIf="selectedSetCard?.set_price as set_price" class="text-color">
-              <ion-label class="text-second-color">{{ set_price }} $</ion-label>
+              <ion-label class="text-color">{{ set_price }} $</ion-label>
             </ion-chip>
           </ng-container>
         </ng-container>
 
         <ng-container *ngIf="['card', 'storage']?.includes(from)">
           <ion-chip *ngIf="card?.atk as atk" class="text-color">
-            <ion-label class="text-second-color">{{ 'COMMON.ATK' | translate }} / {{ atk }}</ion-label>
+            <ion-label class="text-color">{{ 'COMMON.ATK' | translate }} / {{ atk }}</ion-label>
           </ion-chip>
           <ion-chip *ngIf="card?.def as def" class="text-color">
-            <ion-label class="text-second-color">{{ 'COMMON.DEF' | translate }} / {{ def }}</ion-label>
+            <ion-label class="text-color">{{ 'COMMON.DEF' | translate }} / {{ def }}</ion-label>
           </ion-chip>
           <ion-chip *ngIf="card?.race as race" class="text-color">
-            <ion-label class="text-second-color">{{ 'COMMON.RACE' | translate }} / {{ race }}</ion-label>
+            <ion-label class="text-color">{{ 'COMMON.RACE' | translate }} / {{ race }}</ion-label>
           </ion-chip>
         </ng-container>
 
@@ -72,7 +71,7 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
               <span
                 class="font-size-9"
                 [ngClass]="{'forbidden': banlist === 'Banned', 'limited': banlist === 'Limited', 'semi-limited': banlist === 'Semi-Limited'}">
-                {{ ( banlistKey === 'ban_ocg' ? 'COMMON.OCG' : 'COMMON.TCG') | translate}}:
+                {{ ( banlistKey === 'ban_ocg' ? 'COMMON.OCG' : banlistKey === 'ban_tcg' ? 'COMMON.TCG' : 'COMMON.GOAT') | translate}}:
               </span>
               <img [src]="(banlist === 'Banned'
                           ? BANNED
@@ -98,6 +97,9 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
 })
 export class CardComponent {
 
+  LIMIT = LIMIT;
+  BANNED = BANNED;
+  SEMI_LIMIT = SEMI_LIMIT;
   cardColor = cardColor;
   trackById = trackById;
   errorImage = errorImage;
@@ -109,9 +111,6 @@ export class CardComponent {
   @Input() banlistType: string;
   @Output() openSingleCardModal = new EventEmitter<Card>();
   @Output() presentPopoverTrigger = new EventEmitter<{event, info}>();
-  LIMIT = LIMIT;
-  BANNED = BANNED;
-  SEMI_LIMIT = SEMI_LIMIT;
 
 
   constructor() { }

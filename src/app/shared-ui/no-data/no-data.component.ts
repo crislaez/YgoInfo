@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
           <img [src]="image"/>
         </span>
         <br>
-        <span class="text-second-color">{{title | translate}}</span>
+        <span class="text-color">{{title | translate}}</span>
       </div>
     </div>
   `,

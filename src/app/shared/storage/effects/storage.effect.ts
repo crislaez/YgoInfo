@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { TranslateService } from '@ngx-translate/core';
+import { NotificationActions } from '@ygopro/shared/notification';
 import { EntityStatus } from '@ygopro/shared/utils/functions';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as StorageActions from '../actions/storage.actions';
 import { StorageService } from '../services/storage.service';
 
@@ -69,12 +68,12 @@ export class StorageEffects {
 
   messageSuccess$ = createEffect(() =>
     this.actions$.pipe(
-    ofType(
-      StorageActions.saveCardSuccess,
-      StorageActions.deleteCardSuccess
-    ),
-      tap(({message}) => this.presentToast(this.translate.instant(message), 'success')),
-    ), { dispatch: false }
+      ofType(
+        StorageActions.saveCardSuccess,
+        StorageActions.deleteCardSuccess
+      ),
+      map(({message}) => NotificationActions.notificationSuccess({message}))
+    )
   );
 
   failure$ = createEffect(() =>
@@ -84,8 +83,8 @@ export class StorageEffects {
         StorageActions.saveCardFailure,
         StorageActions.deleteCardFailure
       ),
-      tap(({message}) => this.presentToast(this.translate.instant(message), 'danger')),
-    ), { dispatch: false }
+      map(({message}) => NotificationActions.notificationFailure({message}))
+    )
   );
 
   tryLoadStorage$ = createEffect(() => {
@@ -93,21 +92,11 @@ export class StorageEffects {
   });
 
 
+
   constructor(
     private actions$: Actions,
     private _storage: StorageService,
-    private translate: TranslateService,
-    public toastController: ToastController,
   ) { }
 
-
-  async presentToast(message, color) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: color,
-      duration: 1000
-    });
-    toast.present();
-  }
 
 }

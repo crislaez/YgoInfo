@@ -21,17 +21,6 @@
     transform: rotate(23deg);
   }
 
-  &:after{
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 70%;
-    right: 140px;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(23deg);
-  }
-
   >div{
     font-size: 20px;
   }

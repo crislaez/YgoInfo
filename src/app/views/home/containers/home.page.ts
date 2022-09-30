@@ -8,10 +8,11 @@ import { gotToTop, trackById, appColors } from '@ygopro/shared/utils/functions';
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color displays-center">
+      <div class="empty-header text-color displays-center">
+        <h1>{{ 'COMMON.HOME' | translate }}</h1>
       </div>
 
-      <div class="container components-color">
+      <div class="container components-color-second">
         <div
           *ngFor="let item of iteratable; let i = index; trackBy: trackById"
           [routerLink]="[item?.link]"

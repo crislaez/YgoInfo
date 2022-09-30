@@ -251,19 +251,19 @@ $textColor: #FFFFFF;
 $textSecondColor: #EBEBEB;
 $errorColor: red;
 $backColor: #F7F7F7;
-$secondBackColor: #2B2B2B;
-$backSecondColor: #3C396E;
+$secondBackColor: #0E0E10;
+$backSecondColor: #BA195E;
 $backThirdColor: #5C88CF;
 $backfourthColor: #2A3C58;
 
 
 ion-fab-button{
-  --background: #3C396E;
+  --background: #BA195E;
   border-radius: 50%;
 }
 
 ion-content{
-  --background: #FFFFFF !important;
+  --background: #0E0E10 !important;
 }
 
 ion-list {
@@ -301,14 +301,6 @@ ion-menu{
   }
 }
 
-// ion-select{
-//   border-bottom: 10px;
-//   height: 30px;
-// }
-
-// ion-spinner{
-//   display: none;
-// }
 
 // PAGE COLOR
 .text-color{
@@ -338,7 +330,7 @@ ion-menu{
 }
 
 .components-color-second{
-  background: $backColor;
+  background: $secondBackColor;
 }
 
 .components-color-third{
@@ -375,13 +367,13 @@ ion-spinner {
 
 //HEADER PRINCIPAL
 ion-header{
-  background: $textColor;
+  background: $secondBackColor;
   overflow: hidden;
   height: 50px;
 
   ion-toolbar{
     width: 100%;
-    --background: $backColor;
+    --background: $secondBackColor;
     border: 0px !important;
     border-bottom-color: transparent !important;
     background-image: none !important;
@@ -394,7 +386,7 @@ ion-header{
       // font-weight: bold !important;
       text-align: start;
       font-weight: 800;
-      font-size: 25px;
+      font-size: 22px;
     }
 
     div{
@@ -434,7 +426,7 @@ ion-searchbar{
 
   .searchbar-input-container {
     input{
-      background: $textSecondColor !important;
+      background: #C5C5C5 !important;
       color: $secondBackColor !important;
       // color: $backColor !important;
     }
@@ -487,7 +479,7 @@ ion-card{
 ion-button{
   --border-radius: 50px !important;
   --box-shadow: none !important;
-  --background: #3C396E;
+  --background: #BA195E;
 
   ion-icon{
     font-weight: bold;
@@ -505,11 +497,7 @@ ion-item{
 
 form{
   width: 80%;
-  // margin: auto;
-  // padding-top: 60px;
-  // margin-bottom: 10px;
 }
-
 
 ion-avatar{
   box-shadow: 0;
@@ -522,6 +510,11 @@ ion-avatar{
   }
 }
 
+.container-top-radius{
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  margin-top: -25px;
+}
 
 .ion-overlay-wrapper{
   background: none !important;
@@ -561,6 +554,10 @@ ion-avatar{
 
 .padding-5{
   padding: 5px;
+}
+
+.padding-top-10{
+  padding-top: 10px;
 }
 
 .height-30{
@@ -718,16 +715,29 @@ ion-avatar{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  // justify-content: space-between;
   align-items: center;
+}
 
-  h2 {
-    font-weight: bold;
-    font-size: 20px;
-    margin-top: 10px;
-    min-width: 35%;
-    margin-left: 3%;
-  }
+h1, h2 {
+  margin-top: 10px;
+  min-width: 35%;
+}
+
+h1{
+  width: 88%;
+  margin: 0 auto;
+  text-align: start;
+  font-size: 30px;
+  font-weight: 800;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+h2{
+  font-size: 20px;
+  margin-left: 3%;
+  font-weight: 600;
 }
 
 .border-around{
@@ -792,7 +802,7 @@ ion-avatar{
 
 .empty-header{
   width: 100%;
-  height: 125px;
+  height: 150px;
 }
 
 .empty-header-mid{
@@ -803,6 +813,11 @@ ion-avatar{
 .empty-div{
   width: 100%;
   height: 30px;
+}
+
+.empty-div-50{
+  width: 100%;
+  height: 50px;
 }
 
 .header-container-empty{
@@ -830,7 +845,7 @@ ion-avatar{
   align-content: flex-start;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
-  margin-top: -25px;
+  // margin-top: -25px;
 }
 
 .right{

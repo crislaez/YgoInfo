@@ -7,7 +7,7 @@ import { trackById } from '@ygopro/shared/utils/functions';
   selector: 'app-modal-filter',
   template:`
   <ion-content class="modal-wrapper components-color-second">
-    <ion-header translucent class="ion-no-border  components-color-third">
+    <ion-header translucent class="ion-no-border components-color-second">
       <ion-toolbar>
         <ion-buttons slot="end">
           <ion-button fill="clear" (click)="dismissModal()"><ion-icon name="close-outline"></ion-icon></ion-button>

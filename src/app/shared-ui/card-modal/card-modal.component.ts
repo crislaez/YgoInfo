@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Card } from '@ygopro/shared/models/index';
-import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyObject, sliceText, trackById } from '@ygopro/shared/utils/functions';
-
+import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyObject, LIMIT, SEMI_LIMIT, sliceText, trackById } from '@ygopro/shared/utils/functions';
 
 @Component({
   selector: 'app-card-modal',
@@ -23,7 +22,7 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
         [ngStyle]="{'background':cardColor(card)}">
       </div>
 
-      <div class="container components-color-second" >
+      <div class="container components-color-second container-top-radius">
         <ion-card class="fade-in-card banner-card card-card">
           <ion-img
             *ngFor="let image of card?.card_images; trackBy: trackById"
@@ -36,35 +35,55 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
 
         <!-- INFO  -->
         <div class="div-center">
-          <h2 class="text-second-color">{{ 'COMMON.INFO' | translate}}</h2>
+          <h2 class="text-color">{{ 'COMMON.INFO' | translate}}</h2>
         </div>
 
         <ion-card class="fade-in-card card-card">
           <ion-card-content class="displays-between">
             <!-- BANLIST  -->
             <ng-container *ngIf="isNotEmptyObject(card?.banlist_info)">
-              <ng-container *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10  span-bold font-medium">
-                <div class="width-40 height-30 span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.TCG' | translate}}: </div>
-                <div class="width-40 height-30" [ngClass]="{'forbidden': card?.banlist_info?.ban_tcg === 'Banned', 'limited': card?.banlist_info?.ban_tcg === 'Limited', 'semi-limited': card?.banlist_info?.ban_tcg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_tcg }}</div>
+              <ng-container *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10 span-bold font-medium">
+                <div class="width-40 height-30 text-color span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.TCG' | translate}}: </div>
+                <div class="width-40 height-30 text-color">
+                  <img *ngIf="card?.banlist_info?.ban_tcg as banlist"
+                    [src]="(banlist === 'Banned'
+                        ? BANNED
+                        : banlist === 'Limited'
+                        ? LIMIT
+                        : banlist === 'Semi-Limited'
+                        ? SEMI_LIMIT
+                        : SEMI_LIMIT)"
+                    />
+                </div>
               </ng-container>
 
               <ng-container *ngIf="!!card?.banlist_info?.ban_ocg" class="margin-top-10  span-bold font-medium">
-                <div class="width-40 height-30 span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.OCG' | translate}}: </div>
-                <div class="width-40 height-30" [ngClass]="{'forbidden': card?.banlist_info?.ban_ocg === 'Banned', 'limited': card?.banlist_info?.ban_ocg === 'Limited', 'semi-limited': card?.banlist_info?.ban_ocg === 'Semi-Limited'}">{{ card?.banlist_info?.ban_ocg }}</div>
+                <div class="width-40 height-30 text-color span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.OCG' | translate}}: </div>
+                <div class="width-40 height-30 text-color">
+                  <img *ngIf="card?.banlist_info?.ban_ocg as banlist"
+                    [src]="(banlist === 'Banned'
+                        ? BANNED
+                        : banlist === 'Limited'
+                        ? LIMIT
+                        : banlist === 'Semi-Limited'
+                        ? SEMI_LIMIT
+                        : SEMI_LIMIT)"
+                    />
+                </div>
               </ng-container>
             </ng-container>
 
             <!-- LEVEL / RANK / LINK  -->
             <ng-container *ngIf="!!card?.level">
-              <div *ngIf="card?.type !== 'XYZ Monster'; else rank" class="width-40 height-30 span-bold font-medium">{{ 'COMMON.LEVEL' | translate}}:</div>
-              <ng-template #rank> <div class="width-40 height-30 span-bold font-medium">{{ 'COMMON.RANK' | translate}}: </div> </ng-template>
-              <div class="width-40 height-30 font-medium">{{ card?.level }}</div>
+              <div *ngIf="card?.type !== 'XYZ Monster'; else rank" class="width-40 height-30 text-color span-bold font-medium">{{ 'COMMON.LEVEL' | translate}}:</div>
+              <ng-template #rank> <div class="width-40 height-30 text-color span-bold font-medium">{{ 'COMMON.RANK' | translate}}: </div> </ng-template>
+              <div class="width-40 height-30 text-color font-medium">{{ card?.level }}</div>
             </ng-container>
 
             <ng-container *ngFor="let info of infoIteratable; let i = index; trackBy: trackById">
               <ng-container *ngIf="!!card?.[info?.field]">
-                <div class="width-40 height-30 span-bold font-medium">{{ info?.label | translate }}:</div>
-                <div class="width-40 height-30 font-medium"
+                <div class="width-40 height-30 text-color span-bold font-medium">{{ info?.label | translate }}:</div>
+                <div class="width-40 height-30 text-color font-medium"
                   [ngStyle]="{'width':info?.field === 'desc' ? '90%': '40%', 'margin-bottom': info?.field === 'desc' ? '20px': '0px' }">{{ card?.[info?.field] }} </div>
               </ng-container>
             </ng-container>
@@ -74,7 +93,7 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
         <!-- SETS  -->
         <ng-container *ngIf="card?.card_sets?.length > 0">
           <div class="div-center">
-            <h2 class="text-second-color">{{ 'COMMON.EXPANSION' | translate}}</h2>
+            <h2 class="text-color">{{ 'COMMON.EXPANSION' | translate}}</h2>
           </div>
           <ion-card class="fade-in-card card-card">
             <ion-card-content class="displays-between width-max">
@@ -93,14 +112,14 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
         <!-- PRICES  -->
         <ng-container *ngIf="card?.card_prices?.length > 0">
           <div class="div-center">
-            <h2 class="text-second-color">{{ 'COMMON.PRICES' | translate}}</h2>
+            <h2 class="text-color">{{ 'COMMON.PRICES' | translate}}</h2>
           </div>
           <ion-card class="fade-in-card card-card">
             <ion-card-content class="displays-between">
               <ng-container *ngFor="let prices of card?.card_prices; trackBy: trackById">
                 <ng-container *ngFor="let priceItem of priceIteratable; trackBy: trackById">
                   <ng-container *ngIf="prices?.[priceItem?.key] as price">
-                    <div class="width-40 height-30 span-bold">{{ priceItem?.label | translate}}: </div>
+                    <div class="width-40 height-30 text-color span-bold">{{ priceItem?.label | translate}}: </div>
                     <div class="width-40 height-30 text-color-four">{{ price | currency:'USD':'symbol':'1.2-2' }}</div>
                   </ng-container>
                 </ng-container>
@@ -115,12 +134,12 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
     <!-- IS NO DATA  -->
     <ng-template #noData>
       <div class="header" no-border>
-        <ion-back-button defaultHref="/cards" class="text-second-color" [text]="''"></ion-back-button>
-        <!-- <h1 class="text-second-color">{{ card?.name }}</h1> -->
+        <ion-back-button defaultHref="/cards" class="text-color" [text]="''"></ion-back-button>
+        <!-- <h1 class="text-color">{{ card?.name }}</h1> -->
         <div class="header-container-empty"></div>
       </div>
       <div class="error-serve">
-        <span class="text-second-color">{{'COMMON.NORESULT' | translate}}</span>
+        <span class="text-color">{{'COMMON.NORESULT' | translate}}</span>
       </div>
     </ng-template>
 
@@ -135,6 +154,9 @@ import { appColors, cardColor, errorImage, getLastNumber, gotToTop, isNotEmptyOb
 })
 export class CardModalComponent {
 
+  LIMIT = LIMIT;
+  BANNED = BANNED;
+  SEMI_LIMIT = SEMI_LIMIT;
   gotToTop = gotToTop;
   cardColor = cardColor;
   appColors = appColors;

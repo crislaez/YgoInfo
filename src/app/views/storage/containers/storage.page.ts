@@ -14,10 +14,13 @@ import { BANNED, LIMIT, SEMI_LIMIT } from './../../../shared/utils/functions';
   template: `
   <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-    <div class="empty-header textColor displays-center ">
+    <div class="empty-header text-color">
+      <div class="empty-div-50"> </div>
+      <h1 class="padding-top-10">{{ 'COMMON.SAVE' | translate }}
+      </h1>
     </div>
 
-    <div class="container components-color">
+    <div class="container components-color-second">
       <ng-container *ngIf="(storageCards$ | async) as storageCards">
         <ng-container *ngIf="(status$ | async) as status">
           <ng-container *ngIf="status !== 'pending'; else loader">

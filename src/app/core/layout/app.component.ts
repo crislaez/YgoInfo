@@ -12,54 +12,25 @@ import { filter, map, shareReplay } from 'rxjs/operators';
     <ion-header class="ion-no-border">
       <ion-toolbar *ngIf="(currentSection$ | async) as currentSection">
 
-        <!-- <ion-button *ngIf="navItems?.includes(currentSection?.label)" fill="clear" size="small" slot="start"  (click)="open()">
-          <ion-menu-button class="text-color"></ion-menu-button>
-        </ion-button> -->
-
         <ion-back-button
           *ngIf="!isNotShowBackButtons?.includes(currentSection?.route)"
-          class="text-second-color"
+          class="text-color"
           slot="start"
           [defaultHref]="redirectoTo(currentSection)"
           [text]="''">
         </ion-back-button>
 
         <ion-title
-          class="text-second-color"
+          class="text-color"
           slot="start">
-          {{ currentSection?.label | translate }}
+          {{ 'COMMON.TITLE' | translate }}
         </ion-title>
 
       </ion-toolbar>
     </ion-header>
 
-   <!-- MENU LATERAL  -->
-   <!-- <ion-menu side="start" menuId="first" contentId="main">
-     <ion-header>
-       <ion-toolbar >
-         <ion-title class="text-color" >{{ 'COMMON.MENU' | translate}}</ion-title>
-       </ion-toolbar>
-     </ion-header>
-
-     <ion-content >
-       <ion-item class="text-second-color" *ngFor="let item of lateralMenu;  trackBy: trackById" [routerLink]="['/'+item?.link]" (click)="openEnd()">{{ item?.text | translate }}</ion-item>
-     </ion-content >
-   </ion-menu> -->
-
    <!-- RUTER  -->
    <ion-router-outlet id="main"></ion-router-outlet>
-
-   <!-- TAB FOOTER  -->
-    <!-- <ion-tabs *ngIf="currentSection$ | async as currentSection">
-      <ion-tab-bar [translucent]="true" slot="bottom">
-        <ion-tab-button
-        *ngFor="let item of lateralMenu; trackBy: trackById"
-          class="text-color-four"
-          [ngClass]="{'active-class': [item?.link]?.includes(currentSection?.route)}" [routerLink]="[item?.link]">
-          <ion-icon [name]="item?.icon"></ion-icon>
-        </ion-tab-button>
-      </ion-tab-bar>
-    </ion-tabs> -->
 
  </ion-app>
  `,
@@ -83,18 +54,17 @@ export class AppComponent {
       const { url = ''} = event || {};
       const [,,setName] =  url?.split('/') || [];
 
-      if(url?.includes('/set/')) return {label:setName?.replace(/%20/g,' '), route:'set'};
+      // if(url?.includes('/set/')) return {label:setName?.replace(/%20/g,' '), route:'set'};
+      if(url?.includes('/set/')) return {label: 'COMMON.TITLE', route:'set'};
 
       return {
         '/home':{label:'COMMON.TITLE', route:'home'},
-        '/cards':{label:'COMMON.CARDS', route:'cards'},
-        '/sets': {label:'COMMON.SETS', route:'sets'},
-        // '/set': {label:'COMMON.SET', route:'set'},
-        '/storage':{label:'COMMON.SAVED_CARDS', route:'storage'},
-        '/banlist':{label:'COMMON.BANLIST', route:'banlist'},
+        '/cards':{label:'COMMON.TITLE', route:'cards'},
+        '/sets': {label:'COMMON.TITLE', route:'sets'},
+        '/storage':{label:'COMMON.TITLE', route:'storage'},
+        '/banlist':{label:'COMMON.TITLE', route:'banlist'},
       }[url] || {llabel:'COMMON.TITLE', route:'home'}
     })
-    // ,tap(d => console.log(d))
     ,shareReplay(1)
   );
 
@@ -128,3 +98,9 @@ export class AppComponent {
   }
 
 }
+// '/home':{label:'COMMON.TITLE', route:'home'},
+// '/cards':{label:'COMMON.CARDS', route:'cards'},
+// '/sets': {label:'COMMON.SETS', route:'sets'},
+// // '/set': {label:'COMMON.SET', route:'set'},
+// '/storage':{label:'COMMON.SAVED_CARDS', route:'storage'},
+// '/banlist':{label:'COMMON.BANLIST', route:'banlist'},

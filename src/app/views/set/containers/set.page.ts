@@ -27,24 +27,32 @@ export interface SetComponentStatus {
   template: `
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header components-color displays-center margin-top-25">
-        <ng-container *ngIf="!['pending']?.includes(status$ | async)">
+      <div class="empty-header text-color">
+        <div class="empty-div-50"> </div>
+
+        <h1 class="padding-top-10">
+          <!-- {{ 'COMMON.SET' | translate }}: -->
+          <ng-container  *ngIf="title$ | async as title">{{ title }}</ng-container>
+        </h1>
+
+        <div *ngIf="!['pending']?.includes(status$ | async)" class="displays-center">
           <!-- FORM  -->
           <form (submit)="searchSubmit($event)">
             <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
           </form>
            <!-- FILTER  -->
           <ion-button *ngIf="(filters$ | async) as filters" class="displays-center class-ion-button" (click)="presentModal(filters)"> <ion-icon name="options-outline"></ion-icon> </ion-button>
-        </ng-container>
+        </div>
       </div>
 
-      <div class="container components-color">
+      <div class="container components-color-second">
 
         <ng-container *ngIf="(info$ | async) as info">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending' || statusComponent?.page !== 0; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
                 <ng-container *ngIf="info?.cards?.length > 0; else noData">
+                  <div class="empty-div" ></div>
 
                   <ygopro-card-component
                     *ngFor="let card of info?.cards; let i = index; trackBy: trackById"
@@ -157,8 +165,12 @@ export class SetPage {
         map(([cards = [], total = 0, page = 0]) => ({cards, total, page, setName}))
       )
     )
+    // ,tap(d => console.log(d))
   );
 
+  title$ = this.route.params.pipe(
+    map(({setName}) => setName)
+  );
 
   constructor(
     private store: Store,

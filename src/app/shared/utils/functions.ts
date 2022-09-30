@@ -57,13 +57,13 @@ export const cardColor = (card: Card): string =>  {
   if(type?.includes('Ritual Effect Monster') || type?.includes('Ritual Monster')) return '#4072D6';
   if(type?.includes('Link Monster')) return '#006EAD';
   if(type?.includes('Fusion Monste')) return '#9271BC';
-  if(type?.includes('XYZ Monster')) return '#131212';
+  if(type?.includes('XYZ Monster')) return '#585757';
   if(type?.includes('Synchro Monster')) return '#CCCCCC';
-  if(type?.includes('Normal Monster')) return '#FDE68A';
-  if(type?.includes('Monster')) return '#EBCFC1';
+  if(type?.includes('Normal Monster')) return '#F6E2BD';
+  if(type?.includes('Monster')) return '#EEB99B';
   // if(type?.includes('Effect Monster') || type?.includes('Tuner  Monster')) return '#EBCFC1';
-  if(type?.includes('Spell Card')) return '#B3E5C5';
-  if(type?.includes('Trap Card')) return '#EBBCCF';
+  if(type?.includes('Spell Card')) return '#3BC2AE';
+  if(type?.includes('Trap Card')) return '#E273B7';
   return '#EBBCCF';
 }
 

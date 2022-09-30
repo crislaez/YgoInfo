@@ -1,12 +1,17 @@
 @import '../../../../theme/variables.scss';
 
-
-ion-segment-button{
-  color: #2B2B2B;
-  // text-transform: uppercase;
-  --color-checked: #3C396E;
+ion-button{
+  --border-radius: 5px !important;
+  --background: none;
+  color: $backSecondColor;
+  width: 15%;
 }
 
+ion-segment-button{
+  --color-checked: #BA195E;
+}
+
+
 ygopro-card-component {
-  width: 47%;
+  width: 49%;
 }

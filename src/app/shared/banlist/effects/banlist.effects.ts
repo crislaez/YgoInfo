@@ -24,7 +24,7 @@ export class BanlistEffects {
             }
             return of(
               BanlistActions.saveTCGBanlist({ banlistTCG:[], error, status:EntityStatus.Error }),
-              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
+              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_BANLIST_TCG'})
             )
           })
         )
@@ -44,7 +44,7 @@ export class BanlistEffects {
             }
             return of(
               BanlistActions.saveOCGBanlist({ banlistOCG:[], error, status:EntityStatus.Error }),
-              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
+              NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_BANLIST_OCG'})
             )
           })
         )

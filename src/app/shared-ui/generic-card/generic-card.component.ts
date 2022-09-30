@@ -14,18 +14,32 @@ import { errorImage, sliceText } from '@ygopro/shared/utils/functions';
     <div class="item-item displays-around" >
       <div class="item-item-title displays-center" >
         <div class="span-text text-color padding-5 div-title">
-          <span *ngIf="item?.name as name" class="span-bold">{{ sliceText(name,30) }}</span>
-          <span *ngIf="item?.set_name as name" class="span-bold">{{ sliceText(name,30) }}</span>
+          <span *ngIf="item?.name as name" class="span-bold text-center">{{ sliceText(name, 28) }}</span>
+          <span *ngIf="item?.set_name as name" class="span-bold text-center">{{ sliceText(name, 28) }}</span>
         </div>
       </div>
 
       <div class="item-item-types displays-around">
-        <ion-chip *ngIf="item?.tcg_date" class="width-90 text-color">
-          <ion-label class="text-color font-medium">{{ item?.tcg_date }}</ion-label>
+        <ion-chip *ngIf="item?.tcg_date as tcg_date" class="width-90 text-color">
+          <ion-label class="text-color font-medium">{{ tcg_date }}</ion-label>
         </ion-chip>
-        <ion-chip *ngIf="item?.num_of_cards" class="width-90 text-color">
-          <ion-label class="text-color font-medium">{{ 'COMMON.TOTAL_CARDS' | translate }} {{ item?.num_of_cards }}</ion-label>
+        <ion-chip *ngIf="item?.num_of_cards as num_of_cards" class="width-90 text-color">
+          <ion-label class="text-color font-medium">{{ num_of_cards }} {{ 'COMMON.CARDS' | translate }} </ion-label>
         </ion-chip>
+
+        <ion-chip *ngIf="item?.set_rarity || item?.set_price" class="width-90 text-color">
+          <ion-label class="text-color font-medium">
+            <ng-container *ngIf="item?.set_rarity as set_rarity">{{ set_rarity }} : </ng-container>
+            <ng-container *ngIf="item?.set_price as set_price"> {{ set_price }} $</ng-container>
+          </ion-label>
+        </ion-chip>
+
+        <!-- <ion-chip *ngIf="item?.set_code as set_code" class="width-90 text-color">
+          <ion-label class="text-color font-medium">{{ 'COMMON.CODE' | translate }}: {{ set_code }}  </ion-label>
+        </ion-chip> -->
+        <!-- <ion-chip *ngIf="item?.set_price as set_price" class="width-90 text-color">
+          <ion-label class="text-color font-medium">{{ 'COMMON.PRICE' | translate }} {{ set_price }} </ion-label>
+        </ion-chip> -->
       </div>
     </div>
 

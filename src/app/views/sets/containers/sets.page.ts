@@ -21,22 +21,29 @@ export interface SetsComponentStatus {
   template:`
     <ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($any($event))">
 
-      <div class="empty-header textColor displays-center margin-top-25">
-        <!-- FORM  -->
-        <form (submit)="searchSubmit($event)">
-          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
-        </form>
-        <!-- FILTER  -->
-        <ion-button *ngIf="yearsFilter?.length > 0 as filters" class="displays-center class-ion-button" (click)="presentModal(yearsFilter)"> <ion-icon name="options-outline"></ion-icon> </ion-button>
+      <div class="empty-header text-color">
+        <div class="empty-div-50"></div>
+
+        <h1 class="padding-top-10">{{ 'COMMON.SETS' | translate }}</h1>
+
+        <div class="displays-center">
+          <!-- FORM  -->
+          <form (submit)="searchSubmit($event)">
+            <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search" (ionClear)="clearSearch($event)"></ion-searchbar>
+          </form>
+          <!-- FILTER  -->
+          <ion-button *ngIf="yearsFilter?.length > 0 as filters" class="displays-center class-ion-button" (click)="presentModal(yearsFilter)"> <ion-icon name="options-outline"></ion-icon> </ion-button>
+        </div>
       </div>
 
-      <div class="container textColor">
+      <div class="container components-color-second">
 
         <ng-container *ngIf="(info$ | async) as info">
           <ng-container *ngIf="(status$ | async) as status">
             <ng-container *ngIf="status !== 'pending'; else loader">
               <ng-container *ngIf="status !== 'error'; else serverError">
                 <ng-container *ngIf="info?.sets?.length > 0; else noData">
+                  <div class="empty-div" ></div>
 
                   <ygopro-generic-card
                     *ngFor="let set of info?.sets; let i = index; trackBy: trackById"
@@ -255,3 +262,14 @@ export class SetsPage {
 
 
 }
+
+// set_name(pin):"2022 Tin of the Pharaoh's Gods"
+// set_code(pin):"MP22"
+// num_of_cards(pin):275
+// tcg_date(pin):"2022-09-14"
+
+// set_name(pin):"2016 Mega-Tins"
+// set_code(pin):"CT13-EN008"
+// set_rarity(pin):"Ultra Rare"
+// set_rarity_code(pin):"(UR)"
+// set_price(pin):"74.49"
