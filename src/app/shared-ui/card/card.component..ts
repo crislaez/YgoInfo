@@ -11,7 +11,9 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
     >
     <div class="card-title displays-around text-color">
       <div class="card-title-div span-bold">{{ card?.name }}</div>
-      <div class="card-title-icon" (click)="presentPopover($event, card)"><ion-icon name="ellipsis-vertical-outline"></ion-icon></div>
+      <div class="card-title-icon" (click)="presentPopover($event, card)">
+        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+      </div>
     </div>
 
     <div class="card-item displays-around" >
@@ -21,11 +23,13 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
             <ion-chip *ngIf="selectedSetCard?.set_code as set_code">
               <ion-label class="text-color">{{ set_code }}</ion-label>
             </ion-chip>
-            <ion-chip *ngIf="selectedSetCard?.set_rarity as set_rarity" class="text-color">
-              <ion-label class="text-color">{{ set_rarity }}</ion-label>
+            <ion-chip *ngIf="selectedSetCard?.set_rarity as set_rarity">
+              <ion-label class="text-color">{{ set_rarity }}
+                <!-- <ng-container *ngIf="selectedSetCard?.set_rarity_code as set_rarity_code">{{ set_rarity_code}}</ng-container> -->
+              </ion-label>
             </ion-chip>
-            <ion-chip *ngIf="selectedSetCard?.set_price as set_price" class="text-color">
-              <ion-label class="text-color">{{ set_price }} $</ion-label>
+            <ion-chip *ngIf="selectedSetCard?.set_price as set_price">
+              <ion-label class="text-color-four span-bold">{{ set_price }} $</ion-label>
             </ion-chip>
           </ng-container>
         </ng-container>
@@ -67,7 +71,7 @@ import { BANNED, cardColor, errorImage, getObjectKeys, isNotEmptyObject, LIMIT, 
       <ng-container *ngIf="isNotEmptyObject(card?.banlist_info) && !['banlist']?.includes(from)">
         <div class="banlist-div">
           <ng-container *ngFor="let banlistKey of getObjectKeys(card?.banlist_info); trackBy: trackById">
-            <div *ngIf="card?.banlist_info?.[banlistKey] as banlist" class="card-result span-bold">
+            <div *ngIf="card?.banlist_info?.[banlistKey] as banlist" class="card-result span-bold displays-center">
               <span
                 class="font-size-9"
                 [ngClass]="{'forbidden': banlist === 'Banned', 'limited': banlist === 'Limited', 'semi-limited': banlist === 'Semi-Limited'}">

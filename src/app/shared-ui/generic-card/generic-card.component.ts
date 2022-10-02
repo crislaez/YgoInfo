@@ -27,12 +27,19 @@ import { errorImage, sliceText } from '@ygopro/shared/utils/functions';
           <ion-label class="text-color font-medium">{{ num_of_cards }} {{ 'COMMON.CARDS' | translate }} </ion-label>
         </ion-chip>
 
-        <ion-chip *ngIf="item?.set_rarity || item?.set_price" class="width-90 text-color">
+        <ion-chip *ngIf="item?.set_rarity_code || item?.set_price" class="width-90 text-color">
           <ion-label class="text-color font-medium">
-            <ng-container *ngIf="item?.set_rarity as set_rarity">{{ set_rarity }} : </ng-container>
-            <ng-container *ngIf="item?.set_price as set_price"> {{ set_price }} $</ng-container>
+            <ng-container *ngIf="item?.set_rarity_code as set_rarity_code">{{ set_rarity_code }} : </ng-container>
+            <span *ngIf="item?.set_price as set_price" class="text-color-four span-bold"> {{ set_price | currency:'USD':'symbol':'1.2-2' }}</span>
           </ion-label>
         </ion-chip>
+
+        <!-- <ion-chip *ngIf="item?.set_rarity as set_rarity" class="width-90">
+          <ion-label class="text-color font-medium">{{ set_rarity }}</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="item?.set_price as set_price" class="width-90">
+          <ion-label class="text-color-four font-medium"> {{ set_price }} $</ion-label>
+        </ion-chip> -->
 
         <!-- <ion-chip *ngIf="item?.set_code as set_code" class="width-90 text-color">
           <ion-label class="text-color font-medium">{{ 'COMMON.CODE' | translate }}: {{ set_code }}  </ion-label>

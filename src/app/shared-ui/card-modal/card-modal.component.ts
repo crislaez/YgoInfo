@@ -42,9 +42,9 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
           <ion-card-content class="displays-between">
             <!-- BANLIST  -->
             <ng-container *ngIf="isNotEmptyObject(card?.banlist_info)">
-              <ng-container *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10 span-bold font-medium">
-                <div class="width-40 height-30 text-color span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.TCG' | translate}}: </div>
-                <div class="width-40 height-30 text-color">
+              <ng-container *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10 span-bold">
+                <div class="width-40 height-30 text-color span-bold "> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.TCG' | translate}}: </div>
+                <div class="width-40 height-30 text-color-four">
                   <img *ngIf="card?.banlist_info?.ban_tcg as banlist"
                     [src]="(banlist === 'Banned'
                         ? BANNED
@@ -57,9 +57,9 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
                 </div>
               </ng-container>
 
-              <ng-container *ngIf="!!card?.banlist_info?.ban_ocg" class="margin-top-10  span-bold font-medium">
-                <div class="width-40 height-30 text-color span-bold font-medium"> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.OCG' | translate}}: </div>
-                <div class="width-40 height-30 text-color">
+              <ng-container *ngIf="!!card?.banlist_info?.ban_ocg" class="margin-top-10  span-bold">
+                <div class="width-40 height-30 text-color span-bold "> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.OCG' | translate}}: </div>
+                <div class="width-40 height-30 text-color-four">
                   <img *ngIf="card?.banlist_info?.ban_ocg as banlist"
                     [src]="(banlist === 'Banned'
                         ? BANNED
@@ -75,15 +75,15 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
 
             <!-- LEVEL / RANK / LINK  -->
             <ng-container *ngIf="!!card?.level">
-              <div *ngIf="card?.type !== 'XYZ Monster'; else rank" class="width-40 height-30 text-color span-bold font-medium">{{ 'COMMON.LEVEL' | translate}}:</div>
-              <ng-template #rank> <div class="width-40 height-30 text-color span-bold font-medium">{{ 'COMMON.RANK' | translate}}: </div> </ng-template>
-              <div class="width-40 height-30 text-color font-medium">{{ card?.level }}</div>
+              <div *ngIf="card?.type !== 'XYZ Monster'; else rank" class="width-40 height-30 text-color span-bold">{{ 'COMMON.LEVEL' | translate}}:</div>
+              <ng-template #rank> <div class="width-40 height-30 text-color span-bold ">{{ 'COMMON.RANK' | translate}}: </div> </ng-template>
+              <div class="width-40 height-30 text-color-four">{{ card?.level }}</div>
             </ng-container>
 
             <ng-container *ngFor="let info of infoIteratable; let i = index; trackBy: trackById">
               <ng-container *ngIf="!!card?.[info?.field]">
-                <div class="width-40 height-30 text-color span-bold font-medium">{{ info?.label | translate }}:</div>
-                <div class="width-40 height-30 text-color font-medium"
+                <div class="width-40 height-30 text-color span-bold">{{ info?.label | translate }}:</div>
+                <div class="width-40 height-30 text-color-four"
                   [ngStyle]="{'width':info?.field === 'desc' ? '90%': '40%', 'margin-bottom': info?.field === 'desc' ? '20px': '0px' }">{{ card?.[info?.field] }} </div>
               </ng-container>
             </ng-container>
@@ -135,11 +135,10 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
     <ng-template #noData>
       <div class="header" no-border>
         <ion-back-button defaultHref="/cards" class="text-color" [text]="''"></ion-back-button>
-        <!-- <h1 class="text-color">{{ card?.name }}</h1> -->
         <div class="header-container-empty"></div>
       </div>
       <div class="error-serve">
-        <span class="text-color">{{'COMMON.NORESULT' | translate}}</span>
+        <span class="text-color">{{ 'COMMON.NORESULT' | translate }}</span>
       </div>
     </ng-template>
 

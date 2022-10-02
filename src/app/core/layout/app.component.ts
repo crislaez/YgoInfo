@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { MenuController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { NotificationModal } from '@ygopro/shared-ui/notification-modal/notification-modal.page';
 import { trackById } from '@ygopro/shared/utils/functions';
 import { filter, map, shareReplay } from 'rxjs/operators';
 
@@ -16,7 +17,7 @@ import { filter, map, shareReplay } from 'rxjs/operators';
           *ngIf="!isNotShowBackButtons?.includes(currentSection?.route)"
           class="text-color"
           slot="start"
-          [defaultHref]="redirectoTo(currentSection)"
+          [defaultHref]="redirectTo(currentSection)"
           [text]="''">
         </ion-back-button>
 
@@ -26,6 +27,12 @@ import { filter, map, shareReplay } from 'rxjs/operators';
           {{ 'COMMON.TITLE' | translate }}
         </ion-title>
 
+        <ion-icon
+          class="text-color"
+          slot="end"
+          name="ellipsis-horizontal-outline"
+          (click)="presentModal()">
+        </ion-icon>
       </ion-toolbar>
     </ion-header>
 
@@ -52,7 +59,7 @@ export class AppComponent {
     filter((event) => event instanceof NavigationStart),
     map((event: NavigationEnd) => {
       const { url = ''} = event || {};
-      const [,,setName] =  url?.split('/') || [];
+      // const [,,setName] =  url?.split('/') || [];
 
       // if(url?.includes('/set/')) return {label:setName?.replace(/%20/g,' '), route:'set'};
       if(url?.includes('/set/')) return {label: 'COMMON.TITLE', route:'set'};
@@ -70,37 +77,27 @@ export class AppComponent {
 
 
   constructor(
-    private menu: MenuController,
-    private router: Router
+    private router: Router,
+    public modalController: ModalController,
   ) {}
 
 
-  redirectoTo(currentSection:any): string{
+  redirectTo(currentSection:any): string{
     const { route = null} = currentSection || {};
-    // console.log(currentSection)
-    // console.log(route)
     if(route === 'set') return '/sets'
     return '/home';
   }
 
-  open() {
-    this.menu.enable(true, 'first');
-    this.menu.open('first');
+  // OPEN FILTER MODAL
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: NotificationModal,
+    });
+
+    modal.present();
+    await modal.onDidDismiss();
   }
 
-  redirectTo(passage: string): void{
-    this.router.navigate(['/chapter/'+passage])
-    this.menu.close('first')
-  }
 
-  openEnd() {
-    this.menu.close();
-  }
 
 }
-// '/home':{label:'COMMON.TITLE', route:'home'},
-// '/cards':{label:'COMMON.CARDS', route:'cards'},
-// '/sets': {label:'COMMON.SETS', route:'sets'},
-// // '/set': {label:'COMMON.SET', route:'set'},
-// '/storage':{label:'COMMON.SAVED_CARDS', route:'storage'},
-// '/banlist':{label:'COMMON.BANLIST', route:'banlist'},

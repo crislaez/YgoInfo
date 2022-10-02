@@ -1,6 +1,7 @@
 {
   "COMMON":{
     "TITLE":"YGOdex",
+    "CREATE_BY":"create by Crislaez",
     "MENU":"Menu",
     "HOME":"Home",
     "MONSTER_CARDS":"Monster cards",
@@ -64,7 +65,10 @@
     "ORDER":"Order",
     "CARDS":"Cards",
     "TOTAL_CARDS":"Total cards",
-    "CODE":"Code"
+    "CODE":"Code",
+    "APP_DESCRIPTION":"YGOdex is an application with the information of all the cards, sets and banlist of yu-gi-oh! (TCG and OCG), where you can also filter by searches and apply different filters such as types, archetypes, races, attributes...",
+    "APP_FIND":"Any questions or problems, you can contact me at crislaez30@gmail.com, or through the following links",
+    "APP_FAREWELL":"Thank you very much :)"
   },
   "ERRORS":{
     "ERROR_LOAD_SETS":"Error loading sets",
