@@ -16,11 +16,14 @@ import { gotToTop, trackById, appColors } from '@ygopro/shared/utils/functions';
         <div
           *ngFor="let item of iteratable; let i = index; trackBy: trackById"
           [routerLink]="[item?.link]"
-          class="home-div displays-center"
+          class="home-div displays-center ion-activatable ripple-parent"
           [ngStyle]="{'background':appColors?.[i]}">
           <div>
             {{ item?.label | translate }}
           </div>
+
+          <!-- RIPLE EFFECT  -->
+          <ion-ripple-effect></ion-ripple-effect>
         </div>
       </div>
 
