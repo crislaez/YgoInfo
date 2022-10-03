@@ -39,7 +39,7 @@ export class CardService {
       map(res => ({cards: res?.data || [], totalCount: res?.meta?.total_rows || 0})),
       catchError((error) => {
         if( error?.error === 'No card matching your query was found in the database. Please see https://db.ygoprodeck.com/api-guide/ for syntax usage.'){
-          error = 400
+          error = 701
         }
         return throwError(error)
       })

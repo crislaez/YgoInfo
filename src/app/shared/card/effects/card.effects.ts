@@ -19,8 +19,12 @@ export class CardEffects {
         return this._card.getAllCards(page, filter).pipe(
           map(({cards, totalCount }) => CardActions.saveCards({ cards, page, totalCount, filter, error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
+            if(error === 701){
+              return of(CardActions.saveCards({ cards:[], page:0, totalCount:0, error, status:EntityStatus.Loaded }))
+            }
+
             return of(
-              CardActions.saveCards({ cards:[], page:1, totalCount:0, error, status:EntityStatus.Error }),
+              CardActions.saveCards({ cards:[], page:0, totalCount:0, error, status:EntityStatus.Error }),
               NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
             )
           })
@@ -36,8 +40,12 @@ export class CardEffects {
         return this._card.getAllCards(page, filter).pipe(
           map(({cards, totalCount }) => CardActions.saveSetCards({ setName, cards, page, totalCount, filter, error:undefined, status:EntityStatus.Loaded })),
           catchError(error => {
+            if(error === 701){
+              return of(CardActions.saveSetCards({ setName, cards:[], page:0, totalCount:0, error, status:EntityStatus.Loaded }))
+            }
+
             return of(
-              CardActions.saveSetCards({ setName, cards:[], page:1, totalCount:0, error, status:EntityStatus.Error }),
+              CardActions.saveSetCards({ setName, cards:[], page:0, totalCount:0, error, status:EntityStatus.Error }),
               NotificationActions.notificationFailure({message: 'ERRORS.ERROR_LOAD_CARD'})
             )
           })

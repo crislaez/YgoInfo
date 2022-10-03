@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { GenericCardModule } from '../generic-card/generic-card.module';
+import { NoDataModule } from '../no-data/no-data.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { CardModalComponent } from './card-modal.component';
 
@@ -10,6 +11,7 @@ import { CardModalComponent } from './card-modal.component';
   imports: [
     CommonModule,
     IonicModule,
+    NoDataModule,
     SpinnerModule,
     GenericCardModule,
     TranslateModule.forChild(),

@@ -44,7 +44,7 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
             <ng-container *ngIf="isNotEmptyObject(card?.banlist_info)">
               <ng-container *ngIf="!!card?.banlist_info?.ban_tcg" class="margin-top-10 span-bold">
                 <div class="width-40 height-30 text-color span-bold "> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.TCG' | translate}}: </div>
-                <div class="width-40 height-30 text-color-four">
+                <div class="width-40 height-30 text-color">
                   <img *ngIf="card?.banlist_info?.ban_tcg as banlist"
                     [src]="(banlist === 'Banned'
                         ? BANNED
@@ -59,7 +59,7 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
 
               <ng-container *ngIf="!!card?.banlist_info?.ban_ocg" class="margin-top-10  span-bold">
                 <div class="width-40 height-30 text-color span-bold "> {{ 'COMMON.BANLIST' | translate }} {{ 'COMMON.OCG' | translate}}: </div>
-                <div class="width-40 height-30 text-color-four">
+                <div class="width-40 height-30 text-color">
                   <img *ngIf="card?.banlist_info?.ban_ocg as banlist"
                     [src]="(banlist === 'Banned'
                         ? BANNED
@@ -77,13 +77,13 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
             <ng-container *ngIf="!!card?.level">
               <div *ngIf="card?.type !== 'XYZ Monster'; else rank" class="width-40 height-30 text-color span-bold">{{ 'COMMON.LEVEL' | translate}}:</div>
               <ng-template #rank> <div class="width-40 height-30 text-color span-bold ">{{ 'COMMON.RANK' | translate}}: </div> </ng-template>
-              <div class="width-40 height-30 text-color-four">{{ card?.level }}</div>
+              <div class="width-40 height-30 text-color">{{ card?.level }}</div>
             </ng-container>
 
             <ng-container *ngFor="let info of infoIteratable; let i = index; trackBy: trackById">
               <ng-container *ngIf="!!card?.[info?.field]">
                 <div class="width-40 height-30 text-color span-bold">{{ info?.label | translate }}:</div>
-                <div class="width-40 height-30 text-color-four"
+                <div class="width-40 height-30 text-color"
                   [ngStyle]="{'width':info?.field === 'desc' ? '90%': '40%', 'margin-bottom': info?.field === 'desc' ? '20px': '0px' }">{{ card?.[info?.field] }} </div>
               </ng-container>
             </ng-container>
@@ -130,16 +130,9 @@ import { appColors, BANNED, cardColor, errorImage, getLastNumber, gotToTop, isNo
       </div>
     </ng-container>
 
-
     <!-- IS NO DATA  -->
     <ng-template #noData>
-      <div class="header" no-border>
-        <ion-back-button defaultHref="/cards" class="text-color" [text]="''"></ion-back-button>
-        <div class="header-container-empty"></div>
-      </div>
-      <div class="error-serve">
-        <span class="text-color">{{ 'COMMON.NORESULT' | translate }}</span>
-      </div>
+      <app-no-data [title]="'COMMON.NORESULT'" [image]="'assets/images/empty.png'" [top]="'30vh'"></app-no-data>
     </ng-template>
 
     <!-- LOADER  -->

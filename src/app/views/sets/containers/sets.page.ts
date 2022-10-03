@@ -185,6 +185,7 @@ export class SetsPage {
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
+      this.search.reset();
       this.statusComponent = {
         slice: this.slice,
         filter:{},
