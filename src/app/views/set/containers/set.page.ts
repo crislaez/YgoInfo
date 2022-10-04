@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@an
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@capacitor/keyboard';
-import { IonContent, IonInfiniteScroll, ModalController, Platform, PopoverController } from '@ionic/angular';
+import { IonContent, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { concatLatestFrom } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.component';
@@ -117,7 +117,6 @@ export class SetPage {
   errorImage = errorImage;
   getLastNumber = getLastNumber;
   @ViewChild(IonContent, {static: true}) content: IonContent;
-  @ViewChild(IonInfiniteScroll) ionInfiniteScroll: IonInfiniteScroll;
   title: string;
   showButton: boolean = false;
   perPageSum: number = 22;
@@ -172,6 +171,7 @@ export class SetPage {
     map(({setName}) => setName)
   );
 
+
   constructor(
     private store: Store,
     public platform: Platform,
@@ -211,7 +211,6 @@ export class SetPage {
       refresh: true
     };
     this.trigger.next(this.statusComponent);
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
 
   // DELETE SEARCH
@@ -228,7 +227,6 @@ export class SetPage {
       refresh: true
     };
     this.trigger.next(this.statusComponent);
-    if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
   }
 
   // SCROLL EVENT
@@ -261,8 +259,6 @@ export class SetPage {
         refresh: true
       };
       this.trigger.next(this.statusComponent);
-      if(this.ionInfiniteScroll) this.ionInfiniteScroll.disabled = false;
-
       event.target.complete();
     }, 500);
   }
