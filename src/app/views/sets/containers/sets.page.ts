@@ -4,17 +4,12 @@ import { Keyboard } from '@capacitor/keyboard';
 import { IonContent, IonInfiniteScroll, ModalController, Platform } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { ModalFilterComponent } from '@ygopro/shared-ui/modal-filter/modal-filter.component';
-import { Filter } from '@ygopro/shared/card';
 import { fromSet, SetActions } from '@ygopro/shared/set';
 import { Set, SetFilter } from '@ygopro/shared/set/models';
 import { appColors, getLastNumber, gotToTop, trackById } from '@ygopro/shared/utils/functions';
-import { map, switchMap, tap, startWith } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { SetsComponentState } from '../model';
 
-export interface SetsComponentStatus {
-  slice?:number;
-  filter?:SetFilter;
-  refresh?: boolean;
-};
 
 @Component({
   selector: 'ygopro-sets',
@@ -110,8 +105,8 @@ export class SetsPage {
 
 
   status$ = this.store.select(fromSet.getStatus);
-  trigger = new EventEmitter<SetsComponentStatus>();
-  statusComponent: SetsComponentStatus = {
+  trigger = new EventEmitter<SetsComponentState>();
+  statusComponent: SetsComponentState = {
     slice:this.slice,
     filter:{},
     refresh: false
@@ -247,30 +242,17 @@ export class SetsPage {
   }
 
   filterSets(sets: Set[], filter: SetFilter): Set[] {
-    let filterSets = sets || [];
     const { search = null, year = null} = filter || {};
 
-    if(search){
-      filterSets = (filterSets || [])?.filter(({set_name}) => set_name?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()));
-    }
+    return (sets || [])?.filter(({set_name, tcg_date}) => {
+      const searchCondition = set_name?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase());
+      const yearCondition = tcg_date?.includes(year);
 
-    if(year){
-      filterSets = (filterSets || [])?.filter(({tcg_date}) => tcg_date?.includes(year));
-    }
-
-    return filterSets
+      if(search && year) return searchCondition && yearCondition;
+      if(search && !year) return searchCondition;
+      if(year && !search) return yearCondition;
+    })
   }
 
 
 }
-
-// set_name(pin):"2022 Tin of the Pharaoh's Gods"
-// set_code(pin):"MP22"
-// num_of_cards(pin):275
-// tcg_date(pin):"2022-09-14"
-
-// set_name(pin):"2016 Mega-Tins"
-// set_code(pin):"CT13-EN008"
-// set_rarity(pin):"Ultra Rare"
-// set_rarity_code(pin):"(UR)"
-// set_price(pin):"74.49"

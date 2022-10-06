@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, ViewChild } from '@angular/core';
-import { IonContent, ModalController, PopoverController } from '@ionic/angular';
+import { FormControl } from '@angular/forms';
+import { Keyboard } from '@capacitor/keyboard';
+import { IonContent, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.component';
 import { PopoverComponent } from '@ygopro/shared-ui/popover/poper.component';
 import { Card } from '@ygopro/shared/models';
 import { fromStorage, StorageActions } from '@ygopro/shared/storage';
 import { errorImage, gotToTop, isNotEmptyObject, trackById } from '@ygopro/shared/utils/functions';
-import { startWith, switchMap, tap } from 'rxjs/operators';
+import { startWith, switchMap, tap, map } from 'rxjs/operators';
+import { StorageComponentState } from '../model';
 import { BANNED, LIMIT, SEMI_LIMIT } from './../../../shared/utils/functions';
 
 @Component({
@@ -16,25 +19,42 @@ import { BANNED, LIMIT, SEMI_LIMIT } from './../../../shared/utils/functions';
 
     <div class="empty-header text-color">
       <div class="empty-div-50"> </div>
-      <h1 class="padding-top-10">{{ 'COMMON.SAVE' | translate }}
-      </h1>
+      <h1 class="padding-top-10">{{ 'COMMON.SAVE' | translate }}</h1>
+
+      <div *ngIf="!['pending']?.includes(status$ | async)" class="displays-center">
+        <!-- FORM  -->
+        <form (submit)="searchSubmit($event)">
+          <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
+        </form>
+
+      </div>
     </div>
 
     <div class="container components-color-second">
-      <ng-container *ngIf="(storageCards$ | async) as storageCards">
+      <ng-container *ngIf="(info$ | async) as info">
         <ng-container *ngIf="(status$ | async) as status">
           <ng-container *ngIf="status !== 'pending'; else loader">
             <ng-container *ngIf="status !== 'error'; else serverError">
-              <ng-container *ngIf="storageCards?.length > 0; else noData">
+              <ng-container *ngIf="info?.cards?.length > 0; else noData">
+
+               <div class="empty-div" ></div>
 
                 <ygopro-card-component
-                  *ngFor="let card of storageCards; let i = index; trackBy: trackById"
+                  *ngFor="let card of info?.cards; let i = index; trackBy: trackById"
                   [card]="card"
                   [isSetName]="null"
                   [from]="'storage'"
                   (openSingleCardModal)="openSingleCardModal($event)"
                   (presentPopoverTrigger)="presentPopover($event)">
                 </ygopro-card-component>
+
+                <!-- INFINITE SCROLL  -->
+                <ygopro-infinite
+                  [slice]="info?.cards?.length"
+                  [status]="status"
+                  [total]="info?.total"
+                  (loadDataTrigger)="loadData($event)">
+                </ygopro-infinite>
 
               </ng-container>
             </ng-container>
@@ -82,39 +102,83 @@ export class StoragePage {
   errorImage = errorImage;
   isNotEmptyObject = isNotEmptyObject;
   @ViewChild(IonContent, {static: true}) content: IonContent;
-  showButton: boolean = false;
-  ionInfiniteScroll$ = new EventEmitter<string>();
+  slice = 10;
+  showButton = false;
+  search = new FormControl('');
 
   status$ = this.store.select(fromStorage.getStatus);
-  storageCards$ = this.ionInfiniteScroll$.pipe(
-    startWith(''),
-    tap(() => {
-      this.store.dispatch(StorageActions.loadStorage())
+  trigger = new EventEmitter<StorageComponentState>();
+  componentStatus: StorageComponentState = {
+    slice: this.slice,
+    search: null,
+    reload: true
+  };
+  info$ = this.trigger.pipe(
+    startWith(this.componentStatus),
+    tap(({reload}) => {
+      if(reload){
+        this.store.dispatch(StorageActions.loadStorage())
+      }
     }),
-    switchMap(() =>
-      this.store.select(fromStorage.getStorage)
+    switchMap(({search, slice}) =>
+      this.store.select(fromStorage.getStorage).pipe(
+        map((cardList) => {
+          const filterCards = !search
+                            ? cardList
+                            : (cardList || [])?.filter(({name}) => name?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))
+          return{
+            cards: filterCards?.slice(0, slice) ?? [],
+            total: filterCards?.length
+          }
+        })
+      )
     )
+    // ,tap(d => console.log(d))
   );
 
 
   constructor(
     private store: Store,
+    public platform: Platform,
     public popoverController: PopoverController,
     public modalController: ModalController
   ) { }
 
 
-  // SCROLL EVENT
-  logScrolling({detail:{scrollTop}}): void{
-    if(scrollTop >= 300) this.showButton = true
-    else this.showButton = false
+  // SEARCH
+  searchSubmit(event: Event): void{
+    event.preventDefault();
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.componentStatus = {slice: this.slice, search: this.search.value, reload:false}
+    this.trigger.next(this.componentStatus);
+  }
+
+  // DELETE SEARCH
+  clearSearch(event): void{
+    if(!this.platform.is('mobileweb')) Keyboard.hide();
+    this.search.reset();
+    this.componentStatus = {slice: this.slice, search:null, reload:false},
+    this.trigger.next(this.componentStatus);
   }
 
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
-    this.ionInfiniteScroll$.next('')
+      this.componentStatus = {slice: this.slice, search:null, reload:true},
+      this.trigger.next(this.componentStatus);
+      event.target.complete();
+    }, 500);
+  }
 
+  // INIFINITE SCROLL
+  loadData({event, total}) {
+    setTimeout(() => {
+      this.componentStatus = {
+        ...this.componentStatus,
+        slice: (this.componentStatus?.slice + this.slice),
+        reload: false
+      };
+      this.trigger.next(this.componentStatus);
       event.target.complete();
     }, 500);
   }
@@ -147,6 +211,12 @@ export class StoragePage {
 
     const {id = null} = info || {};
     this.store.dispatch(StorageActions.deleteCard({id}))
+  }
+
+  // SCROLL EVENT
+  logScrolling({detail:{scrollTop}}): void{
+    if(scrollTop >= 300) this.showButton = true
+    else this.showButton = false
   }
 
 }

@@ -12,13 +12,8 @@ import { Card } from '@ygopro/shared/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { gotToTop, trackById } from '@ygopro/shared/utils/functions';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { CardComponentState } from '../model';
 import * as fromCardPage from '../selectors/card.selectors';
-
-export interface CardComponentStatus {
-  page:number,
-  filter: Filter,
-  refresh?: boolean;
-};
 
 @Component({
   selector: 'ygopro-card',
@@ -117,11 +112,8 @@ export class CardPage  {
   filters$ = this.store.select(fromCardPage.cardFilterSelectors);
   status$ = this.store.select(fromCard.selectStatus).pipe(shareReplay(1));
 
-  trigger = new EventEmitter<CardComponentStatus>();
-  statusComponent: CardComponentStatus = {
-    page: 0,
-    filter: {}
-  };
+  trigger = new EventEmitter<CardComponentState>();
+  statusComponent: CardComponentState;
 
   info$ = this.trigger.pipe(
     concatLatestFrom(() => this.store.select(fromCard.selectFilters)),

@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.ygoinfo",
-	"appName": "yu-gi-oh! Info",
+	"appId": "io.ionic.YGOdex",
+	"appName": "YGOdex",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }

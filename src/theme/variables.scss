@@ -407,10 +407,6 @@ ion-header{
   }
 }
 
-// ion-select-option{
-//   background: white;
-// }
-
 ion-footer, ion-toolbar{
   height:50px;
   --background: $backSecondColor !important;
@@ -430,7 +426,7 @@ ion-searchbar{
 
   .searchbar-input-container {
     input{
-      background: #C5C5C5 !important;
+      background: $textColor !important;
       color: $secondBackColor !important;
       // color: $backColor !important;
     }

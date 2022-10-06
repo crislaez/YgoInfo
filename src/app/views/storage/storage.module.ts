@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModalModule } from '@ygopro/shared-ui/card-modal/card-modal.module';
 import { CardItemModule } from '@ygopro/shared-ui/card/card.module';
+import { InfiniteScrollModule } from '@ygopro/shared-ui/infinite-scroll/infinite-scroll.module';
 import { NoDataModule } from '@ygopro/shared-ui/no-data/no-data.module';
 import { PopoverModule } from '@ygopro/shared-ui/popover/popover.module';
 import { SpinnerModule } from '@ygopro/shared-ui/spinner/spinner.module';
@@ -22,7 +23,8 @@ const SHARED_UI_MODULE = [
   SpinnerModule,
   PopoverModule,
   CardItemModule,
-  CardModalModule
+  CardModalModule,
+  InfiniteScrollModule
 ];
 
 @NgModule({

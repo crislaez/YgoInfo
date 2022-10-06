@@ -8,19 +8,13 @@ import { Store } from '@ngrx/store';
 import { CardModalComponent } from '@ygopro/shared-ui/card-modal/card-modal.component';
 import { ModalFilterComponent } from '@ygopro/shared-ui/modal-filter/modal-filter.component';
 import { PopoverComponent } from '@ygopro/shared-ui/popover/poper.component';
-import { CardActions, Filter, fromCard } from '@ygopro/shared/card';
+import { CardActions, fromCard } from '@ygopro/shared/card';
 import { Card } from '@ygopro/shared/models';
 import { StorageActions } from '@ygopro/shared/storage';
 import { appColors, errorImage, getLastNumber, gotToTop, trackById } from '@ygopro/shared/utils/functions';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { SetComponentState } from '../model';
 import * as fromSet from '../selectors/set.selectors';
-
-export interface SetComponentStatus {
-  setName?: string;
-  page?:number;
-  filter?: Filter;
-  refresh?: boolean;
-};
 
 @Component({
   selector: 'ygopro-set',
@@ -31,7 +25,6 @@ export interface SetComponentStatus {
         <div class="empty-div-50"> </div>
 
         <h1 class="padding-top-10">
-          <!-- {{ 'COMMON.SET' | translate }}: -->
           <ng-container  *ngIf="title$ | async as title">{{ title }}</ng-container>
         </h1>
 
@@ -130,8 +123,8 @@ export class SetPage {
     ,shareReplay(1)
   );
 
-  trigger = new EventEmitter<SetComponentStatus>();
-  statusComponent:SetComponentStatus = {};
+  trigger = new EventEmitter<SetComponentState>();
+  statusComponent:SetComponentState;
 
   info$ = this.trigger.pipe(
     concatLatestFrom(() => this.store.select(fromCard.selectAllSetsCards)),
