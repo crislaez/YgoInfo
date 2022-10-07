@@ -35,8 +35,6 @@ export interface BanlistComponentStatus {
           <form *ngIf="['loaded']?.includes(status$ | async)" (submit)="searchSubmit($event)">
             <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
           </form>
-          <!-- FILTER  -->
-          <ion-button class="displays-center class-ion-button" ></ion-button>
         </div>
       </div>
 

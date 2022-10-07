@@ -7,10 +7,14 @@ ion-button{
   width: 15%;
 }
 
+form {
+  width: 94% !important;
+  margin: 0 auto;
+}
+
 ion-segment-button{
   --color-checked: #BA195E;
 }
-
 
 ygopro-card-component {
   width: 49%;

@@ -26,7 +26,6 @@ import { BANNED, LIMIT, SEMI_LIMIT } from './../../../shared/utils/functions';
         <form (submit)="searchSubmit($event)">
           <ion-searchbar [placeholder]="'COMMON.SEARCH' | translate" [formControl]="search"(ionClear)="clearSearch($event)"></ion-searchbar>
         </form>
-
       </div>
     </div>
 
@@ -164,6 +163,7 @@ export class StoragePage {
   // REFRESH
   doRefresh(event) {
     setTimeout(() => {
+      this.search.reset();
       this.componentStatus = {slice: this.slice, search:null, reload:true},
       this.trigger.next(this.componentStatus);
       event.target.complete();
